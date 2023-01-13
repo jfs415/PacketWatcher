@@ -1,0 +1,33 @@
+apply plugin: 'java'
+apply plugin: 'maven-publish'
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = rootProject.name
+            from components.java
+        }
+    }
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+allprojects {
+    sourceCompatibility = '11'
+    targetCompatibility = '11'
+
+    group 'com.jfs415'
+    version '0.1.0-SNAPSHOT'
+
+    test {
+        useJUnitPlatform()
+    }
+}
+
+dependencies {
+    implementation 'junit:junit:4.13.1'
+    implementation 'junit:junit:4.13.1'
+}

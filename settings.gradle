@@ -1,0 +1,6 @@
+rootProject.name = 'PacketWatcher'
+include 'src:main:test'
+findProject(':src:main:test')?.name = 'test'
+include 'packetwatcher-core'
+include 'packetwatcher-ui'
+

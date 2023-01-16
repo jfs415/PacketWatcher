@@ -19,17 +19,13 @@ public class CorePropertiesManager {
 
 		properties.load(inputStream);
 		inputStream.close();
-
-		PacketWatcherCore.debug("PacketWatcherCore config file loaded");
 	}
 
 	public void save() throws IOException {
 		File configFile = new File(PROPERTIES_FILENAME);
 		FileWriter writer = new FileWriter(configFile);
-		properties.store(writer, "host settings");
+		properties.store(writer, "Core service config settings");
 		writer.close();
-		
-		PacketWatcherCore.debug("Config file saved");
 	}
 
 	/**

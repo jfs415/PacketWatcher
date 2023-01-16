@@ -62,6 +62,7 @@ public class PacketWatcherCore {
 
 		try {
 			configProperties.load();
+			debug("PacketWatcherCore config file loaded");
 		} catch (IOException e) {
 			e.printStackTrace();
 			error("Encountered an exception when trying to load properties, attempting to load defaults");
@@ -81,6 +82,12 @@ public class PacketWatcherCore {
 	@PreDestroy
 	public void onShutdown() {
 		debug("PacketWatcher-Core shutting down");
+		
+		try {
+			configProperties.save();
+		} catch (IOException e) {
+			debug("Encountered an exception saving PacketWatcherCore config on shutdown");
+		}
 		handle.shutdown();
 	}
 

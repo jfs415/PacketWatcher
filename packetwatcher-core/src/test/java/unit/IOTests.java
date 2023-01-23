@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.sql.Timestamp;
 
 import org.junit.jupiter.api.Test;
-import org.testng.Assert;
 
 import com.jfs415.packetwatcher_core.CorePropertiesManager;
 
@@ -87,12 +86,12 @@ public class IOTests {
 		
 		assert pm.refresh();
 
-		Assert.assertEquals(pm.getArchiveRetentionDays(), newArchivedRetentionDays);
-		Assert.assertEquals(pm.getFlaggedRetentionDays(), newFlaggedRetentionDays);
-		Assert.assertEquals(pm.getLastAppStart(), newLastAppStart);
-		Assert.assertEquals(pm.getLastAppShutdown(), newLastAppShutdown);
-		Assert.assertEquals(pm.getLastFlaggedRecordPurge(), newLastFlaggedRecordPurge);
-		Assert.assertEquals(pm.getLastArchiveRecordPurge(), newLastArchivedRecordPurge);
+		assert pm.getArchiveRetentionDays()  == newArchivedRetentionDays;
+		assert pm.getFlaggedRetentionDays() == newFlaggedRetentionDays;
+		assert pm.getLastAppStart().equals(newLastAppStart);
+		assert pm.getLastAppShutdown().equals(newLastAppShutdown);
+		assert pm.getLastFlaggedRecordPurge().equals(newLastFlaggedRecordPurge);
+		assert pm.getLastArchiveRecordPurge().equals(newLastArchivedRecordPurge);
 	}
 
 }

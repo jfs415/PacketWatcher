@@ -6,7 +6,6 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
-import org.testng.Assert;
 
 import com.axlabs.ip2asn2cc.Ip2Asn2Cc;
 import com.axlabs.ip2asn2cc.exception.RIRNotDownloadedException;
@@ -19,12 +18,12 @@ public class Ip2Asn2CcTest {
 
 	@Test
 	public void testIp2Cc() {
-		Assert.assertEquals(getIpLookupUtility().getRIRCountryCode("8.8.8.8"), "US");
-		Assert.assertEquals(getIpLookupUtility().getRIRCountryCode("221.192.199.49"), FlaggedCountries.CHINA.getCountryCode());
-		Assert.assertEquals(getIpLookupUtility().getRIRCountryCode("80.92.32.0"), FlaggedCountries.RUSSIA.getCountryCode());
-		Assert.assertEquals(getIpLookupUtility().getRIRCountryCode("37.212.59.152"), FlaggedCountries.BELARUS.getCountryCode());
-		Assert.assertEquals(getIpLookupUtility().getRIRCountryCode("190.15.150.165"), FlaggedCountries.CUBA.getCountryCode());
-		Assert.assertEquals(getIpLookupUtility().getRIRCountryCode("5.134.128.0"), FlaggedCountries.IRAN.getCountryCode());
+		assert getIpLookupUtility().getRIRCountryCode("8.8.8.8").equals("US");
+		assert getIpLookupUtility().getRIRCountryCode("221.192.199.49").equals(FlaggedCountries.CHINA.getCountryCode());
+		assert getIpLookupUtility().getRIRCountryCode("80.92.32.0").equals(FlaggedCountries.RUSSIA.getCountryCode());
+		assert getIpLookupUtility().getRIRCountryCode("37.212.59.152").equals(FlaggedCountries.BELARUS.getCountryCode());
+		assert getIpLookupUtility().getRIRCountryCode("190.15.150.165").equals(FlaggedCountries.CUBA.getCountryCode());
+		assert getIpLookupUtility().getRIRCountryCode("5.134.128.0").equals(FlaggedCountries.IRAN.getCountryCode());
 	}
 
 	private Ip2Asn2Cc getIpLookupUtility() {

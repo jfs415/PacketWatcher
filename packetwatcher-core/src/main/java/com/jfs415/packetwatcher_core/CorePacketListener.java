@@ -2,7 +2,6 @@ package com.jfs415.packetwatcher_core;
 
 import java.sql.Timestamp;
 import java.util.EnumSet;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.pcap4j.core.PacketListener;
@@ -29,7 +28,7 @@ public class CorePacketListener implements PacketListener {
 		}
 	}
 
-	public Optional<String> getFlaggedCountry(String destinationIp) {
+	public String getFlaggedCountry(String destinationIp) {
 		return ipLookupUtility.getRIRCountryCode(destinationIp);
 	}
 
@@ -41,14 +40,14 @@ public class CorePacketListener implements PacketListener {
 
 			if (!destIpString.startsWith(PacketWatcherCore.getHostAddr())) {
 				String destHostName = ((IpV4Header) eth.getPayload().getHeader()).getDstAddr().getHostName();
-				Optional<String> countryName = getFlaggedCountry(destIpString);
+				String countryName = getFlaggedCountry(destIpString);
 				
-				if (countryName.isPresent()) {
+				if (countryName != null && !countryName.equalsIgnoreCase("Unknown")) {
 					Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 					String destPort = ((TcpPacket) packet.getPacket().getPayload().getPayload()).getHeader().getDstPort().toString();
 
 					PacketRecordKey key = new PacketRecordKey(timestamp, destIpString, destPort);
-					PacketWatcherCore.getPacketService().addToSaveQueue(new FlaggedPacketRecord(key, destHostName, countryName.get().toUpperCase()));
+					PacketWatcherCore.getPacketService().addToSaveQueue(new FlaggedPacketRecord(key, destHostName, countryName.toUpperCase()));
 				}
 			}
 		}

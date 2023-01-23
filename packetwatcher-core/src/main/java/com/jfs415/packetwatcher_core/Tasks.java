@@ -21,7 +21,7 @@ public class Tasks {
 		FlaggedPacketRecord.createTestPacket().save(); //Create test packets every day to confirm things are still working
 	}
 	
-	@Scheduled(fixedDelay = 45, timeUnit = TimeUnit.SECONDS)
+	@Scheduled(fixedDelay = 1, timeUnit = TimeUnit.DAYS)
 	public void createTestPacket() {
 		FlaggedPacketRecord.createTestPacket().save();
 		PacketWatcherCore.debug("CREATED TEST PACKET");

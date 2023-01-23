@@ -6,7 +6,9 @@ public enum FlaggedCountries {
 	RUSSIA("RU"),
 	BELARUS("BY"),
 	IRAN("IR"),
-	CUBA("CU"),;
+	CUBA("CU")
+	
+	;
 
 	private final String countryCode;
 

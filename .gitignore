@@ -28,3 +28,5 @@ hs_err_pid*
 /out/
 /packetwatcher-core/PacketWatcherCore.properties
 /packetwatcher-ui/PacketWatcherUI.properties
+/packetwatcher-api/build/
+/packetwatcher-core/build/

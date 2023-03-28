@@ -1,0 +1,85 @@
+body {
+    background-color: #18191A;
+}
+
+.form-spacing {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align:center;
+    height: 9em;
+}
+
+.form-label {
+    color: #E4E6EB;
+    text-align: left;
+}
+
+img.login-logo {
+    border-radius: 15px;
+}
+
+.login-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    vertical-align: center;
+    height: 23em;
+    border: 1px solid black;
+    margin-left: 35%;
+    margin-right: 35%;
+    margin-top: 8%;
+    background-color: #242526;
+    border-radius: 15px;
+}
+
+.passwordChecklist {
+    color: white;
+}
+
+.reset-password-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    vertical-align: center;
+    height: 35em;
+    border: 1px solid black;
+    margin-left: 30%;
+    margin-right: 30%;
+    margin-top: 5%;
+    background-color: #242526;
+    border-radius: 15px;
+}
+
+.reset-pass {
+    text-align: center;
+}
+
+/*.creds {*/
+/*    background: transparent;*/
+/*    border: none;*/
+/*    border-bottom: 1px solid #000000;*/
+/*    color: #E4E6EB;*/
+/*}*/
+
+/*.creds:focus {*/
+/*    border-bottom: 1px solid #CE2929;*/
+/*}*/
+
+.password {
+    color: #E4E6EB;
+}
+
+/*.submit {*/
+/*    color: black;*/
+/*}*/
+
+::placeholder {
+    opacity: 1;
+    color: #CE2929;
+}
+
+/*input:focus, textarea:focus, select:focus{*/
+/*    outline: none;*/
+/*    color: #E4E6EB;*/
+/*}*/

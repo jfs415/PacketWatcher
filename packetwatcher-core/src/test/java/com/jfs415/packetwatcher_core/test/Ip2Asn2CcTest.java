@@ -1,4 +1,4 @@
-package unit;
+package com.jfs415.packetwatcher_core.test;
 
 import java.util.EnumSet;
 import java.util.List;

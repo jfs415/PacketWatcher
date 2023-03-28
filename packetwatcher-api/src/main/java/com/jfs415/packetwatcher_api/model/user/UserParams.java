@@ -30,10 +30,6 @@ public class UserParams {
 	@NotBlank(message = "Password cannot be empty!")
 	private String password;
 
-	public UserParams() {
-
-	}
-
 	public UserParams(String first, String last, String email, @Nullable String phone, String username, String password) {
 		this.first = first;
 		this.last = last;

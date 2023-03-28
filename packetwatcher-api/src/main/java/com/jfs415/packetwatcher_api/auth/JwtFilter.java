@@ -16,7 +16,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.jfs415.packetwatcher_api.PacketWatcherApi;
+import com.jfs415.packetwatcher_api.model.services.UserService;
 
 import io.jsonwebtoken.lang.Strings;
 
@@ -25,13 +25,16 @@ public class JwtFilter extends OncePerRequestFilter {
 
 	@Autowired
 	private JwtUtil jwtUtil;
+	
+	@Autowired
+	private UserService userService;
 
 	@Override
 	public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
 
 		// Get authorization header and validate
 		final String header = request.getHeader(HttpHeaders.AUTHORIZATION);
-		if (Strings.hasText(header) || !header.startsWith("Bearer ")) {
+		if (header == null || Strings.hasText(header) || !header.startsWith("Bearer ")) {
 			chain.doFilter(request, response);
 			return;
 		}
@@ -40,7 +43,7 @@ public class JwtFilter extends OncePerRequestFilter {
 		final String token = header.split(" ")[1].trim();
 		
 		// Get user identity and set it on the spring security context
-		UserDetails userDetails = PacketWatcherApi.getUserService().getUserByUsername(jwtUtil.getUsername(token)).orElse(null);
+		UserDetails userDetails = userService.getUserByUsername(jwtUtil.getUsername(token));
 		
 		if (userDetails == null || !jwtUtil.validateToken(token, userDetails)) {
 			chain.doFilter(request, response);

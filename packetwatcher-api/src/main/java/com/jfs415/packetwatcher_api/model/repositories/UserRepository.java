@@ -1,7 +1,6 @@
 package com.jfs415.packetwatcher_api.model.repositories;
 
 import java.util.Optional;
-import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -9,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import com.jfs415.packetwatcher_api.model.user.User;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, UUID> {
+public interface UserRepository extends JpaRepository<User, String> {
 
 	/**
 	 * Equivalent to SQL query "SELECT * from Users WHERE email = other_email".

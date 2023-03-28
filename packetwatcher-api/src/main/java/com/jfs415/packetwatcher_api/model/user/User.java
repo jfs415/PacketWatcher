@@ -2,7 +2,7 @@ package com.jfs415.packetwatcher_api.model.user;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.UUID;
+import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,6 +11,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Immutable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -19,11 +20,8 @@ import com.jfs415.packetwatcher_api.PacketWatcherApi;
 @Entity
 @Table(name = "users", schema = "packetwatcher")
 public class User implements Serializable, UserDetails {
-	
-	@Id
-	@Column(name = "uuid", unique = true)
-	private final UUID uuid = UUID.randomUUID();
 
+	@Id
 	@Column(name = "username", length = 16, unique = true)
 	private String username;
 
@@ -34,7 +32,7 @@ public class User implements Serializable, UserDetails {
 	private String first;
 
 	@Column(name = "last")
-	private String last = "Doe";
+	private String last;
 
 	@Column(name = "email")
 	private String email;
@@ -49,6 +47,9 @@ public class User implements Serializable, UserDetails {
 	@Enumerated(EnumType.ORDINAL)
 	@Column(name = "activation_state")
 	private UserActivationState userActivationState;
+	
+	@Column(name = "password_reset_token")
+	private String passwordResetToken;
 
 	public User() { }
 
@@ -61,12 +62,9 @@ public class User implements Serializable, UserDetails {
 		this.phone = userParams.getPhone();
 		this.level = Authority.USER;
 		this.userActivationState = UserActivationState.UNCONFIRMED; //Unconfirmed until they activate via email
+		this.passwordResetToken = null;
 	}
-
-	public UUID getUuid() {
-		return uuid;
-	}
-
+	
 	@Override
 	public String getUsername() {
 		return username;
@@ -100,6 +98,10 @@ public class User implements Serializable, UserDetails {
 	@Override
 	public String getPassword() {
 		return password;
+	}
+	
+	public void setUserActivationState(UserActivationState activationState) {
+		this.userActivationState = activationState;
 	}
 
 	public void setPassword(String password) {
@@ -146,12 +148,12 @@ public class User implements Serializable, UserDetails {
 		this.level = level;
 	}
 
-	public void save() {
-		PacketWatcherApi.getUserService().saveUser(this);
+	public String getPasswordResetToken() {
+		return passwordResetToken;
 	}
 	
-	public void delete() {
-		PacketWatcherApi.getUserService().deleteUser(this);
+	public void setPasswordResetToken(String passwordResetToken) {
+		this.passwordResetToken = passwordResetToken;
 	}
 	
 	public UserView toUserView() {
@@ -163,10 +165,13 @@ public class User implements Serializable, UserDetails {
 		if (obj instanceof User) {
 			User other = (User) obj;
 			return this.email.equals(other.email) && this.first.equals(other.first)
-			       && this.last.equals(other.last) && this.username.equals(other.username) && this.level == other.level
-			       && this.uuid.equals(other.uuid) && this.password.equals(other.password)
-			       && (this.phone == null || other.phone == null || this.phone.equals(other.phone))
-			       && this.userActivationState == other.userActivationState;
+					&& this.last.equals(other.last) && this.username.equals(other.username) && this.level == other.level
+					&& this.password.equals(other.password)
+					&& ((this.phone == null && other.phone == null) || 
+					    Objects.requireNonNullElse(this.phone, "").equals(Objects.requireNonNullElse(other.phone, "")))
+					&& this.userActivationState == other.userActivationState
+					&& ((this.passwordResetToken == null && other.passwordResetToken == null) || 
+					    Objects.requireNonNullElse(this.passwordResetToken, "").equals(Objects.requireNonNullElse(other.passwordResetToken, "")));
 		}
 
 		return false;
@@ -175,12 +180,12 @@ public class User implements Serializable, UserDetails {
 	@Override
 	public int hashCode() {
 		return 31 * (email.hashCode() + first.hashCode() + last.hashCode() + username.hashCode()
-		             + level.hashCode() + uuid.hashCode() + password.hashCode()
-		             + (phone != null ? phone.hashCode() : 0)
-		             + userActivationState.hashCode());
+				+ level.hashCode() + password.hashCode()
+				+ userActivationState.hashCode());
 	}
 
-	public static class UserView {
+	@Immutable
+	public static final class UserView {
 
 		private final String username;
 		private final String firstName;

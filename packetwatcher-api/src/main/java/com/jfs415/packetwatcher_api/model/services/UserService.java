@@ -1,10 +1,14 @@
 package com.jfs415.packetwatcher_api.model.services;
 
-import java.util.Optional;
+import java.util.HashMap;
 
-import javax.ws.rs.NotFoundException;
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -12,8 +16,10 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.jfs415.packetwatcher_api.auth.SecurityConfig;
 import com.jfs415.packetwatcher_api.model.repositories.UserRepository;
 import com.jfs415.packetwatcher_api.model.user.User;
+import com.jfs415.packetwatcher_api.model.user.UserNotFoundException;
 import com.jfs415.packetwatcher_api.model.user.UserParams;
 
 @Service
@@ -21,11 +27,21 @@ public class UserService implements UserDetailsService {
 
 	@Autowired
 	private UserRepository userRepo;
+	
+	@Autowired
+	private JavaMailSender mailSender;
+	
+	@Autowired
+	private SecurityConfig securityConfig;
+	
+	@Value("${spring.mail.password}")
+	private String sender;
+	
+	private final HashMap<String, Long> passwordResetTimestamps = new HashMap<>();
+	
+	private static final long FIVE_MINUTES = 300000;
 
 	public User createUser(UserParams userParams) {
-		String salt = BCrypt.gensalt(15); //Generate salt, larger number is better but slower. Recommended to play around with this to find the right balance
-		//userParams.setPassword(); //Generate encrypted password with a hash
-
 		return new User(userParams);
 	}
 
@@ -36,23 +52,23 @@ public class UserService implements UserDetailsService {
 
 	@Transactional
 	public void deleteUser(User user) {
-		userRepo.deleteById(user.getUuid());
+		userRepo.deleteById(user.getUsername());
 	}
 
-	public Optional<User> getUserByUsername(String username) {
-		return userRepo.findByUsername(username);
+	public User getUserByUsername(String username) throws UserNotFoundException {
+		return userRepo.findByUsername(username).orElseThrow(UserNotFoundException::new);
 	}
 
-	public User getUserByEmail(String email) {
-		return userRepo.findByEmail(email).orElseThrow(() -> new NotFoundException("User not found"));
+	public User getUserByEmail(String email) throws UserNotFoundException {
+		return userRepo.findByEmail(email).orElseThrow(UserNotFoundException::new);
 	}
 
-	public User getUserForRecovery(String usernameOrEmail) {
-		return isValidEmail(usernameOrEmail) ? getUserByEmail(usernameOrEmail) : getUserByUsername(usernameOrEmail).orElse(null);
+	public User getUserForRecovery(String usernameOrEmail) throws UserNotFoundException {
+		return isValidEmail(usernameOrEmail) ? getUserByEmail(usernameOrEmail) : getUserByUsername(usernameOrEmail);
 	}
 
-	public User getUserByCredentials(String usernameOrEmail, String password) {
-		User user = isValidEmail(usernameOrEmail) ? getUserByEmail(usernameOrEmail) : getUserByUsername(usernameOrEmail).orElse(null);
+	public User getUserByCredentials(String usernameOrEmail, String password) throws UserNotFoundException {
+		User user = isValidEmail(usernameOrEmail) ? getUserByEmail(usernameOrEmail) : getUserByUsername(usernameOrEmail);
 		return user != null ? BCrypt.checkpw(password, user.getPassword()) ? user : null : null;
 	}
 
@@ -66,6 +82,56 @@ public class UserService implements UserDetailsService {
 
 	public boolean isUsernameInUse(String username) {
 		return userRepo.existsByUsername(username);
+	}
+	
+	public boolean isCorrectPasswordResetToken(String requestToken, String storedToken) {
+		return securityConfig.passwordEncoder().matches(requestToken, storedToken);
+	}
+
+	public void setPasswordResetToken(String email, String token) throws UserNotFoundException {
+		User user = getUserByEmail(email);
+		user.setPasswordResetToken(securityConfig.passwordEncoder().encode(token));
+
+		saveUser(user);
+	}
+
+	public void updatePassword(User user, String password) {
+		String encodedPassword = securityConfig.passwordEncoder().encode(password);
+		user.setPassword(encodedPassword);
+		user.setPasswordResetToken(null);
+		
+		passwordResetTimestamps.remove(user.getEmail());
+
+		saveUser(user);
+	}
+	
+	public void sendPasswordResetEmail(String email, String token) throws MessagingException {
+		MimeMessage message = mailSender.createMimeMessage();
+		MimeMessageHelper helper = new MimeMessageHelper(message);
+	
+		helper.setFrom(sender);
+		helper.setTo(email);
+	
+		String subject = "Password reset link";
+	
+		String content = "<p>Hello,</p>"
+			+ "<p>You have requested to reset your password.</p>"
+			+ "<p>Click the link below to change your password:</p>"
+			+ "<p><a href=\"" + "http://localhost:3000/accounts/reset/" + token + "\">Change my password</a></p>"
+			+ "<br>"
+			+ "<p>Please gnore this email if you have not made the request.</p>";
+	
+		helper.setSubject(subject);
+		helper.setText(content, true);
+		mailSender.send(message);
+	}
+	
+	public void addPasswordResetTimestamp(String email, long timestamp) {
+		passwordResetTimestamps.put(email, timestamp);
+	}
+	
+	public void purgeExpiredPasswordResetRequests() {
+		passwordResetTimestamps.entrySet().removeIf(e -> e.getValue() <= System.currentTimeMillis() - FIVE_MINUTES);
 	}
 
 	@Override

@@ -128,7 +128,11 @@ public class PacketService {
 	}
 
 	public List<FlaggedPacketRecord> getAllFlaggedPacketRecords() {
-		return (List<FlaggedPacketRecord>) flaggedPacketRepo.findAll();
+		return flaggedPacketRepo.findAll();
+	}
+	
+	public List<FlaggedPacketRecord> getLast30FlaggedPacketRecords() {
+		return flaggedPacketRepo.findTop30ByOrderByKey_TimestampDesc();
 	}
 	
 	private long convertLocalDateTimeToEpochSecond(LocalDateTime localDateTime, int offset) {

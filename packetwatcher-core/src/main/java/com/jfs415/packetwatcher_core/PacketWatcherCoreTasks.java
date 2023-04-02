@@ -8,9 +8,9 @@ import org.springframework.stereotype.Component;
 import com.jfs415.packetwatcher_core.model.packets.FlaggedPacketRecord;
 
 @Component
-public class Tasks {
+public class PacketWatcherCoreTasks {
 	
-	@Scheduled(fixedDelay = 30, timeUnit = TimeUnit.SECONDS)
+	@Scheduled(fixedDelay = 33, timeUnit = TimeUnit.SECONDS)
 	public void processSaveQueues() {
 		PacketWatcherCore.getPacketService().flushSaveQueues();
 	}
@@ -18,12 +18,11 @@ public class Tasks {
 	@Scheduled(fixedDelay = 1, timeUnit = TimeUnit.DAYS)
 	public void cleanupRecords() {
 		PacketWatcherCore.getPacketService().cleanupAllRecords();
-		FlaggedPacketRecord.createTestPacket().save(); //Create test packets every day to confirm things are still working
 	}
 	
 	@Scheduled(fixedDelay = 1, timeUnit = TimeUnit.DAYS)
 	public void createTestPacket() {
-		FlaggedPacketRecord.createTestPacket().save();
+		FlaggedPacketRecord.createTestPacket().save(); //Create test packets every day to confirm things are still working
 		PacketWatcherCore.debug("CREATED TEST PACKET");
 	}
 	

@@ -24,7 +24,10 @@ public class CorePacketListener implements PacketListener {
 			ipLookupUtility = new Ip2Asn2Cc(EnumSet.allOf(FlaggedCountries.class).stream().map(FlaggedCountries::getCountryCode).collect(Collectors.toList()));
 		} catch (RIRNotDownloadedException e) {
 			e.printStackTrace();
-			PacketWatcherCore.fail("Encountered a fatal exception when creating ipLookupUtility");
+			
+			if (!PacketWatcherCore.getCoreConfigProperties().getDoNotFailOnRIRDownloadException()) {
+				PacketWatcherCore.fail("Encountered a fatal exception when creating ipLookupUtility");
+			}
 		}
 	}
 

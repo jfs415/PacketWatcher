@@ -49,6 +49,7 @@ public class CorePropertiesManager {
 		setLastArchiveRecordPurge(now);
 		setFlaggedRetentionDays(flaggedRetentionDays);
 		setArchiveRetentionDays(archiveRetentionDays);
+		setDoNotFailOnRIRDownloadException(true);
 
 		return getLastAppStart().equals(now) && getLastFlaggedRecordPurge().equals(now) && getLastAppShutdown().equals(now) 
 				&& getFlaggedRetentionDays() == flaggedRetentionDays && getArchiveRetentionDays() == archiveRetentionDays;
@@ -123,6 +124,14 @@ public class CorePropertiesManager {
 
 	public void setLastArchiveRecordPurge(Timestamp lastRecordArchivePurge) {
 		properties.setProperty("last_record_Archive_purge", lastRecordArchivePurge == null ? null : String.valueOf(lastRecordArchivePurge.getTime()));
+	}
+	
+	public boolean getDoNotFailOnRIRDownloadException() {
+		return Boolean.parseBoolean(properties.getProperty("do_not_fail_on_rir_download_exception"));
+	}
+	
+	public void setDoNotFailOnRIRDownloadException(boolean doNotFailOnRIRDownloadException) {
+		properties.setProperty("do_not_fail_on_rir_download_exception", String.valueOf(doNotFailOnRIRDownloadException));
 	}
 
 }

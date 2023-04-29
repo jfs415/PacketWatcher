@@ -2,14 +2,14 @@ import React, { useState } from 'react';
 import { useLocalState } from "../../util/LocalStorage";
 import Navbar from "../Navbar";
 
-const Dashboard = ({ children }) => {
+const Dashboard = () => {
 
     const [jwt, setJwt] = useLocalState("", "jwt");
 
     return (
-        <>
-            <Navbar />
-        </>
+        <div style={ { display: 'flex', height: '100vh', overflow: 'scroll initial' } }>
+            <Navbar/>
+        </div>
     );
 }
 

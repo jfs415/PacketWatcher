@@ -13,11 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.jfs415.packetwatcher_api.auth.JwtUtil;
 import com.jfs415.packetwatcher_api.auth.UserPasswordResetRequest;
+import com.jfs415.packetwatcher_api.exceptions.UserNotFoundException;
 import com.jfs415.packetwatcher_api.model.services.UserService;
 import com.jfs415.packetwatcher_api.model.user.User;
-import com.jfs415.packetwatcher_api.model.user.UserNotFoundException;
-
-import net.bytebuddy.utility.RandomString;
 
 @RestController
 public class RecoverAccountController {
@@ -42,13 +40,10 @@ public class RecoverAccountController {
 	public ResponseEntity<?> processAccountRecoveryInitiation(@RequestBody Map<String, String> request) {
 		try {
 			String email = request.get("email");
+			
 			if (!Objects.requireNonNull(email).isEmpty()) {
 				long timestamp = System.currentTimeMillis();
-				
-				String token = RandomString.make(30);
-				userService.setPasswordResetToken(email, token);
-				userService.sendPasswordResetEmail(email, token);
-				userService.addPasswordResetTimestamp(email, timestamp);
+				userService.handleAccountRecoveryInitiation(timestamp, email);
 
 				return ResponseEntity.ok(true);
 			} else {

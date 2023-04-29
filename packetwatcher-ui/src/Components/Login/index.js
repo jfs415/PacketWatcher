@@ -1,19 +1,19 @@
-import React, { Component, useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useLocalState } from "../../util/LocalStorage";
-import { Button, Col, Container, Form, Row, Stack } from "react-bootstrap";
+import { Button, Container, Form, Row } from "react-bootstrap";
 
 
 function Login() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-
+    
     const [jwt, setJwt] = useLocalState("", "jwt");
 
     function sendLoginRequest() {
 
         const reqBody = {
-            username: username,
-            password: password,
+            'username': username,
+            'password': password,
         };
 
         fetch("/login", {
@@ -57,7 +57,7 @@ function Login() {
                             required
                         />
                     </Form.Group><br/>
-                    
+
                     <Form.Group controlId="formBasicPassword">
                         <Form.Label>Password</Form.Label>
                         <Form.Control

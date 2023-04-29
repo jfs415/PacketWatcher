@@ -11,7 +11,7 @@ import com.jfs415.packetwatcher_api.model.analytics.HostnameStatsRecord;
 import com.jfs415.packetwatcher_api.model.repositories.HostnameStatsRepository;
 
 @Service
-public class HostnameStatsService extends StatsSorter {
+public class HostnameStatsService {
 
 	@Autowired
 	private HostnameStatsRepository hostnameStatsRepo;

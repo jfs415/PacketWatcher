@@ -12,7 +12,7 @@ import com.jfs415.packetwatcher_api.model.analytics.CountryStatsRecord;
 import com.jfs415.packetwatcher_api.model.repositories.CountryStatsRepository;
 
 @Service
-public class CountryStatsService extends StatsSorter {
+public class CountryStatsService {
 
 	@Autowired
 	private CountryStatsRepository countryStatsRepo;

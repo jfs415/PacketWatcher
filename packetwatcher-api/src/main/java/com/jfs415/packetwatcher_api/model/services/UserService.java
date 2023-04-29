@@ -1,6 +1,7 @@
 package com.jfs415.packetwatcher_api.model.services;
 
 import java.util.HashMap;
+import java.util.stream.Collectors;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -12,15 +13,19 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.jfs415.packetwatcher_api.auth.SecurityConfig;
+import com.jfs415.packetwatcher_api.exceptions.UserNotFoundException;
 import com.jfs415.packetwatcher_api.model.repositories.UserRepository;
+import com.jfs415.packetwatcher_api.model.user.Authority;
 import com.jfs415.packetwatcher_api.model.user.User;
-import com.jfs415.packetwatcher_api.model.user.UserNotFoundException;
 import com.jfs415.packetwatcher_api.model.user.UserParams;
+import com.jfs415.packetwatcher_api.views.UserProfileView;
+import com.jfs415.packetwatcher_api.views.collections.UserProfilesCollectionView;
+
+import net.bytebuddy.utility.RandomString;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -54,6 +59,14 @@ public class UserService implements UserDetailsService {
 	public void deleteUser(User user) {
 		userRepo.deleteById(user.getUsername());
 	}
+	
+	@Transactional
+	public User updateUser(User user, UserProfileView updatedProfile) {
+		user.updateFromProfile(updatedProfile);
+		saveUser(user);
+		
+		return user;
+	}
 
 	public User getUserByUsername(String username) throws UserNotFoundException {
 		return userRepo.findByUsername(username).orElseThrow(UserNotFoundException::new);
@@ -62,18 +75,13 @@ public class UserService implements UserDetailsService {
 	public User getUserByEmail(String email) throws UserNotFoundException {
 		return userRepo.findByEmail(email).orElseThrow(UserNotFoundException::new);
 	}
-
-	public User getUserForRecovery(String usernameOrEmail) throws UserNotFoundException {
-		return isValidEmail(usernameOrEmail) ? getUserByEmail(usernameOrEmail) : getUserByUsername(usernameOrEmail);
+	
+	public UserProfilesCollectionView getAllUserProfilesWithLevelLessThanEqual(Authority authority) {
+		return new UserProfilesCollectionView(userRepo.findAllByLevelIsLessThanEqual(authority).stream().map(User::toUserProfileView).collect(Collectors.toList()));
 	}
-
-	public User getUserByCredentials(String usernameOrEmail, String password) throws UserNotFoundException {
-		User user = isValidEmail(usernameOrEmail) ? getUserByEmail(usernameOrEmail) : getUserByUsername(usernameOrEmail);
-		return user != null ? BCrypt.checkpw(password, user.getPassword()) ? user : null : null;
-	}
-
-	private boolean isValidEmail(String usernameOrEmail) {
-		return true;
+	
+	public UserProfilesCollectionView getAllProfiles() {
+		return new UserProfilesCollectionView(userRepo.findAll().stream().map(User::toUserProfileView).collect(Collectors.toList())); //TODO: Testing method only, do not push to production
 	}
 
 	public boolean isEmailInUse(String email) {
@@ -133,10 +141,17 @@ public class UserService implements UserDetailsService {
 	public void purgeExpiredPasswordResetRequests() {
 		passwordResetTimestamps.entrySet().removeIf(e -> e.getValue() <= System.currentTimeMillis() - FIVE_MINUTES);
 	}
+	
+	public void handleAccountRecoveryInitiation(long timestamp, String email) throws MessagingException {
+		String token = RandomString.make(30);
+		setPasswordResetToken(email, token);
+		sendPasswordResetEmail(email, token);
+		addPasswordResetTimestamp(email, timestamp);
+	}
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		return userRepo.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("Invalid Credentials"));
+		return userRepo.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("Username not found"));
 	}
 
 }

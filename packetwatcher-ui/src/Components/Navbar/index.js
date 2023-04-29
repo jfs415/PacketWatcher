@@ -11,46 +11,48 @@ import { NavLink } from "react-bootstrap";
 
 const Navbar = () => {
     return (
-        <div style={{ display: 'flex', height: '100vh', overflow: 'scroll initial' }}>
-            <CDBSidebar textColor="#fff" backgroundColor="#333">
-                <CDBSidebarHeader prefix={<i className="fa fa-bars fa-large"></i>}>
-                    <a href="/" className="text-decoration-none" style={{ color: 'inherit' }}>
-                        PacketWatcher
-                    </a>
-                </CDBSidebarHeader>
+        <CDBSidebar textColor="#fff" backgroundColor="#333">
+            <CDBSidebarHeader prefix={ <i className="fa fa-bars fa-large"></i> }>
+                <a href="/dashboard" className="text-decoration-none" style={ { color: 'inherit' } }>
+                    PacketWatcher
+                </a>
+            </CDBSidebarHeader>
 
-                <CDBSidebarContent className="sidebar-content">
-                    <CDBSidebarMenu>
-                        <NavLink exact to="/" activeClassName="activeClicked">
-                            <CDBSidebarMenuItem icon="columns">Dashboard</CDBSidebarMenuItem>
-                        </NavLink>
-                        <NavLink exact to="/tables" activeClassName="activeClicked">
-                            <CDBSidebarMenuItem icon="table">Tables</CDBSidebarMenuItem>
-                        </NavLink>
-                        <NavLink exact to="/profile" activeClassName="activeClicked">
-                            <CDBSidebarMenuItem icon="user">Profile page</CDBSidebarMenuItem>
-                        </NavLink>
-                        <NavLink exact to="/analytics" activeClassName="activeClicked">
-                            <CDBSidebarMenuItem icon="chart-line">Analytics</CDBSidebarMenuItem>
-                        </NavLink>
-                        
-                        <NavLink exact to="/hero404" target="_blank" activeClassName="activeClicked">
-                            <CDBSidebarMenuItem icon="BsFillEnvelopeOpenFill">Captured Packets</CDBSidebarMenuItem>
-                        </NavLink>
-                    </CDBSidebarMenu>
-                </CDBSidebarContent>
+            <CDBSidebarContent className="sidebar-content">
+                <CDBSidebarMenu>
+                    <NavLink href="/packets" activeClassName="activeClicked">
+                        <CDBSidebarMenuItem icon="envelope">Captured Packets</CDBSidebarMenuItem>
+                    </NavLink>
+                    <NavLink href="/system/settings" activeClassName="activeClicked">
+                        <CDBSidebarMenuItem icon="cog">System Settings</CDBSidebarMenuItem>
+                    </NavLink>
+                    <NavLink href="/profile" activeClassName="activeClicked">
+                        <CDBSidebarMenuItem icon="user">User Profile</CDBSidebarMenuItem>
+                    </NavLink>
+                    <NavLink href="/users" activeClassName="activeClicked">
+                        <CDBSidebarMenuItem icon="users">Users</CDBSidebarMenuItem>
+                    </NavLink>
+                    <NavLink href="/users/locked/history" activeClassName="activeClicked">
+                        <CDBSidebarMenuItem icon="users">Locked User History</CDBSidebarMenuItem>
+                    </NavLink>
+                    <NavLink href="/system/analytics" activeClassName="activeClicked">
+                        <CDBSidebarMenuItem icon="chart-line">System Analytics</CDBSidebarMenuItem>
+                    </NavLink>
+                    <NavLink href="/events/authentication" activeClassName="activeClicked">
+                        <CDBSidebarMenuItem icon="star">Authentication Events</CDBSidebarMenuItem>
+                    </NavLink>
+                    <NavLink href="/events/authorization" activeClassName="activeClicked">
+                        <CDBSidebarMenuItem icon="star">Authorization Events</CDBSidebarMenuItem>
+                    </NavLink>
+                </CDBSidebarMenu>
+            </CDBSidebarContent>
 
-                <CDBSidebarFooter style={{ textAlign: 'center' }}>
-                    <div
-                        style={{
-                            padding: '20px 5px',
-                        }}
-                    >
-                        Sidebar Footer
-                    </div>
-                </CDBSidebarFooter>
-            </CDBSidebar>
-        </div>
+            <CDBSidebarFooter style={ { textAlign: 'center' } }>
+                <div style={ { padding: '2em 5em' } }>
+                    <a className="password" href="/logout">Logout</a>
+                </div>
+            </CDBSidebarFooter>
+        </CDBSidebar>
     );
 };
 

@@ -11,11 +11,11 @@ import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.Immutable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.jfs415.packetwatcher_api.PacketWatcherApi;
+import com.jfs415.packetwatcher_api.views.UserProfileView;
 
 @Entity
 @Table(name = "users", schema = "packetwatcher")
@@ -51,6 +51,9 @@ public class User implements Serializable, UserDetails {
 	@Column(name = "password_reset_token")
 	private String passwordResetToken;
 
+	@Column(name = "failed_login_attempts", nullable = false)
+	private int failedLoginAttempts;
+
 	public User() { }
 
 	public User(UserParams userParams) {
@@ -63,6 +66,7 @@ public class User implements Serializable, UserDetails {
 		this.level = Authority.USER;
 		this.userActivationState = UserActivationState.UNCONFIRMED; //Unconfirmed until they activate via email
 		this.passwordResetToken = null;
+		this.failedLoginAttempts = 0;
 	}
 	
 	@Override
@@ -155,9 +159,24 @@ public class User implements Serializable, UserDetails {
 	public void setPasswordResetToken(String passwordResetToken) {
 		this.passwordResetToken = passwordResetToken;
 	}
+
+	public int getFailedLoginAttempts() {
+		return failedLoginAttempts;
+	}
+
+	public void setFailedLoginAttempts(int failedLoginAttempts) {
+		this.failedLoginAttempts = failedLoginAttempts;
+	}
 	
-	public UserView toUserView() {
-		return new UserView(this);
+	public UserProfileView toUserProfileView() {
+		return new UserProfileView(this);
+	}
+
+	public void updateFromProfile(UserProfileView updatedProfile) {
+		this.first = updatedProfile.getFirstName();
+		this.last = updatedProfile.getLastName();
+		this.email = updatedProfile.getEmail();
+		this.phone = updatedProfile.getPhone();
 	}
 
 	@Override
@@ -170,6 +189,7 @@ public class User implements Serializable, UserDetails {
 					&& ((this.phone == null && other.phone == null) || 
 					    Objects.requireNonNullElse(this.phone, "").equals(Objects.requireNonNullElse(other.phone, "")))
 					&& this.userActivationState == other.userActivationState
+			        && failedLoginAttempts == other.failedLoginAttempts
 					&& ((this.passwordResetToken == null && other.passwordResetToken == null) || 
 					    Objects.requireNonNullElse(this.passwordResetToken, "").equals(Objects.requireNonNullElse(other.passwordResetToken, "")));
 		}
@@ -181,40 +201,7 @@ public class User implements Serializable, UserDetails {
 	public int hashCode() {
 		return 31 * (email.hashCode() + first.hashCode() + last.hashCode() + username.hashCode()
 				+ level.hashCode() + password.hashCode()
-				+ userActivationState.hashCode());
-	}
-
-	@Immutable
-	public static final class UserView {
-
-		private final String username;
-		private final String firstName;
-		private final String lastName;
-		
-		public UserView(User user) {
-			this.username = user.getUsername();
-			this.firstName = user.getFirst();
-			this.lastName = user.getLast();
-		}
-
-		public UserView(String username, String firstName, String lastName) {
-			this.username = username;
-			this.firstName = firstName;
-			this.lastName = lastName;
-		}
-
-		public String getUsername() {
-			return username;
-		}
-
-		public String getFirstName() {
-			return firstName;
-		}
-
-		public String getLastName() {
-			return lastName;
-		}
-
+				+ userActivationState.hashCode() + failedLoginAttempts);
 	}
 
 }

@@ -14,13 +14,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.jfs415.packetwatcher_api.auth.JwtUtil;
 import com.jfs415.packetwatcher_api.auth.AuthenticationRequest;
+import com.jfs415.packetwatcher_api.auth.JwtUtil;
 import com.jfs415.packetwatcher_api.model.user.User;
 
 @RestController
 @RequestMapping(value = "/", produces = "application/json", method = { RequestMethod.GET })
-public class LoginController {
+public class AuthController {
 
 	@Autowired
 	private AuthenticationManager authenticationManager;
@@ -36,7 +36,7 @@ public class LoginController {
 
 			User user = (User) authenticate.getPrincipal();
 
-			return ResponseEntity.ok().header(HttpHeaders.AUTHORIZATION, jwtUtil.generateToken(user)).body(user.toUserView());
+			return ResponseEntity.ok().header(HttpHeaders.AUTHORIZATION, jwtUtil.generateToken(user)).body(user.toUserProfileView());
 		} catch (BadCredentialsException e) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}

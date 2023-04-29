@@ -27,8 +27,6 @@ interface LimitedAccessRepository<T, ID> extends Repository<T, ID> {
 
 	boolean existsById(ID id);
 
-	Iterable<T> findAll();
-
 	Iterable<T> findAllById(Iterable<ID> key);
 
 	long count();

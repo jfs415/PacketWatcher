@@ -1,10 +1,12 @@
 package com.jfs415.packetwatcher_api.model.repositories;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import com.jfs415.packetwatcher_api.model.user.Authority;
 import com.jfs415.packetwatcher_api.model.user.User;
 
 @Repository
@@ -29,6 +31,8 @@ public interface UserRepository extends JpaRepository<User, String> {
 	 * @return A user with the corresponding username.
 	 */
 	Optional<User> findByUsername(String username);
+	
+	List<User> findAllByLevelIsLessThanEqual(Authority authority);
 
 	/**
 	 * Check if an existing user already has this email.

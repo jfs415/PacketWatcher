@@ -6,9 +6,14 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 import org.springframework.lang.Nullable;
+
+import com.jfs415.packetwatcher_api.views.SystemSettingView;
+import com.jfs415.packetwatcher_api.views.collections.SystemSettingsCollectionView;
 
 public class PropertiesManager {
 
@@ -99,8 +104,28 @@ public class PropertiesManager {
 		properties.setProperty("last_shutdown", lastAppShutdown == null ? "" : String.valueOf(lastAppShutdown.getTime()));
 	}
 	
+	public int getPasswordStrength() {
+		return Integer.parseInt(properties.getProperty("password_strength"));
+	}
+	
+	public void setPasswordStrength(int passwordStrength) {
+		properties.setProperty("password_Strength", String.valueOf(passwordStrength));
+	}
+	
 	public static boolean isNullOrEmpty(String str) {
 		return str == null || str.isEmpty();
+	}
+	
+	public SystemSettingsCollectionView toCollectionView() {
+		return new SystemSettingsCollectionView(properties.entrySet().stream().map(entry -> {
+			return new SystemSettingView(entry.getKey().toString(), entry.getValue().toString());
+		}).collect(Collectors.toList()));
+	}
+	
+	public void updateSystemSettingsFromViews(List<SystemSettingView> updates) {
+		for (SystemSettingView view : updates) {
+			properties.setProperty(view.getSettingKey(), view.getSettingValue());
+		}
 	}
 
 }

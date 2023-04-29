@@ -1,9 +1,9 @@
-package com.jfs415.packetwatcher_api.model.user;
+package com.jfs415.packetwatcher_api.exceptions;
 
 public class UserNotFoundException extends RuntimeException {
 
 	public UserNotFoundException() {
-		super();
+		super("Username not found");
 	}
 	
 	public UserNotFoundException(String errorMessage) {

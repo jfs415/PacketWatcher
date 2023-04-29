@@ -13,14 +13,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 import com.jfs415.packetwatcher_api.model.user.Authority;
 
-@EnableJpaRepositories
+@SpringBootApplication()
+@EnableJpaRepositories()
+@ComponentScan(basePackages = { "com.jfs415.packetwatcher_core", "com.jfs415.packetwatcher_api" })
 @EnableScheduling
-@SpringBootApplication
 public class PacketWatcherApi extends SpringBootServletInitializer {
 
 	private static PacketWatcherApi instance;

@@ -21,3 +21,12 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+
+# Gradle files
+/.gradle/
+/build/
+/out/
+/packetwatcher-core/PacketWatcherCore.properties
+/packetwatcher-ui/PacketWatcherUI.properties
+/packetwatcher-api/build/
+/packetwatcher-core/build/

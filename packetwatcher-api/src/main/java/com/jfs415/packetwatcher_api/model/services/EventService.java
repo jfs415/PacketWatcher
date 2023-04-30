@@ -9,7 +9,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.jfs415.packetwatcher_api.events.IAuthEventType;
 import com.jfs415.packetwatcher_api.events.authentication.AuthenticationEventType;
 import com.jfs415.packetwatcher_api.events.authorization.AuthorizationEventType;
+import com.jfs415.packetwatcher_api.exceptions.InvalidEventArgumentException;
 import com.jfs415.packetwatcher_api.exceptions.InvalidEventTypeArgumentException;
+import com.jfs415.packetwatcher_api.model.events.AuthenticationEvent;
+import com.jfs415.packetwatcher_api.model.events.AuthorizationEvent;
 import com.jfs415.packetwatcher_api.model.events.PacketWatcherEvent;
 import com.jfs415.packetwatcher_api.model.repositories.AuthenticationEventRepository;
 import com.jfs415.packetwatcher_api.model.repositories.AuthorizationEventRepository;
@@ -25,8 +28,14 @@ public class EventService {
 	private AuthorizationEventRepository authorizationEventRepository;
 
 	@Transactional
-	public void saveAuthEvent(PacketWatcherEvent event) {
-		authenticationEventRepository.saveAndFlush(event);
+	public void saveAuthEvent(PacketWatcherEvent event) throws InvalidEventArgumentException {
+		if (event instanceof AuthorizationEvent) {
+			authorizationEventRepository.saveAndFlush((AuthorizationEvent) event);
+		} else if (event instanceof AuthenticationEvent) {
+			authenticationEventRepository.saveAndFlush((AuthenticationEvent) event);
+		} else {
+			throw new InvalidEventArgumentException();
+		}
 	}
 
 	public EventsCollectionView getAllEventsByEventType(Class<? extends IAuthEventType> eventType) {

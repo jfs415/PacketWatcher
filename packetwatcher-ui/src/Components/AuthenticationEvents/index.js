@@ -15,7 +15,7 @@ const AuthenticationEvents = () => {
             },
             {
                 label: "Attempted Username",
-                field: "attemptedUsername",
+                field: "username",
             },
             {
                 label: "Event Type",

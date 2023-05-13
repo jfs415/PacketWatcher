@@ -12,29 +12,29 @@ import com.jfs415.packetwatcher_api.events.authentication.AuthenticationEventTyp
 import com.jfs415.packetwatcher_api.exceptions.InvalidEventArgumentException;
 import com.jfs415.packetwatcher_api.model.events.AuthenticationEvent;
 import com.jfs415.packetwatcher_api.model.events.AuthorizationEvent;
-import com.jfs415.packetwatcher_api.model.events.PacketWatcherEvent;
+import com.jfs415.packetwatcher_api.model.events.EventMappedSuperclass;
 
 @Immutable
 public class EventView implements Serializable {
 
 	private final Timestamp timestamp;
 
-	private final String attemptedUsername;
+	private final String username;
 
 	private final String ipAddress;
 
 	private final IAuthEventType eventType;
 
-	public EventView(PacketWatcherEvent event) {
+	public EventView(EventMappedSuperclass event) {
 		this.timestamp = event.getTimestamp();
-		this.attemptedUsername = event.getAttemptedUsername();
+		this.username = event.getUsername();
 		this.ipAddress = event.getIpAddress();
 		this.eventType = getEventType(event);
 	}
 
 	public EventView(@NonNull Timestamp timestamp, @Nullable String username, @Nullable String ipAddress, @NonNull AuthenticationEventType eventType) {
 		this.timestamp = timestamp;
-		this.attemptedUsername = username;
+		this.username = username;
 		this.ipAddress = ipAddress;
 		this.eventType = eventType;
 	}
@@ -48,14 +48,14 @@ public class EventView implements Serializable {
 	}
 
 	public String getAttemptedUsername() {
-		return attemptedUsername;
+		return username;
 	}
 
 	public String getIpAddress() {
 		return ipAddress;
 	}
 
-	private IAuthEventType getEventType(PacketWatcherEvent event) {
+	private IAuthEventType getEventType(EventMappedSuperclass event) {
 		if (event instanceof AuthorizationEvent) {
 			return ((AuthorizationEvent) event).getEventType();
 		} else if (event instanceof AuthenticationEvent) {

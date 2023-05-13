@@ -13,8 +13,8 @@ const AuthorizationEvents = () => {
                 sort: "desc",
             },
             {
-                label: "Attempted Username",
-                field: "attemptedUsername",
+                label: "Username",
+                field: "username",
             },
             {
                 label: "Event Type",

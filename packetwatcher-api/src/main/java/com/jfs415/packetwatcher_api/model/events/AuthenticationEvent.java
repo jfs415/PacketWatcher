@@ -8,11 +8,13 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Table;
 
+import com.jfs415.packetwatcher_api.annotations.PacketWatcherEvent;
 import com.jfs415.packetwatcher_api.events.authentication.AuthenticationEventType;
 
 @Entity
 @Table(name = "authentication_events", schema = "packetwatcher")
-public class AuthenticationEvent extends PacketWatcherEvent implements Serializable {
+@PacketWatcherEvent
+public class AuthenticationEvent extends EventMappedSuperclass implements Serializable {
 
 	@Enumerated(EnumType.STRING)
 	@Column(name = "event_type")

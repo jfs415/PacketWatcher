@@ -10,29 +10,29 @@ import javax.persistence.MappedSuperclass;
 import com.jfs415.packetwatcher_api.views.EventView;
 
 @MappedSuperclass
-public class PacketWatcherEvent implements Serializable {
+public class EventMappedSuperclass implements Serializable, IPacketWatcherEvent {
 
 	@Id
 	@Column(name = "timestamp", unique = true)
 	private Timestamp timestamp;
 
-	@Column(name = "attempted_username")
-	private String attemptedUsername;
+	@Column(name = "username")
+	private String username;
 
 	@Column(name = "ip_address")
 	private String ipAddress;
 
-	public PacketWatcherEvent() { }
+	public EventMappedSuperclass() { }
 
-	public PacketWatcherEvent(long time) {
+	public EventMappedSuperclass(long time) {
 		this.timestamp = new Timestamp(time);
-		this.attemptedUsername = null;
+		this.username = null;
 		this.ipAddress = null;
 	}
 
-	public PacketWatcherEvent(long time, String attemptedUsername, String ipAddress) {
+	public EventMappedSuperclass(long time, String username, String ipAddress) {
 		this.timestamp = new Timestamp(time);
-		this.attemptedUsername = attemptedUsername;
+		this.username = username;
 		this.ipAddress = ipAddress;
 	}
 
@@ -52,12 +52,12 @@ public class PacketWatcherEvent implements Serializable {
 		this.ipAddress = ipAddress;
 	}
 
-	public String getAttemptedUsername() {
-		return attemptedUsername;
+	public String getUsername() {
+		return username;
 	}
 
-	public void setAttemptedUsername(String username) {
-		this.attemptedUsername = username;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 	public EventView toEventView() {

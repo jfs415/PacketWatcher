@@ -12,7 +12,7 @@ import com.jfs415.packetwatcher_api.events.authorization.AuthorizationEventType;
 
 @Entity
 @Table(name = "authoritization_events", schema = "packetwatcher")
-public class AuthorizationEvent extends PacketWatcherEvent implements Serializable {
+public class AuthorizationEvent extends EventMappedSuperclass implements Serializable, IPacketWatcherEvent {
 
 	@Enumerated(EnumType.STRING)
 	@Column(name = "event_type")

@@ -25,26 +25,26 @@ public class PacketWatcherParentEvent {
 
 	protected final void saveVerifiedAuthenticationEvent(AbstractAuthenticationFailureEvent e, String ipAddress, AuthenticationEventType eventType) {
 		UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) e.getSource();
-		eventService.saveAuthEvent(new AuthenticationEvent(e.getTimestamp(), ipAddress, (String) token.getPrincipal(), eventType));
+		eventService.save(new AuthenticationEvent(e.getTimestamp(), ipAddress, (String) token.getPrincipal(), eventType));
 	}
 
 	protected final void saveVerifiedAuthorizationEvent(ApplicationEvent e, String ipAddress, AuthorizationEventType eventType) {
 		UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) e.getSource();
 
 		if (e instanceof AuthorizationDeniedEvent || e instanceof AuthorizationGrantedEvent) {
-			eventService.saveAuthEvent(new AuthorizationEvent(e.getTimestamp(), ipAddress, (String) token.getPrincipal(), eventType));
+			eventService.save(new AuthorizationEvent(e.getTimestamp(), ipAddress, (String) token.getPrincipal(), eventType));
 		} else {
 			throw new InvalidEventArgumentException();
 		}
 	}
 
 	protected final void saveDefaultAuthenticationEvent(AbstractAuthenticationFailureEvent e, String ipAddress, AuthenticationEventType eventType) {
-		eventService.saveAuthEvent(new AuthenticationEvent(e.getTimestamp(), ipAddress, eventType));
+		eventService.save(new AuthenticationEvent(e.getTimestamp(), ipAddress, eventType));
 	}
 
 	protected final void saveDefaultAuthorizationEvent(ApplicationEvent e, String ipAddress, AuthorizationEventType eventType) {
 		if (e instanceof AuthorizationDeniedEvent || e instanceof AuthorizationGrantedEvent) {
-			eventService.saveAuthEvent(new AuthorizationEvent(e.getTimestamp(), ipAddress, eventType));
+			eventService.save(new AuthorizationEvent(e.getTimestamp(), ipAddress, eventType));
 		} else {
 			throw new InvalidEventArgumentException();
 		}

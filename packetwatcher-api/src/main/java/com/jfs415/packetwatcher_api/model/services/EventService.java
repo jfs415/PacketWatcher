@@ -14,9 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.jfs415.packetwatcher_api.annotations.PacketWatcherEvent;
 import com.jfs415.packetwatcher_api.exceptions.EventAnnotationNotFoundException;
 import com.jfs415.packetwatcher_api.exceptions.InvalidEventArgumentException;
-import com.jfs415.packetwatcher_api.events.DualEventTimeframe;
+import com.jfs415.packetwatcher_api.util.DualSearchTimeframe;
 import com.jfs415.packetwatcher_api.model.events.EventMappedSuperclass;
-import com.jfs415.packetwatcher_api.events.EventTimeframe;
+import com.jfs415.packetwatcher_api.util.SearchTimeframe;
 import com.jfs415.packetwatcher_api.model.repositories.PacketWatcherEventRepository;
 import com.jfs415.packetwatcher_api.views.collections.EventsCollectionView;
 
@@ -52,7 +52,7 @@ public class EventService {
 		return new EventsCollectionView(events.map(EventMappedSuperclass::toEventView).collect(Collectors.toList()));
 	}
 
-	public EventsCollectionView getEventsByTypeAndIpAddressWithTimeframe(Class<?> eventType, String ipAddress, EventTimeframe timeframe) {
+	public EventsCollectionView getEventsByTypeAndIpAddressWithTimeframe(Class<?> eventType, String ipAddress, SearchTimeframe timeframe) {
 		try {
 			validate(eventType);
 		} catch (EventAnnotationNotFoundException e) {
@@ -78,7 +78,7 @@ public class EventService {
 		return new EventsCollectionView(events.map(EventMappedSuperclass::toEventView).collect(Collectors.toList()));
 	}
 
-	public EventsCollectionView getEventsByTypeAndIpAddressAndUsernameWithTimeframe(Class<?> eventType, String ipAddress, String username, EventTimeframe timeframe) {
+	public EventsCollectionView getEventsByTypeAndIpAddressAndUsernameWithTimeframe(Class<?> eventType, String ipAddress, String username, SearchTimeframe timeframe) {
 		try {
 			validate(eventType);
 		} catch (EventAnnotationNotFoundException e) {
@@ -89,7 +89,7 @@ public class EventService {
 		return lookupEventsWithUsernameAndIpAddressAndTimeframe(repositoryManager.getRepository(eventType), username, ipAddress, timeframe);
 	}
 
-	public EventsCollectionView getEventsByTypeAndUsernameWithTimeframe(Class<?> eventType, String username, EventTimeframe timeframe) {
+	public EventsCollectionView getEventsByTypeAndUsernameWithTimeframe(Class<?> eventType, String username, SearchTimeframe timeframe) {
 		try {
 			validate(eventType);
 		} catch (EventAnnotationNotFoundException e) {
@@ -114,7 +114,7 @@ public class EventService {
 		return new EventsCollectionView(events.map(EventMappedSuperclass::toEventView).collect(Collectors.toList()));
 	}
 
-	public EventsCollectionView getEventsByTypeWithTimeframe(Class<?> eventType, EventTimeframe timeframe) {
+	public EventsCollectionView getEventsByTypeWithTimeframe(Class<?> eventType, SearchTimeframe timeframe) {
 		try {
 			validate(eventType);
 		} catch (EventAnnotationNotFoundException e) {
@@ -138,18 +138,18 @@ public class EventService {
 		return new EventsCollectionView(repository.findAll().stream().map(EventMappedSuperclass::toEventView).collect(Collectors.toList()));
 	}
 
-	private EventsCollectionView lookupEventsWithUsernameAndIpAddressAndTimeframe(PacketWatcherEventRepository<EventMappedSuperclass, Serializable> repository, String username, String ipAddress, EventTimeframe eventTimeframe) {
+	private EventsCollectionView lookupEventsWithUsernameAndIpAddressAndTimeframe(PacketWatcherEventRepository<EventMappedSuperclass, Serializable> repository, String username, String ipAddress, SearchTimeframe searchTimeframe) {
 		Stream<EventMappedSuperclass> events;
 
-		switch (eventTimeframe.getTimeframe()) {
+		switch (searchTimeframe.getTimeframe()) {
 			case BEFORE:
-				events = StreamSupport.stream(repository.findAllByUsernameAndIpAddressAndTimestampBefore(username, ipAddress, eventTimeframe.getTimestamp()).spliterator(), true);
+				events = StreamSupport.stream(repository.findAllByUsernameAndIpAddressAndTimestampBefore(username, ipAddress, searchTimeframe.getTimestamp()).spliterator(), true);
 				return new EventsCollectionView(events.map(EventMappedSuperclass::toEventView).collect(Collectors.toList()));
 			case AFTER:
-				events = StreamSupport.stream(repository.findAllByUsernameAndIpAddressAndTimestampAfter(username, ipAddress, eventTimeframe.getTimestamp()).spliterator(), true);
+				events = StreamSupport.stream(repository.findAllByUsernameAndIpAddressAndTimestampAfter(username, ipAddress, searchTimeframe.getTimestamp()).spliterator(), true);
 				return new EventsCollectionView(events.map(EventMappedSuperclass::toEventView).collect(Collectors.toList()));
 			case BETWEEN:
-				DualEventTimeframe dualTimeframe = (DualEventTimeframe) eventTimeframe;
+				DualSearchTimeframe dualTimeframe = (DualSearchTimeframe) searchTimeframe;
 				events = StreamSupport.stream(repository.findAllByUsernameAndIpAddressAndTimestampBetween(username, ipAddress, dualTimeframe.getStart(), dualTimeframe.getEnd()).spliterator(), true);
 				return new EventsCollectionView(events.map(EventMappedSuperclass::toEventView).collect(Collectors.toList()));
 			default:
@@ -157,18 +157,18 @@ public class EventService {
 		}
 	}
 
-	private EventsCollectionView lookupEventsWithIpAddressAndTimeframe(PacketWatcherEventRepository<EventMappedSuperclass, Serializable> repository, String ipAddress, EventTimeframe eventTimeframe) {
+	private EventsCollectionView lookupEventsWithIpAddressAndTimeframe(PacketWatcherEventRepository<EventMappedSuperclass, Serializable> repository, String ipAddress, SearchTimeframe searchTimeframe) {
 		Stream<EventMappedSuperclass> events;
 
-		switch (eventTimeframe.getTimeframe()) {
+		switch (searchTimeframe.getTimeframe()) {
 			case BEFORE:
-				events = StreamSupport.stream(repository.findAllByIpAddressAndTimestampBefore(ipAddress, eventTimeframe.getTimestamp()).spliterator(), true);
+				events = StreamSupport.stream(repository.findAllByIpAddressAndTimestampBefore(ipAddress, searchTimeframe.getTimestamp()).spliterator(), true);
 				return new EventsCollectionView(events.map(EventMappedSuperclass::toEventView).collect(Collectors.toList()));
 			case AFTER:
-				events = StreamSupport.stream(repository.findAllByIpAddressAndTimestampAfter(ipAddress, eventTimeframe.getTimestamp()).spliterator(), true);
+				events = StreamSupport.stream(repository.findAllByIpAddressAndTimestampAfter(ipAddress, searchTimeframe.getTimestamp()).spliterator(), true);
 				return new EventsCollectionView(events.map(EventMappedSuperclass::toEventView).collect(Collectors.toList()));
 			case BETWEEN:
-				DualEventTimeframe dualTimeframe = (DualEventTimeframe) eventTimeframe;
+				DualSearchTimeframe dualTimeframe = (DualSearchTimeframe) searchTimeframe;
 				events = StreamSupport.stream(repository.findAllByIpAddressAndTimestampBetween(ipAddress, dualTimeframe.getStart(), dualTimeframe.getEnd()).spliterator(), true);
 				return new EventsCollectionView(events.map(EventMappedSuperclass::toEventView).collect(Collectors.toList()));
 			default:
@@ -176,18 +176,18 @@ public class EventService {
 		}
 	}
 
-	private EventsCollectionView lookupEventsWithUsernameAndTimeframe(PacketWatcherEventRepository<EventMappedSuperclass, Serializable> repository, String username, EventTimeframe eventTimeframe) {
+	private EventsCollectionView lookupEventsWithUsernameAndTimeframe(PacketWatcherEventRepository<EventMappedSuperclass, Serializable> repository, String username, SearchTimeframe searchTimeframe) {
 		Stream<EventMappedSuperclass> events;
 
-		switch (eventTimeframe.getTimeframe()) {
+		switch (searchTimeframe.getTimeframe()) {
 			case BEFORE:
-				events = StreamSupport.stream(repository.findAllByUsernameAndTimestampBefore(username, eventTimeframe.getTimestamp()).spliterator(), true);
+				events = StreamSupport.stream(repository.findAllByUsernameAndTimestampBefore(username, searchTimeframe.getTimestamp()).spliterator(), true);
 				return new EventsCollectionView(events.map(EventMappedSuperclass::toEventView).collect(Collectors.toList()));
 			case AFTER:
-				events = StreamSupport.stream(repository.findAllByUsernameAndTimestampAfter(username, eventTimeframe.getTimestamp()).spliterator(), true);
+				events = StreamSupport.stream(repository.findAllByUsernameAndTimestampAfter(username, searchTimeframe.getTimestamp()).spliterator(), true);
 				return new EventsCollectionView(events.map(EventMappedSuperclass::toEventView).collect(Collectors.toList()));
 			case BETWEEN:
-				DualEventTimeframe dualTimeframe = (DualEventTimeframe) eventTimeframe;
+				DualSearchTimeframe dualTimeframe = (DualSearchTimeframe) searchTimeframe;
 				events = StreamSupport.stream(repository.findAllByUsernameAndTimestampBetween(username, dualTimeframe.getStart(), dualTimeframe.getEnd()).spliterator(), true);
 				return new EventsCollectionView(events.map(EventMappedSuperclass::toEventView).collect(Collectors.toList()));
 			default:
@@ -195,18 +195,18 @@ public class EventService {
 		}
 	}
 
-	private EventsCollectionView lookupEventsWithTimeframeOnly(PacketWatcherEventRepository<EventMappedSuperclass, Serializable> repository, EventTimeframe eventTimeframe) {
+	private EventsCollectionView lookupEventsWithTimeframeOnly(PacketWatcherEventRepository<EventMappedSuperclass, Serializable> repository, SearchTimeframe searchTimeframe) {
 		Stream<EventMappedSuperclass> events;
 		
-		switch (eventTimeframe.getTimeframe()) {
+		switch (searchTimeframe.getTimeframe()) {
 			case BEFORE:
-				events = StreamSupport.stream(repository.findAllByTimestampBefore(eventTimeframe.getTimestamp()).spliterator(), true);
+				events = StreamSupport.stream(repository.findAllByTimestampBefore(searchTimeframe.getTimestamp()).spliterator(), true);
 				return new EventsCollectionView(events.map(EventMappedSuperclass::toEventView).collect(Collectors.toList()));
 			case AFTER:
-				events = StreamSupport.stream(repository.findAllByTimestampAfter(eventTimeframe.getTimestamp()).spliterator(), true);
+				events = StreamSupport.stream(repository.findAllByTimestampAfter(searchTimeframe.getTimestamp()).spliterator(), true);
 				return new EventsCollectionView(events.map(EventMappedSuperclass::toEventView).collect(Collectors.toList()));
 			case BETWEEN:
-				DualEventTimeframe dualTimeframe = (DualEventTimeframe) eventTimeframe;
+				DualSearchTimeframe dualTimeframe = (DualSearchTimeframe) searchTimeframe;
 				events = StreamSupport.stream(repository.findAllByTimestampBetween(dualTimeframe.getStart(), dualTimeframe.getEnd()).spliterator(), true);
 				return new EventsCollectionView(events.map(EventMappedSuperclass::toEventView).collect(Collectors.toList()));
 			default:

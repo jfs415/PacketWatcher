@@ -14,6 +14,11 @@ public class StatsRecordsView {
 	private final List<CountryStatsRecord> countryStatsRecords;
 	private final List<HostnameStatsRecord> hostnameStatsRecords;
 
+	public StatsRecordsView() {
+		this.countryStatsRecords = new ArrayList<>();
+		this.hostnameStatsRecords = new ArrayList<>();
+	}
+
 	public StatsRecordsView(ArrayList<CountryStatsRecord> countryStatsRecords, ArrayList<HostnameStatsRecord> hostnameStatsRecords) {
 		this.countryStatsRecords = countryStatsRecords;
 		this.hostnameStatsRecords = hostnameStatsRecords;

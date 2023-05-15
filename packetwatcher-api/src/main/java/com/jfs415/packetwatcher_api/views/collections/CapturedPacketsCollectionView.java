@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.annotation.Immutable;
-import org.springframework.lang.NonNull;
 
 import com.jfs415.packetwatcher_api.views.FlaggedPacketView;
 
@@ -18,7 +17,7 @@ public class CapturedPacketsCollectionView implements Serializable {
 		this.packets = new ArrayList<>();
 	}
 
-	public CapturedPacketsCollectionView(@NonNull List<FlaggedPacketView> packets) {
+	public CapturedPacketsCollectionView(List<FlaggedPacketView> packets) {
 		this.packets = packets;
 	}
 

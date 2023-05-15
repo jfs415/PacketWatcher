@@ -28,7 +28,7 @@ public class FlaggedPacketRecord implements Serializable, PacketRecord {
 	}
 
 	public static FlaggedPacketRecord createTestPacket() {
-		PacketRecordKey key = new PacketRecordKey(new Timestamp(System.currentTimeMillis()), "127.0.0.1", "00000");
+		PacketRecordKey key = new PacketRecordKey(new Timestamp(System.currentTimeMillis()), "127.0.0.1", "00000", "127.0.0.1" , "00000");
 		return new FlaggedPacketRecord(key, "LOCALHOST", null);
 	}
 

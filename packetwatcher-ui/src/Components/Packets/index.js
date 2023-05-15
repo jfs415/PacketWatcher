@@ -24,6 +24,15 @@ const Packets = () => {
                 field: "destinationPort",
             },
             {
+                label: "Source Host",
+                field: "sourceHost",
+            },
+
+            {
+                label: "Source Port",
+                field: "sourcePort",
+            },
+            {
                 label: "Flagged Country",
                 field: "flaggedCountry",
             },

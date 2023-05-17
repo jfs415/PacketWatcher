@@ -41,10 +41,6 @@ public class PacketWatcherCore {
 		}
 	}
 
-	public static PacketService getPacketService() {
-		return instance.packetService;
-	}
-
 	public static CorePropertiesManager getCoreConfigProperties() {
 		return instance.configProperties;
 	}

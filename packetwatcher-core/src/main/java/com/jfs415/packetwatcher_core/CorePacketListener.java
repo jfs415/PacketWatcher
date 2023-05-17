@@ -10,13 +10,18 @@ import org.pcap4j.packet.EthernetPacket;
 import org.pcap4j.packet.IpV4Packet.IpV4Header;
 import org.pcap4j.packet.TcpPacket;
 import org.pcap4j.packet.TcpPacket.TcpHeader;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.axlabs.ip2asn2cc.Ip2Asn2Cc;
 import com.axlabs.ip2asn2cc.exception.RIRNotDownloadedException;
 import com.jfs415.packetwatcher_core.model.packets.FlaggedPacketRecord;
 import com.jfs415.packetwatcher_core.model.packets.PacketRecordKey;
+import com.jfs415.packetwatcher_core.services.PacketService;
 
 public class CorePacketListener implements PacketListener {
+	
+	@Autowired
+	private PacketService packetService;
 
 	private Ip2Asn2Cc ipLookupUtility = null;
 
@@ -56,7 +61,7 @@ public class CorePacketListener implements PacketListener {
 					String sourcePort = tcpHeader.getSrcPort().toString();
 
 					PacketRecordKey key = new PacketRecordKey(timestamp, destIpString, destPort, sourceHostName, sourcePort);
-					PacketWatcherCore.getPacketService().addToSaveQueue(new FlaggedPacketRecord(key, destHostName, countryName.toUpperCase()));
+					packetService.addToSaveQueue(new FlaggedPacketRecord(key, destHostName, countryName.toUpperCase()));
 				}
 			}
 		}

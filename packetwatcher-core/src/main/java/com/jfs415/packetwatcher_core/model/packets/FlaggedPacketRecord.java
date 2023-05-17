@@ -8,11 +8,9 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import com.jfs415.packetwatcher_core.PacketWatcherCore;
-
 @Entity
 @Table(name = "flagged_packet_records", schema = "packetwatcher")
-public class FlaggedPacketRecord implements Serializable, PacketRecord {
+public class FlaggedPacketRecord implements Serializable {
 
 	@EmbeddedId
 	private PacketRecordKey key;
@@ -56,10 +54,6 @@ public class FlaggedPacketRecord implements Serializable, PacketRecord {
 
 	public PacketRecordKey getKey() {
 		return key;
-	}
-
-	public void save() {
-		PacketWatcherCore.getPacketService().savePacketRecord(this);
 	}
 
 	@Override

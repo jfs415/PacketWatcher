@@ -27,7 +27,7 @@ public class PacketWatcherApi extends SpringBootServletInitializer {
 
 	private static PacketWatcherApi instance;
 
-	private static final Logger LOG = LoggerFactory.getLogger(PacketWatcherApi.class);
+	private final Logger logger = LoggerFactory.getLogger(PacketWatcherApi.class);
 	private static final EnumSet<Authority> authoritySet = EnumSet.allOf(Authority.class);
 
 	private EntityManager entityManager;
@@ -43,6 +43,7 @@ public class PacketWatcherApi extends SpringBootServletInitializer {
 		}
 	}
 
+	//TODO: Should make these Spring components.
 	public static PropertiesManager getPropertiesManager() {
 		return instance.propertiesManager;
 	}
@@ -80,21 +81,9 @@ public class PacketWatcherApi extends SpringBootServletInitializer {
 		instance.entityManager = emf.createEntityManager();
 	}
 
-	public static void fail(String message) {
-		LOG.error(message);
+	public void fail(String message) {
+		logger.error(message);
 		System.exit(1);
-	}
-
-	public static void error(String errorMessage) {
-		LOG.error(errorMessage);
-	}
-
-	public static void warn(String warnMessage) {
-		LOG.warn(warnMessage);
-	}
-
-	public static void debug(String debugMessage) {
-		LOG.debug(debugMessage);
 	}
 
 	public static void main(String... args) {

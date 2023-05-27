@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.lang.Nullable;
 
 import com.jfs415.packetwatcher_api.views.SystemSettingView;
@@ -17,8 +19,9 @@ import com.jfs415.packetwatcher_api.views.collections.SystemSettingsCollectionVi
 
 public class PropertiesManager {
 
-	private final Properties properties = new Properties();
 	private final static String PATH = "PacketWatcherAPI.properties";
+	private final Properties properties = new Properties();
+	private final Logger logger = LoggerFactory.getLogger(PropertiesManager.class);
 	
 	public void load() throws IOException {
 		File configFile = new File("packetwatcher-API" + File.separator + PATH);
@@ -27,7 +30,7 @@ public class PropertiesManager {
 		properties.load(inputStream);
 		inputStream.close();
 
-		PacketWatcherApi.debug("PacketWatcherAPI config file loaded");
+		logger.debug("PacketWatcherAPI config file loaded");
 	}
 
 	/**
@@ -54,7 +57,7 @@ public class PropertiesManager {
 			save();
 		} catch (IOException e) {
 			e.printStackTrace();
-			PacketWatcherApi.warn("Unable to save properties file during refresh");
+			logger.warn("Unable to write properties file during refresh");
 			return false;
 		}
 
@@ -62,7 +65,7 @@ public class PropertiesManager {
 			load();
 		} catch (IOException e) {
 			e.printStackTrace();
-			PacketWatcherApi.warn("Unable to load properties file during refresh");
+			logger.warn("Unable to load properties file during refresh");
 			return false;
 		}
 
@@ -75,7 +78,7 @@ public class PropertiesManager {
 		properties.store(writer, "host settings");
 		writer.close();
 
-		PacketWatcherApi.debug("Config file saved");
+		logger.debug("Config file saved");
 	}
 
 	public @Nullable Timestamp getRecordLastPurge() {

@@ -11,16 +11,12 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class CorePropertiesManager implements InitializingBean {
 
 	private static final String PROPERTIES_FILENAME = "PacketWatcherCore.properties";
-	
-	@Autowired
-	private PacketWatcherCore packetWatcherCore;
 	
 	private final Properties properties = new Properties();
 	private final Logger logger = LoggerFactory.getLogger(CorePropertiesManager.class);
@@ -97,7 +93,7 @@ public class CorePropertiesManager implements InitializingBean {
 
 	public Timestamp getLastAppShutdown() {
 		String lastShutdown = properties.getProperty("last_shutdown");
-		return PacketWatcherCore.isNullOrEmpty(lastShutdown) ? null : new Timestamp(Long.parseLong(lastShutdown));
+		return lastShutdown.isBlank() ? null : new Timestamp(Long.parseLong(lastShutdown));
 	}
 
 	public void setLastAppShutdown(Timestamp lastAppShutdown) {
@@ -122,7 +118,7 @@ public class CorePropertiesManager implements InitializingBean {
 
 	public Timestamp getLastFlaggedRecordPurge() {
 		String lastFlaggedRecordPurge = properties.getProperty("last_flagged_record_purge");
-		return PacketWatcherCore.isNullOrEmpty(lastFlaggedRecordPurge) ? null : new Timestamp(Long.parseLong(lastFlaggedRecordPurge));
+		return lastFlaggedRecordPurge.isBlank() ? null : new Timestamp(Long.parseLong(lastFlaggedRecordPurge));
 	}
 
 	public void setLastFlaggedRecordPurge(Timestamp lastFlaggedRecordPurge) {
@@ -131,7 +127,7 @@ public class CorePropertiesManager implements InitializingBean {
 
 	public Timestamp getLastArchiveRecordPurge() {
 		String lastArchivePurge = properties.getProperty("last_record_Archive_purge");
-		return PacketWatcherCore.isNullOrEmpty(lastArchivePurge) ? null : new Timestamp(Long.parseLong(lastArchivePurge));
+		return lastArchivePurge.isBlank() ? null : new Timestamp(Long.parseLong(lastArchivePurge));
 	}
 
 	public void setLastArchiveRecordPurge(Timestamp lastRecordArchivePurge) {

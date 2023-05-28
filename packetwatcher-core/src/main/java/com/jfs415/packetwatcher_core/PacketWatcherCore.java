@@ -1,7 +1,6 @@
 package com.jfs415.packetwatcher_core;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.annotation.PreDestroy;
 import javax.persistence.EntityManagerFactory;
@@ -18,11 +17,10 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 @SpringBootApplication
 public class PacketWatcherCore {
-
-	private static PacketWatcherCore instance;
+	
 	private static final Logger logger = LoggerFactory.getLogger(PacketWatcherCore.class); //TODO: Logging refactor, add to all classes
 	private static final String HOST_ADDR = "192.168"; //TODO: Refactor this, should be configurable
-	
+
 	private PacketCaptureThread handle;
 	private final CorePropertiesManager configProperties = new CorePropertiesManager();
 
@@ -34,17 +32,15 @@ public class PacketWatcherCore {
 			fail("Encountered an exception while creating the PacketWatcherCore Instance");
 		}
 	}
-	
+
 	public static String getHostAddr() {
 		return HOST_ADDR;
 	}
 
 	private void onInit() {
-		instance = this;
-
 		EntityManagerFactory emf = Persistence.createEntityManagerFactory("packetwatcher-core");
 		emf.createEntityManager();
-		
+
 		handle = new PacketCaptureThread();
 		handle.start();
 	}
@@ -66,24 +62,8 @@ public class PacketWatcherCore {
 		System.exit(1);
 	}
 
-	public static void error(String errorMessage) {
-		logger.error(errorMessage);
-	}
-
-	public static void warn(String warnMessage) {
-		logger.warn(warnMessage);
-	}
-
 	public static void debug(String debugMessage) {
 		logger.debug(debugMessage);
-	}
-
-	public static boolean isNullOrEmpty(String str) {
-		return str == null || str.isEmpty();
-	}
-
-	public static boolean isNullOrEmpty(List<?> list) {
-		return list == null || list.isEmpty();
 	}
 
 	public static void main(String... args) {

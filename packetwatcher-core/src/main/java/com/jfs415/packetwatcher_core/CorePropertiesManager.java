@@ -8,11 +8,23 @@ import java.io.InputStream;
 import java.sql.Timestamp;
 import java.util.Properties;
 
-public class CorePropertiesManager {
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-	private final Properties properties = new Properties();
+@Component
+public class CorePropertiesManager implements InitializingBean {
+
 	private static final String PROPERTIES_FILENAME = "PacketWatcherCore.properties";
 	
+	@Autowired
+	private PacketWatcherCore packetWatcherCore;
+	
+	private final Properties properties = new Properties();
+	private final Logger logger = LoggerFactory.getLogger(CorePropertiesManager.class);
+
 	public void load() throws IOException {
 		File configFile = new File(PROPERTIES_FILENAME);
 		InputStream inputStream = new FileInputStream(configFile);
@@ -52,7 +64,7 @@ public class CorePropertiesManager {
 		setDoNotFailOnRIRDownloadException(true);
 
 		return getLastAppStart().equals(now) && getLastFlaggedRecordPurge().equals(now) && getLastAppShutdown().equals(now) 
-				&& getFlaggedRetentionDays() == flaggedRetentionDays && getArchiveRetentionDays() == archiveRetentionDays;
+		       && getFlaggedRetentionDays() == flaggedRetentionDays && getArchiveRetentionDays() == archiveRetentionDays;
 	}
 
 	public boolean refresh() {
@@ -60,7 +72,7 @@ public class CorePropertiesManager {
 			save();
 		} catch (IOException e) {
 			e.printStackTrace();
-			PacketWatcherCore.warn("Unable to save properties file during refresh");
+			logger.warn("Unable to write properties file during refresh");
 			return false;
 		}
 
@@ -68,7 +80,7 @@ public class CorePropertiesManager {
 			load();
 		} catch (IOException e) {
 			e.printStackTrace();
-			PacketWatcherCore.warn("Unable to load properties file during refresh");
+			logger.warn("Unable to load properties file during refresh");
 			return false;
 		}
 
@@ -125,13 +137,28 @@ public class CorePropertiesManager {
 	public void setLastArchiveRecordPurge(Timestamp lastRecordArchivePurge) {
 		properties.setProperty("last_record_Archive_purge", lastRecordArchivePurge == null ? null : String.valueOf(lastRecordArchivePurge.getTime()));
 	}
-	
+
 	public boolean getDoNotFailOnRIRDownloadException() {
 		return Boolean.parseBoolean(properties.getProperty("do_not_fail_on_rir_download_exception"));
 	}
-	
+
 	public void setDoNotFailOnRIRDownloadException(boolean doNotFailOnRIRDownloadException) {
 		properties.setProperty("do_not_fail_on_rir_download_exception", String.valueOf(doNotFailOnRIRDownloadException));
+	}
+
+	@Override
+	public void afterPropertiesSet() {
+		try {
+			load();
+			logger.debug("PacketWatcherCore config file loaded");
+		} catch (IOException e) {
+			e.printStackTrace();
+			logger.error("Encountered an exception when trying to load properties, attempting to load defaults");
+
+			if (!canLoadDefaults()) {
+				PacketWatcherCore.fail("Could not load config defaults, application is exiting");
+			}
+		}
 	}
 
 }

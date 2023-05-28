@@ -12,16 +12,23 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
+import org.springframework.stereotype.Component;
 
 import com.jfs415.packetwatcher_api.views.SystemSettingView;
 import com.jfs415.packetwatcher_api.views.collections.SystemSettingsCollectionView;
 
-public class PropertiesManager {
+@Component
+public class PropertiesManager implements InitializingBean {
 
 	private final static String PATH = "PacketWatcherAPI.properties";
 	private final Properties properties = new Properties();
 	private final Logger logger = LoggerFactory.getLogger(PropertiesManager.class);
+	
+	@Autowired
+	private PacketWatcherApi packetWatcherApi;
 	
 	public void load() throws IOException {
 		File configFile = new File("packetwatcher-API" + File.separator + PATH);
@@ -128,6 +135,19 @@ public class PropertiesManager {
 	public void updateSystemSettingsFromViews(List<SystemSettingView> updates) {
 		for (SystemSettingView view : updates) {
 			properties.setProperty(view.getSettingKey(), view.getSettingValue());
+		}
+	}
+
+	@Override
+	public void afterPropertiesSet() {
+		try {
+			load();
+		} catch (IOException e) {
+			e.printStackTrace();
+
+			if (!canLoadDefaults()) {
+				packetWatcherApi.fail("Encountered an exception when trying to load properties, default values could not be assigned!");
+			}
 		}
 	}
 

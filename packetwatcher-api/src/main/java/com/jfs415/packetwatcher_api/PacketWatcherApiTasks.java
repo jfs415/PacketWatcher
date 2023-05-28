@@ -17,6 +17,9 @@ public class PacketWatcherApiTasks {
 	
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private PropertiesManager propertiesManager;
 
 	@Scheduled(fixedDelay = 1, timeUnit = TimeUnit.MINUTES)
 	public void refreshDashboard() {
@@ -25,7 +28,7 @@ public class PacketWatcherApiTasks {
 
 	@Scheduled(fixedDelay = 1, timeUnit = TimeUnit.MINUTES)
 	public void refreshConfig() {
-		PacketWatcherApi.getPropertiesManager().refresh();
+		propertiesManager.refresh();
 		logger.debug("PacketWatcher config has been refreshed");
 	}
 

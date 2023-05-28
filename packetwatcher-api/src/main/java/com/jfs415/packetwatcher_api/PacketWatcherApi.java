@@ -1,13 +1,9 @@
 package com.jfs415.packetwatcher_api;
 
-import java.io.IOException;
 import java.util.EnumSet;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import org.hibernate.validator.internal.constraintvalidators.bv.EmailValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -25,14 +21,8 @@ import com.jfs415.packetwatcher_api.model.user.Authority;
 @EnableScheduling
 public class PacketWatcherApi extends SpringBootServletInitializer {
 
-	private static PacketWatcherApi instance;
-
 	private final Logger logger = LoggerFactory.getLogger(PacketWatcherApi.class);
 	private static final EnumSet<Authority> authoritySet = EnumSet.allOf(Authority.class);
-
-	private EntityManager entityManager;
-	private final PropertiesManager propertiesManager = new PropertiesManager();
-	private final EmailValidator emailValidator = new EmailValidator();
 
 	public PacketWatcherApi() {
 		try {
@@ -43,42 +33,12 @@ public class PacketWatcherApi extends SpringBootServletInitializer {
 		}
 	}
 
-	//TODO: Should make these Spring components.
-	public static PropertiesManager getPropertiesManager() {
-		return instance.propertiesManager;
-	}
-
-	public static EntityManager getEntityManager() {
-		return instance.entityManager;
-	}
-
-	public static PacketWatcherApi getInstance() {
-		return instance;
-	}
-
-	public static EmailValidator getEmailValidator() {
-		return instance.emailValidator;
-	}
-
 	public static EnumSet<Authority> getAuthoritySet() {
 		return authoritySet;
 	}
 
 	private void onInit() {
-		instance = this;
-
-		try {
-			propertiesManager.load();
-		} catch (IOException e) {
-			e.printStackTrace();
-
-			if (!propertiesManager.canLoadDefaults()) {
-				fail("Encountered an exception when trying to load properties, default values could not be assigned!");
-			}
-		}
-
-		EntityManagerFactory emf = Persistence.createEntityManagerFactory("packetwatcher-api");
-		instance.entityManager = emf.createEntityManager();
+		Persistence.createEntityManagerFactory("packetwatcher-api").createEntityManager();
 	}
 
 	public void fail(String message) {

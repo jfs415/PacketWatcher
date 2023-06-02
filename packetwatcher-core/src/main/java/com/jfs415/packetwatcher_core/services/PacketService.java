@@ -5,21 +5,28 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.jfs415.packetwatcher_core.PacketWatcherCore;
 import com.jfs415.packetwatcher_core.model.packets.FlaggedPacketRecord;
 import com.jfs415.packetwatcher_core.model.repositories.FlaggedPacketRepository;
 
 @Service
 public class PacketService {
-
-	@Autowired
-	private FlaggedPacketRepository flaggedPacketRepo;
+	
+	private final FlaggedPacketRepository flaggedPacketRepo;
+	
+	private final Logger logger = LoggerFactory.getLogger(PacketService.class);
 
 	private final ArrayList<FlaggedPacketRecord> flaggedPacketSaveQueue = new ArrayList<>();
+	
+	@Autowired
+	public PacketService(FlaggedPacketRepository flaggedPacketRepo) {
+		this.flaggedPacketRepo = flaggedPacketRepo;
+	}
 
 	@Transactional
 	public void savePacketRecord(FlaggedPacketRecord record) {
@@ -37,7 +44,7 @@ public class PacketService {
 
 		int size = flaggedSaveQueueCopy.size();
 		flaggedPacketRepo.saveAllAndFlush(flaggedSaveQueueCopy);
-		PacketWatcherCore.debug("Saved " + size + " flagged packets from the queue");
+		logger.debug("Saved " + size + " flagged packets from the queue");
 	}
 
 	@Transactional

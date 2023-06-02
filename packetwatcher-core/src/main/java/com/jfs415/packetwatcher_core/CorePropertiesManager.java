@@ -8,18 +8,41 @@ import java.io.InputStream;
 import java.sql.Timestamp;
 import java.util.Properties;
 
+import javax.annotation.PreDestroy;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CorePropertiesManager implements InitializingBean {
+public class CorePropertiesManager {
 
 	private static final String PROPERTIES_FILENAME = "PacketWatcherCore.properties";
 	
+	private final PacketWatcherCore packetWatcherCore;
+	
 	private final Properties properties = new Properties();
 	private final Logger logger = LoggerFactory.getLogger(CorePropertiesManager.class);
+	
+	@Autowired
+	public CorePropertiesManager(PacketWatcherCore packetWatcherCore) {
+		this.packetWatcherCore = packetWatcherCore;
+		
+		startup();
+	}
+
+	@PreDestroy
+	public void onShutdown() {
+		logger.debug("Saving PacketWatcherCore config properties");
+
+		try {
+			save();
+		} catch (IOException e) {
+			e.printStackTrace();
+			logger.warn("Encountered an exception saving PacketWatcherCore config properties");
+		}
+	}
 
 	public void load() throws IOException {
 		File configFile = new File(PROPERTIES_FILENAME);
@@ -46,6 +69,8 @@ public class CorePropertiesManager implements InitializingBean {
 	 * @return Whether all properties match the assigned default values
 	 */
 	public boolean canLoadDefaults() {
+		logger.info("Attempting to load default configurations");
+		
 		Timestamp now = new Timestamp(System.currentTimeMillis());
 
 		final int flaggedRetentionDays = 180;
@@ -141,19 +166,29 @@ public class CorePropertiesManager implements InitializingBean {
 	public void setDoNotFailOnRIRDownloadException(boolean doNotFailOnRIRDownloadException) {
 		properties.setProperty("do_not_fail_on_rir_download_exception", String.valueOf(doNotFailOnRIRDownloadException));
 	}
-
-	@Override
-	public void afterPropertiesSet() {
+	
+	public void startup() {
 		try {
 			load();
+			
+			if (properties.isEmpty()) {
+				attemptToLoadDefaults();
+			}
+			
 			logger.debug("PacketWatcherCore config file loaded");
 		} catch (IOException e) {
 			e.printStackTrace();
 			logger.error("Encountered an exception when trying to load properties, attempting to load defaults");
 
 			if (!canLoadDefaults()) {
-				PacketWatcherCore.fail("Could not load config defaults, application is exiting");
+				packetWatcherCore.fail("Could not load config defaults, application is exiting");
 			}
+		}
+	}
+	
+	private void attemptToLoadDefaults() {
+		if (!canLoadDefaults()) {
+			packetWatcherCore.fail("Could not load config defaults, application is exiting");
 		}
 	}
 

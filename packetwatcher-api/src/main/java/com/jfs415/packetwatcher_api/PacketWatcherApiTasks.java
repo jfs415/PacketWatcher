@@ -14,12 +14,14 @@ import com.jfs415.packetwatcher_api.model.services.UserService;
 public class PacketWatcherApiTasks {
 
 	private final Logger logger = LoggerFactory.getLogger(PacketWatcherApiTasks.class);
-	
+	private final UserService userService;
+	private final PropertiesManager propertiesManager;
+
 	@Autowired
-	private UserService userService;
-	
-	@Autowired
-	private PropertiesManager propertiesManager;
+	public PacketWatcherApiTasks(UserService userService, PropertiesManager propertiesManager) {
+		this.userService = userService;
+		this.propertiesManager = propertiesManager;
+	}
 
 	@Scheduled(fixedDelay = 1, timeUnit = TimeUnit.MINUTES)
 	public void refreshDashboard() {

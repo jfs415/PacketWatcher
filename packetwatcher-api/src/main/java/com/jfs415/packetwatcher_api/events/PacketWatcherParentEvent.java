@@ -18,10 +18,16 @@ import com.jfs415.packetwatcher_api.model.services.EventService;
 
 public class PacketWatcherParentEvent {
 
-	@Autowired
-	private EventService eventService;
-	
+	protected final HttpServletRequest request;
+	protected final EventService eventService;
+
 	private static final String IP_ADDRESS_HEADER = "X-Forwarded-For";
+
+	@Autowired
+	public PacketWatcherParentEvent(HttpServletRequest request, EventService eventService) {
+		this.request = request;
+		this.eventService = eventService;
+	}
 
 	protected final void saveVerifiedAuthenticationEvent(AbstractAuthenticationFailureEvent e, String ipAddress, AuthenticationEventType eventType) {
 		UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) e.getSource();

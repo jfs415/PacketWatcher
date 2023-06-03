@@ -1,5 +1,6 @@
 package com.jfs415.packetwatcher_api.auth;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,13 +13,20 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-import com.jfs415.packetwatcher_api.PacketWatcherApi;
+import com.jfs415.packetwatcher_api.PropertiesManager;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
+	private final PropertiesManager propertiesManager;
+
 	private PasswordEncoder encoder;
+
+	@Autowired
+	public SecurityConfig(PropertiesManager propertiesManager) {
+		this.propertiesManager = propertiesManager;
+	}
 
 	@Bean
 	public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
@@ -28,7 +36,7 @@ public class SecurityConfig {
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		if (encoder == null) {
-			encoder = new BCryptPasswordEncoder(PacketWatcherApi.getPropertiesManager().getPasswordStrength());
+			encoder = new BCryptPasswordEncoder(propertiesManager.getPasswordStrength());
 		}
 
 		return encoder;
@@ -37,7 +45,7 @@ public class SecurityConfig {
 	@Bean
 	public SecurityFilterChain configure(HttpSecurity http) throws Exception {
 		return http.csrf(AbstractHttpConfigurer::disable)
-				   .cors().disable()
+		           .cors().disable()
 		           .authorizeRequests(auth -> auth.antMatchers("/", "/login", "/accounts/**").permitAll())
 		           .httpBasic(Customizer.withDefaults()).build();
 	}

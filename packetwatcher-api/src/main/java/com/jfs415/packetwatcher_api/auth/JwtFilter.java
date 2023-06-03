@@ -23,11 +23,14 @@ import io.jsonwebtoken.lang.Strings;
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 
+	private final JwtUtil jwtUtil;
+	private final UserService userService;
+
 	@Autowired
-	private JwtUtil jwtUtil;
-	
-	@Autowired
-	private UserService userService;
+	public JwtFilter(JwtUtil jwtUtil, UserService userService) {
+		this.jwtUtil = jwtUtil;
+		this.userService = userService;
+	}
 
 	@Override
 	public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
@@ -41,15 +44,15 @@ public class JwtFilter extends OncePerRequestFilter {
 
 		// Get jwt token and validate (bearer dsa.sadasdasdsa -> ([bearer] [dsa.sadasdasdsa])
 		final String token = header.split(" ")[1].trim();
-		
+
 		// Get user identity and set it on the spring security context
 		UserDetails userDetails = userService.getUserByUsername(jwtUtil.getUsername(token));
-		
+
 		if (userDetails == null || !jwtUtil.validateToken(token, userDetails)) {
 			chain.doFilter(request, response);
 			return;
 		}
-		
+
 		UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
 		authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

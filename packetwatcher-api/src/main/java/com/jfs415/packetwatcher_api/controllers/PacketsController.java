@@ -14,8 +14,12 @@ import com.jfs415.packetwatcher_core.services.PacketService;
 @RestController
 public class PacketsController {
 
+	private final PacketService packetService;
+
 	@Autowired
-	private PacketService packetService;
+	public PacketsController(PacketService packetService) {
+		this.packetService = packetService;
+	}
 
 	@GetMapping("/packets")
 	public ResponseEntity<?> getDefaultCapturedPacketsView() {

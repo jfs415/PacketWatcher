@@ -27,11 +27,15 @@ public class PropertiesManager implements InitializingBean {
 	private final Properties properties = new Properties();
 	private final Logger logger = LoggerFactory.getLogger(PropertiesManager.class);
 	
+	private final PacketWatcherApi packetWatcherApi;
+	
 	@Autowired
-	private PacketWatcherApi packetWatcherApi;
+	public PropertiesManager(PacketWatcherApi packetWatcherApi) {
+		this.packetWatcherApi = packetWatcherApi;
+	}
 	
 	public void load() throws IOException {
-		File configFile = new File("packetwatcher-API" + File.separator + PATH);
+		File configFile = new File(PATH);
 		InputStream inputStream = new FileInputStream(configFile);
 
 		properties.load(inputStream);

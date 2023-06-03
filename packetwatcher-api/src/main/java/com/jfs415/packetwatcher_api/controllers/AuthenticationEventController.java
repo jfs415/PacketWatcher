@@ -7,17 +7,20 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.jfs415.packetwatcher_api.model.events.AuthenticationEvent;
-import com.jfs415.packetwatcher_api.util.DualSearchTimeframe;
+import com.jfs415.packetwatcher_api.util.RangedSearchTimeframe;
 import com.jfs415.packetwatcher_api.util.SearchTimeframe;
 import com.jfs415.packetwatcher_api.model.services.EventService;
 
 @Controller
 public class AuthenticationEventController {
 
-	@Autowired
-	private EventService eventService;
-
+	private final EventService eventService;
 	private final Class<?> IMPL = AuthenticationEvent.class;
+
+	@Autowired
+	public AuthenticationEventController(EventService eventService) {
+		this.eventService = eventService;
+	}
 
 	@GetMapping("/events/authentication")
 	public ResponseEntity<?> getAuthenticationEvents() {
@@ -36,7 +39,7 @@ public class AuthenticationEventController {
 
 	@GetMapping(value = "/events/authentication", params = { "start", "stop" })
 	public ResponseEntity<?> getAuthenticationEventsBetween(@RequestParam long start, @RequestParam long stop) {
-		return ResponseEntity.ok(eventService.getEventsByTypeWithTimeframe(IMPL, DualSearchTimeframe.between(start, stop)));
+		return ResponseEntity.ok(eventService.getEventsByTypeWithTimeframe(IMPL, RangedSearchTimeframe.between(start, stop)));
 	}
 
 	@GetMapping(value = "/events/authentication", params = "username")
@@ -56,7 +59,7 @@ public class AuthenticationEventController {
 
 	@GetMapping(value = "/events/authentication", params = { "username", "start", "stop" })
 	public ResponseEntity<?> getAuthenticationEventsWithUsernameBetween(@RequestParam String username, @RequestParam long start, @RequestParam long stop) {
-		return ResponseEntity.ok(eventService.getEventsByTypeAndUsernameWithTimeframe(IMPL, username, DualSearchTimeframe.between(start, stop)));
+		return ResponseEntity.ok(eventService.getEventsByTypeAndUsernameWithTimeframe(IMPL, username, RangedSearchTimeframe.between(start, stop)));
 	}
 
 	@GetMapping(value = "/events/authentication", params = "ipAddress")
@@ -76,7 +79,7 @@ public class AuthenticationEventController {
 
 	@GetMapping(value = "/events/authentication", params = { "ipAddress", "start", "stop" })
 	public ResponseEntity<?> getAuthenticationEventsWithIpAddressBetween(@RequestParam String ipAddress, @RequestParam long start, @RequestParam long stop) {
-		return ResponseEntity.ok(eventService.getEventsByTypeAndIpAddressWithTimeframe(IMPL, ipAddress, DualSearchTimeframe.between(start, stop)));
+		return ResponseEntity.ok(eventService.getEventsByTypeAndIpAddressWithTimeframe(IMPL, ipAddress, RangedSearchTimeframe.between(start, stop)));
 	}
 
 	@GetMapping(value = "/events/authentication", params = { "username", "ipAddress" })
@@ -96,7 +99,7 @@ public class AuthenticationEventController {
 
 	@GetMapping(value = "/events/authentication", params = { "username", "ipAddress", "start", "stop" })
 	public ResponseEntity<?> getAuthenticationEventsWithUsernameAndIpAddressBetween(@RequestParam String username, @RequestParam String ipAddress, @RequestParam long start, @RequestParam long stop) {
-		return ResponseEntity.ok(eventService.getEventsByTypeAndIpAddressAndUsernameWithTimeframe(IMPL, ipAddress, username, DualSearchTimeframe.between(start, stop)));
+		return ResponseEntity.ok(eventService.getEventsByTypeAndIpAddressAndUsernameWithTimeframe(IMPL, ipAddress, username, RangedSearchTimeframe.between(start, stop)));
 	}
 
 }

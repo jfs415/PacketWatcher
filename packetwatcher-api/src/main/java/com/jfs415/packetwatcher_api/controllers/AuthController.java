@@ -22,11 +22,14 @@ import com.jfs415.packetwatcher_api.model.user.User;
 @RequestMapping(value = "/", produces = "application/json", method = { RequestMethod.GET })
 public class AuthController {
 
-	@Autowired
-	private AuthenticationManager authenticationManager;
+	private final AuthenticationManager authenticationManager;
+	private final JwtUtil jwtUtil;
 
 	@Autowired
-	private JwtUtil jwtUtil;
+	public AuthController(AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
+		this.authenticationManager = authenticationManager;
+		this.jwtUtil = jwtUtil;
+	}
 
 	@PostMapping("login")
 	public ResponseEntity<?> processLogin(@RequestBody AuthenticationRequest request) {

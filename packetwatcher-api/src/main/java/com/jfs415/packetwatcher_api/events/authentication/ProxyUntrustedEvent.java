@@ -6,14 +6,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.event.AuthenticationFailureProxyUntrustedEvent;
+import org.springframework.stereotype.Component;
 
 import com.jfs415.packetwatcher_api.events.PacketWatcherParentEvent;
+import com.jfs415.packetwatcher_api.model.services.EventService;
 
+@Component
 public class ProxyUntrustedEvent extends PacketWatcherParentEvent implements ApplicationListener<AuthenticationFailureProxyUntrustedEvent> {
 
 	@Autowired
-	private HttpServletRequest request;
-	
+	public ProxyUntrustedEvent(HttpServletRequest request, EventService eventService) {
+		super(request, eventService);
+	}
+
 	@Override
 	public void onApplicationEvent(AuthenticationFailureProxyUntrustedEvent event) {
 		final String ipAddress = getIpAddressFromRequest(request);

@@ -19,12 +19,15 @@ import com.jfs415.packetwatcher_api.model.user.User;
 
 @RestController
 public class RecoverAccountController {
-	
-	@Autowired
-	private UserService userService;
+
+	private final UserService userService;
+	private final JwtUtil jwtUtil;
 
 	@Autowired
-	private JwtUtil jwtUtil;
+	public RecoverAccountController(UserService userService, JwtUtil jwtUtil) {
+		this.userService = userService;
+		this.jwtUtil = jwtUtil;
+	}
 
 	@PostMapping(value = "/account/reset", produces = "application/json")
 	public ResponseEntity<?> processAuthenticatedUserPasswordReset(@CookieValue(name = "jwt") String token, @AuthenticationPrincipal User user) {
@@ -35,12 +38,12 @@ public class RecoverAccountController {
 			return ResponseEntity.notFound().build();
 		}
 	}
-	
+
 	@PostMapping(value = "/accounts/forgot", produces = "application/json")
 	public ResponseEntity<?> processAccountRecoveryInitiation(@RequestBody Map<String, String> request) {
 		try {
 			String email = request.get("email");
-			
+
 			if (!Objects.requireNonNull(email).isEmpty()) {
 				long timestamp = System.currentTimeMillis();
 				userService.handleAccountRecoveryInitiation(timestamp, email);
@@ -54,22 +57,22 @@ public class RecoverAccountController {
 			return ResponseEntity.notFound().build();
 		}
 	}
-	
+
 	@PostMapping(value = "/accounts/reset", produces = "application/json")
 	public ResponseEntity<?> processAccountRecoveryRequest(@RequestBody UserPasswordResetRequest request) {
 		try {
 			User user = userService.getUserByUsername(request.getUsername());
-			
+
 			if (!userService.isCorrectPasswordResetToken(request.getToken(), user.getPasswordResetToken())) {
 				return ResponseEntity.notFound().build();
 			}
-			
+
 			userService.updatePassword(user, request.getPassword());
-			
+
 			return ResponseEntity.ok(true);
 		} catch (UserNotFoundException e) {
 			return ResponseEntity.notFound().build();
 		}
 	}
-	
+
 }

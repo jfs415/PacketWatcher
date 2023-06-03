@@ -9,12 +9,15 @@ import org.springframework.security.authentication.event.AuthenticationFailureDi
 import org.springframework.stereotype.Component;
 
 import com.jfs415.packetwatcher_api.events.PacketWatcherParentEvent;
+import com.jfs415.packetwatcher_api.model.services.EventService;
 
 @Component
 public class DisabledCredentialsEvent extends PacketWatcherParentEvent implements ApplicationListener<AuthenticationFailureDisabledEvent> {
 
 	@Autowired
-	private HttpServletRequest request;
+	private DisabledCredentialsEvent(HttpServletRequest httpServletRequest, EventService eventService) {
+		super(httpServletRequest, eventService);
+	}
 
 	@Override
 	public void onApplicationEvent(AuthenticationFailureDisabledEvent event) {

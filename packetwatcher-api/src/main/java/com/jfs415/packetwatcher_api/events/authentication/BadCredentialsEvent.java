@@ -9,16 +9,20 @@ import org.springframework.security.authentication.event.AuthenticationFailureBa
 import org.springframework.stereotype.Component;
 
 import com.jfs415.packetwatcher_api.events.PacketWatcherParentEvent;
+import com.jfs415.packetwatcher_api.model.services.EventService;
 import com.jfs415.packetwatcher_api.model.services.UserActivationStateService;
 
 @Component
 public class BadCredentialsEvent extends PacketWatcherParentEvent implements ApplicationListener<AuthenticationFailureBadCredentialsEvent> {
 
-	@Autowired
-	private HttpServletRequest request;
+	private final UserActivationStateService userActivationStateService;
 
 	@Autowired
-	private UserActivationStateService userActivationStateService;
+	public BadCredentialsEvent(HttpServletRequest request, EventService eventService, UserActivationStateService userActivationStateService) {
+		super(request, eventService);
+		
+		this.userActivationStateService = userActivationStateService;
+	}
 
 	@Override
 	public void onApplicationEvent(AuthenticationFailureBadCredentialsEvent event) {

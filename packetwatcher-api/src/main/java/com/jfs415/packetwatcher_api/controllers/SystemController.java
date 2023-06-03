@@ -2,13 +2,14 @@ package com.jfs415.packetwatcher_api.controllers;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.jfs415.packetwatcher_api.PacketWatcherApi;
+import com.jfs415.packetwatcher_api.PropertiesManager;
 import com.jfs415.packetwatcher_api.auth.AuthenticationRequest;
 import com.jfs415.packetwatcher_api.views.SystemSettingView;
 import com.jfs415.packetwatcher_api.views.collections.SystemSettingsCollectionView;
@@ -16,10 +17,17 @@ import com.jfs415.packetwatcher_api.views.collections.SystemSettingsCollectionVi
 @RestController
 public class SystemController {
 
-	@GetMapping(value = "/system/settings", produces = "application/json")
+	private final PropertiesManager propertiesManager;
+
+	@Autowired
+	public SystemController(PropertiesManager propertiesManager) {
+		this.propertiesManager = propertiesManager;
+	}
+
+	@GetMapping(value = "/system/settings")
 	public ResponseEntity<?> getSystemSettingsView() {
 		try {
-			SystemSettingsCollectionView collection = PacketWatcherApi.getPropertiesManager().toCollectionView();
+			SystemSettingsCollectionView collection = propertiesManager.toCollectionView();
 			return isValidSystemSettingsCollection(collection) ? ResponseEntity.ok(collection) : ResponseEntity.badRequest().build();
 		} catch (Exception e) {
 			return ResponseEntity.notFound().build();
@@ -33,8 +41,8 @@ public class SystemController {
 				return ResponseEntity.badRequest().build();
 			}
 
-			PacketWatcherApi.getPropertiesManager().updateSystemSettingsFromViews(updates);
-			SystemSettingsCollectionView collection = PacketWatcherApi.getPropertiesManager().toCollectionView();
+			propertiesManager.updateSystemSettingsFromViews(updates);
+			SystemSettingsCollectionView collection = propertiesManager.toCollectionView();
 
 			return isValidSystemSettingsCollection(collection) ? ResponseEntity.ok(collection) : ResponseEntity.badRequest().build();
 		} catch (Exception e) {

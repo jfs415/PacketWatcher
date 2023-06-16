@@ -1,4 +1,4 @@
-package com.jfs415.packetwatcher_core.test;
+package com.jfs415.packetwatcher_core.test.unit;
 
 import java.security.ProtectionDomain;
 import java.util.Iterator;
@@ -12,10 +12,13 @@ import org.pcap4j.core.PcapNativeException;
 import org.pcap4j.core.PcapNetworkInterface;
 import org.pcap4j.core.Pcaps;
 import org.pcap4j.packet.factory.PacketFactoryBinderProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Pcap4jTests {
 
 	private static final String HOST_ADDR = "192.168";
+	private static final Logger logger = LoggerFactory.getLogger(Pcap4jTests.class);
 
 	@Test
 	public void testForPrimaryInterface() {
@@ -24,12 +27,12 @@ public class Pcap4jTests {
 			System.out.println(nifs.size());
 			for (PcapNetworkInterface n : nifs) {
 				if (n.isRunning() && n.isUp() && isPrimaryInterface(n.getAddresses())) {
-					System.out.println(n.getAddresses());
+					logger.info(n.getAddresses().toString());
 				}
 			}
 		} catch (PcapNativeException e) {
 			e.printStackTrace();
-			System.out.println("Pcap exception when trying to run network interface collection test");
+			logger.info("Pcap exception when trying to run network interface collection test");
 		}
 	}
 
@@ -58,12 +61,12 @@ public class Pcap4jTests {
 				assert pd != null;
 				assert packetFactoryBinderProvider.getBinder() != null;
 
-				System.out.println("Succeeded in PacketFactoryBinderProvider.getBinder()");
+				logger.info("Succeeded in PacketFactoryBinderProvider.getBinder()");
 			} else {
-				System.out.println("No PacketFactoryBinder is available. Ensure you have the pcap4j-packetfactory-static-2.0.0-alpha.7-SNAPSHOT.jar as a library!");
+				logger.info("No PacketFactoryBinder is available. Ensure you have the pcap4j-packetfactory-static-2.0.0-alpha.7-SNAPSHOT.jar as a library!");
 			}
 		} catch (ServiceConfigurationError e) {
-			System.out.println(e.getClass().getName() + ": " + e.getMessage());
+			logger.info(e.getClass().getName() + ": " + e.getMessage());
 		}
 	}
 

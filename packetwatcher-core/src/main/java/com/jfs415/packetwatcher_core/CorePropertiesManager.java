@@ -12,24 +12,31 @@ import javax.annotation.PreDestroy;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@Component
-public class CorePropertiesManager {
+import static com.jfs415.packetwatcher_core.CorePropertiesManager.CoreProperties.DO_NOT_FAIL_ON_RIR_DOWNLOAD_EXCEPTION;
+import static com.jfs415.packetwatcher_core.CorePropertiesManager.CoreProperties.FLAGGED_RETENTION_DAYS;
+import static com.jfs415.packetwatcher_core.CorePropertiesManager.CoreProperties.LAST_FLAGGED_RECORD_PURGE;
+import static com.jfs415.packetwatcher_core.CorePropertiesManager.CoreProperties.LAST_SHUTDOWN;
+import static com.jfs415.packetwatcher_core.CorePropertiesManager.CoreProperties.LAST_START;
+import static com.jfs415.packetwatcher_core.CorePropertiesManager.CoreProperties.LOCAL_IP_ADDRESS_END;
+import static com.jfs415.packetwatcher_core.CorePropertiesManager.CoreProperties.LOCAL_IP_ADDRESS_START;
 
-	private static final String PROPERTIES_FILENAME = "PacketWatcherCore.properties";
-	
+@Component
+public class CorePropertiesManager implements InitializingBean {
+
+	private static final String PROPERTIES_FILENAME = "packetwatcher-core/PacketWatcherCore.properties";
+
 	private final PacketWatcherCore packetWatcherCore;
-	
+
 	private final Properties properties = new Properties();
-	private final Logger logger = LoggerFactory.getLogger(CorePropertiesManager.class);
-	
+	private static final Logger logger = LoggerFactory.getLogger(CorePropertiesManager.class);
+
 	@Autowired
 	public CorePropertiesManager(PacketWatcherCore packetWatcherCore) {
 		this.packetWatcherCore = packetWatcherCore;
-		
-		startup();
 	}
 
 	@PreDestroy
@@ -70,22 +77,20 @@ public class CorePropertiesManager {
 	 */
 	public boolean canLoadDefaults() {
 		logger.info("Attempting to load default configurations");
-		
+
 		Timestamp now = new Timestamp(System.currentTimeMillis());
 
 		final int flaggedRetentionDays = 180;
-		final int archiveRetentionDays = 180;
 
 		setLastAppStart(now);
 		setLastAppShutdown(now);
 		setLastFlaggedRecordPurge(now);
-		setLastArchiveRecordPurge(now);
 		setFlaggedRetentionDays(flaggedRetentionDays);
-		setArchiveRetentionDays(archiveRetentionDays);
 		setDoNotFailOnRIRDownloadException(true);
+		setLocalIpAddressStart("192.168.1.1");
+		setLocalIpAddressEnd("192.168.1.255");
 
-		return getLastAppStart().equals(now) && getLastFlaggedRecordPurge().equals(now) && getLastAppShutdown().equals(now) 
-		       && getFlaggedRetentionDays() == flaggedRetentionDays && getArchiveRetentionDays() == archiveRetentionDays;
+		return getLastAppStart().equals(now) && getLastFlaggedRecordPurge().equals(now) && getLastAppShutdown().equals(now) && getFlaggedRetentionDays() == flaggedRetentionDays;
 	}
 
 	public boolean refresh() {
@@ -109,72 +114,78 @@ public class CorePropertiesManager {
 	}
 
 	public Timestamp getLastAppStart() {
-		return new Timestamp(Long.parseLong(properties.getProperty("last_start")));
+		return new Timestamp(Long.parseLong(properties.getProperty(LAST_START.getName())));
 	}
 
 	public void setLastAppStart(Timestamp lastAppStart) {
-		properties.setProperty("last_start", String.valueOf(lastAppStart.getTime()));
+		properties.setProperty(LAST_START.getName(), String.valueOf(lastAppStart.getTime()));
 	}
 
 	public Timestamp getLastAppShutdown() {
-		String lastShutdown = properties.getProperty("last_shutdown");
+		String lastShutdown = properties.getProperty(LAST_SHUTDOWN.getName());
 		return lastShutdown.isBlank() ? null : new Timestamp(Long.parseLong(lastShutdown));
 	}
 
 	public void setLastAppShutdown(Timestamp lastAppShutdown) {
-		properties.setProperty("last_shutdown", lastAppShutdown == null ? "" : String.valueOf(lastAppShutdown.getTime()));
+		properties.setProperty(LAST_SHUTDOWN.getName(), lastAppShutdown == null ? "" : String.valueOf(lastAppShutdown.getTime()));
 	}
 
 	public int getFlaggedRetentionDays() {
-		return Integer.parseInt(properties.getProperty("flagged_retention_days"));
+		return Integer.parseInt(properties.getProperty(FLAGGED_RETENTION_DAYS.getName()));
 	}
 
 	public void setFlaggedRetentionDays(int flaggedRetentionDays) {
-		properties.setProperty("flagged_retention_days", String.valueOf(flaggedRetentionDays));
-	}
-
-	public int getArchiveRetentionDays() {
-		return Integer.parseInt(properties.getProperty("archive_retention_days"));
-	}
-
-	public void setArchiveRetentionDays(int archiveRetentionDays) {
-		properties.setProperty("archive_retention_days", String.valueOf(archiveRetentionDays));
+		properties.setProperty(FLAGGED_RETENTION_DAYS.getName(), String.valueOf(flaggedRetentionDays));
 	}
 
 	public Timestamp getLastFlaggedRecordPurge() {
-		String lastFlaggedRecordPurge = properties.getProperty("last_flagged_record_purge");
+		String lastFlaggedRecordPurge = properties.getProperty(LAST_FLAGGED_RECORD_PURGE.getName());
 		return lastFlaggedRecordPurge.isBlank() ? null : new Timestamp(Long.parseLong(lastFlaggedRecordPurge));
 	}
 
 	public void setLastFlaggedRecordPurge(Timestamp lastFlaggedRecordPurge) {
-		properties.setProperty("last_flagged_record_purge", lastFlaggedRecordPurge == null ? null : String.valueOf(lastFlaggedRecordPurge.getTime()));
-	}
-
-	public Timestamp getLastArchiveRecordPurge() {
-		String lastArchivePurge = properties.getProperty("last_record_Archive_purge");
-		return lastArchivePurge.isBlank() ? null : new Timestamp(Long.parseLong(lastArchivePurge));
-	}
-
-	public void setLastArchiveRecordPurge(Timestamp lastRecordArchivePurge) {
-		properties.setProperty("last_record_Archive_purge", lastRecordArchivePurge == null ? null : String.valueOf(lastRecordArchivePurge.getTime()));
+		properties.setProperty(LAST_FLAGGED_RECORD_PURGE.getName(), lastFlaggedRecordPurge == null ? null : String.valueOf(lastFlaggedRecordPurge.getTime()));
 	}
 
 	public boolean getDoNotFailOnRIRDownloadException() {
-		return Boolean.parseBoolean(properties.getProperty("do_not_fail_on_rir_download_exception"));
+		return Boolean.parseBoolean(properties.getProperty(DO_NOT_FAIL_ON_RIR_DOWNLOAD_EXCEPTION.getName()));
 	}
 
 	public void setDoNotFailOnRIRDownloadException(boolean doNotFailOnRIRDownloadException) {
-		properties.setProperty("do_not_fail_on_rir_download_exception", String.valueOf(doNotFailOnRIRDownloadException));
+		properties.setProperty(DO_NOT_FAIL_ON_RIR_DOWNLOAD_EXCEPTION.getName(), String.valueOf(doNotFailOnRIRDownloadException));
+	}
+
+	public String getLocalIpAddressStart() {
+		return properties.getProperty(LOCAL_IP_ADDRESS_START.getName());
+	}
+
+	public void setLocalIpAddressStart(String localIpAddressStart) {
+		properties.setProperty(LOCAL_IP_ADDRESS_START.getName(), localIpAddressStart);
+	}
+
+	public String getLocalIpAddressEnd() {
+		return properties.getProperty(LOCAL_IP_ADDRESS_END.getName());
+	}
+
+	public void setLocalIpAddressEnd(String localIpAddressEnd) {
+		properties.setProperty(LOCAL_IP_ADDRESS_END.getName(), localIpAddressEnd);
 	}
 	
-	public void startup() {
+	private void attemptToLoadDefaults() {
+		if (!canLoadDefaults()) {
+			packetWatcherCore.fail("Could not load config defaults, application is exiting");
+		}
+	}
+
+	@Override
+	public void afterPropertiesSet() {
 		try {
 			load();
-			
+
 			if (properties.isEmpty()) {
 				attemptToLoadDefaults();
 			}
-			
+
 			logger.debug("PacketWatcherCore config file loaded");
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -185,10 +196,25 @@ public class CorePropertiesManager {
 			}
 		}
 	}
-	
-	private void attemptToLoadDefaults() {
-		if (!canLoadDefaults()) {
-			packetWatcherCore.fail("Could not load config defaults, application is exiting");
+
+	protected enum CoreProperties {
+
+		LAST_START("last_start"),
+		DO_NOT_FAIL_ON_RIR_DOWNLOAD_EXCEPTION("do_not_fail_on_rir_exception"),
+		FLAGGED_RETENTION_DAYS("flagged_retention_days"),
+		LAST_SHUTDOWN("last_shutdown"),
+		LAST_FLAGGED_RECORD_PURGE("last_flagged_record_purge"),
+		LOCAL_IP_ADDRESS_START("ip_address_start"),
+		LOCAL_IP_ADDRESS_END("ip_address_end");
+
+		private final String name;
+
+		CoreProperties(String name) {
+			this.name = name;
+		}
+
+		private String getName() {
+			return name;
 		}
 	}
 

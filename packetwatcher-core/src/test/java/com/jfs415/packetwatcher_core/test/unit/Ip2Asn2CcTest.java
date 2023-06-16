@@ -1,4 +1,4 @@
-package com.jfs415.packetwatcher_core.test;
+package com.jfs415.packetwatcher_core.test.unit;
 
 import java.util.EnumSet;
 import java.util.List;
@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import com.axlabs.ip2asn2cc.Ip2Asn2Cc;
 import com.axlabs.ip2asn2cc.exception.RIRNotDownloadedException;
 import com.jfs415.packetwatcher_core.FlaggedCountries;
-import com.jfs415.packetwatcher_core.PacketWatcherCore;
 
 public class Ip2Asn2CcTest {
 
@@ -42,8 +41,8 @@ public class Ip2Asn2CcTest {
 			ipLookupUtility = new Ip2Asn2Cc(flaggedCountries);
 		} catch (RIRNotDownloadedException e) {
 			e.printStackTrace();
-			PacketWatcherCore.fail("Encountered a fatal exception when creating ipLookupUtility");
 		}
+
 		return ipLookupUtility;
 	}
 

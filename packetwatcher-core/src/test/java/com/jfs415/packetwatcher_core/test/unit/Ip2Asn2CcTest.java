@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 
 import com.axlabs.ip2asn2cc.Ip2Asn2Cc;
 import com.axlabs.ip2asn2cc.exception.RIRNotDownloadedException;
-import com.jfs415.packetwatcher_core.FlaggedCountries;
 
 public class Ip2Asn2CcTest {
 
@@ -44,6 +43,26 @@ public class Ip2Asn2CcTest {
 		}
 
 		return ipLookupUtility;
+	}
+
+	private enum FlaggedCountries {
+
+		CHINA("CN"),
+		RUSSIA("RU"),
+		BELARUS("BY"),
+		IRAN("IR"),
+		CUBA("CU");
+
+		private final String countryCode;
+
+		FlaggedCountries(String countryCode) {
+			this.countryCode = countryCode;
+		}
+
+		public String getCountryCode() {
+			return countryCode;
+		}
+
 	}
 
 }

@@ -4,38 +4,23 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.jfs415.packetwatcher_core.CorePropertiesManager;
 import com.jfs415.packetwatcher_core.PacketWatcherCore;
 import com.jfs415.packetwatcher_core.filter.FilterRulesManager;
 
 @SpringBootTest(classes = PacketWatcherCore.class)
 public class FilterRuleManagerTest {
-
+	
+	private final FilterRulesManager filterRulesManager;
+	
 	@Autowired
-	private CorePropertiesManager corePropertiesManager;
-	@Autowired
-	private FilterRulesManager filterRulesManager;
-
-	//@BeforeEach
-	//public void init(@Mock PacketWatcherCore packetWatcherCore) {
-	//	corePropertiesManager = new CorePropertiesManager(packetWatcherCore);
-	//	corePropertiesManager.setLocalIpAddressStart("192.168.1.1");
-	//	corePropertiesManager.setLocalIpAddressEnd("192.168.1.255");
-	//	
-	//	filterRulesManager = new FilterRulesManager(corePropertiesManager);
-	//}
-
-	@Test
-	public void verifyNonNull() {
-		assert filterRulesManager != null;
+	public FilterRuleManagerTest(FilterRulesManager filterRulesManager) {
+		this.filterRulesManager = filterRulesManager;
 	}
 
 	@Test
 	public void ipRangeInclusiveTests() {
 
 		assert filterRulesManager != null;
-		assert corePropertiesManager.getLocalIpAddressStart() != null;
-		assert corePropertiesManager.getLocalIpAddressEnd() != null;
 
 		//Tests outside range
 		assert !filterRulesManager.isIpInLocalRange("0.0.0.0");

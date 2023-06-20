@@ -4,15 +4,18 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.jfs415.packetwatcher_core.PacketWatcherCore;
 import com.jfs415.packetwatcher_core.model.packets.FlaggedPacketRecord;
-import com.jfs415.packetwatcher_core.services.PacketService;
+import com.jfs415.packetwatcher_core.model.services.PacketService;
 
-@SpringBootTest(classes = PacketWatcherCore.class)
+@SpringBootTest()
 public class PacketTests {
 
+	private final PacketService packetService;
+
 	@Autowired
-	private PacketService packetService;
+	public PacketTests(PacketService packetService) {
+		this.packetService = packetService;
+	}
 
 	@Test
 	public void addTestPacket() {

@@ -12,15 +12,17 @@ import org.pcap4j.packet.TcpPacket.TcpHeader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.axlabs.ip2asn2cc.Ip2Asn2Cc;
 import com.axlabs.ip2asn2cc.exception.RIRNotDownloadedException;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.jfs415.packetwatcher_core.PacketWatcherCore;
 import com.jfs415.packetwatcher_core.model.packets.FlaggedPacketRecord;
 import com.jfs415.packetwatcher_core.model.packets.PacketRecordKey;
-import com.jfs415.packetwatcher_core.services.PacketService;
+import com.jfs415.packetwatcher_core.model.services.PacketService;
 
 @JsonSerialize(using = FilterOptionsDataSerializer.class)
 @Component
@@ -30,20 +32,28 @@ public class FilterOptionsManager {
 	private final EnumMap<FilterOption, List<IFilter<?>>> filterOptions = new EnumMap<>(FilterOption.class);
 
 	@JsonIgnore
-	private static final Logger logger = LoggerFactory.getLogger(FilterOptionsManager.class);
+	private final PacketService packetService;
+	
+	@JsonIgnore
+	private final PacketWatcherCore packetWatcherCore;
 
 	@JsonIgnore
-	private PacketService packetService;
+	private static final Logger logger = LoggerFactory.getLogger(FilterOptionsManager.class);
 
 	@JsonIgnore
 	private Ip2Asn2Cc ipLookupUtility;
 
 	@JsonIgnore
 	private boolean tracksCountryCode = false;
+	
+	@JsonIgnore
+	@Value("${packetwatcher-core.survive-rir-exception}")
+	private boolean surviveRirException;
 
 	@Autowired
-	private FilterOptionsManager(PacketService packetService) {
+	private FilterOptionsManager(PacketService packetService, PacketWatcherCore packetWatcherCore) {
 		this.packetService = packetService;
+		this.packetWatcherCore = packetWatcherCore;
 	}
 
 	protected EnumMap<FilterOption, List<IFilter<?>>> getOptions() { //Protected to provide visibility within package
@@ -195,7 +205,9 @@ public class FilterOptionsManager {
 
 			ipLookupUtility = new Ip2Asn2Cc(filterOptions.get(FilterOption.COUNTRY).stream().flatMap(f -> ((FilterSet<String>) f).getDataSet().stream()).collect(Collectors.toList()));
 		} catch (RIRNotDownloadedException e) {
-			e.printStackTrace();
+			if (!surviveRirException) {
+				packetWatcherCore.fail("Encountered a fatal exception when creating ipLookupUtility");
+			}
 		}
 	}
 

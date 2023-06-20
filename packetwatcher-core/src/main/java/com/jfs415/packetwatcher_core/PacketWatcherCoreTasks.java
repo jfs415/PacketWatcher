@@ -9,18 +9,19 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import com.jfs415.packetwatcher_core.model.packets.FlaggedPacketRecord;
-import com.jfs415.packetwatcher_core.services.PacketService;
+import com.jfs415.packetwatcher_core.model.services.PacketService;
 
 @Component
 public class PacketWatcherCoreTasks {
-	
-	private final Logger logger = LoggerFactory.getLogger(PacketWatcherCoreTasks.class);
+
+	private static final Logger logger = LoggerFactory.getLogger(PacketWatcherCoreTasks.class);
+
+	private final PacketService packetService;
 
 	@Autowired
-	private PacketService packetService;
-
-	@Autowired
-	private CorePropertiesManager corePropertiesManager;
+	public PacketWatcherCoreTasks(PacketService packetService) {
+		this.packetService = packetService;
+	}
 
 	@Scheduled(fixedDelay = 33, timeUnit = TimeUnit.SECONDS)
 	public void processSaveQueues() {
@@ -31,12 +32,6 @@ public class PacketWatcherCoreTasks {
 	public void createTestPacket() {
 		packetService.savePacketRecord(FlaggedPacketRecord.createTestPacket());
 		logger.debug("Created test packet");
-	}
-
-	@Scheduled(fixedDelay = 1, timeUnit = TimeUnit.MINUTES)
-	public void refreshConfig() {
-		corePropertiesManager.refresh();
-		logger.debug("PacketWatcher config has been refreshed");
 	}
 
 }

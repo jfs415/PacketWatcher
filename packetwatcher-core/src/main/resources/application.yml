@@ -1,0 +1,34 @@
+#Spring database settings
+spring:
+  application:
+    name: Packetwatcher-Core
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${PW_DB_HOST:localhost}:${PW_DB_PORT:3306}/packetwatcher
+    username: ${PW_DB_USERNAME:username}
+    password: ${PW_DB_PASSWORD:password}
+  sql:
+    init:
+      platform: ${PW_DB_PLATFORM:mysql}
+      mode: ${PW_DB_MODE:always}
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    generate-ddl: true
+    hibernate:
+      ddl-auto: update
+    database: ${PW_DB_PLATFORM:mysql}
+
+server:
+  shutdown: graceful
+
+logging:
+  level:
+    com: TRACE
+    org:
+      springframework: TRACE
+      
+packetwatcher-core:
+  survive-rir-exception: true
+  local-ip-range-start: 192.168.1.1
+  local-ip-range-end: 192.168.1.255
+  flagged-packet-retention-days: 90

@@ -20,6 +20,7 @@ import org.pcap4j.packet.TcpPacket.TcpHeader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.yaml.snakeyaml.Yaml;
@@ -29,7 +30,6 @@ import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
-import com.jfs415.packetwatcher_core.CorePropertiesManager;
 
 @Component
 public class FilterRulesManager implements PacketListener {
@@ -38,17 +38,20 @@ public class FilterRulesManager implements PacketListener {
 	private static final Logger logger = LoggerFactory.getLogger(FilterRulesManager.class);
 
 	private final EnumMap<FilterRule, FilterConfigurationManager> configuration = new EnumMap<>(FilterRule.class);
-
-	protected final CorePropertiesManager corePropertiesManager;
 	private final FilterConfigurationManager filterConfigurationManager;
 	private final RangedFilter<String> localNetRange;
 
+	@Value("${packetwatcher-core.local-ip-range-start}")
+	private String localIpRangeStart;
+
+	@Value("${packetwatcher-core.local-ip-range-end}")
+	private String localIpRangeEnd;
+
 	@Autowired
-	public FilterRulesManager(CorePropertiesManager corePropertiesManager, FilterConfigurationManager filterConfigurationManager) {
-		this.corePropertiesManager = corePropertiesManager;
-		this.localNetRange = new RangedFilter<>(corePropertiesManager.getLocalIpAddressStart(), corePropertiesManager.getLocalIpAddressEnd(), new IpComparator());
+	public FilterRulesManager(FilterConfigurationManager filterConfigurationManager) {
+		this.localNetRange = new RangedFilter<>(localIpRangeStart, localIpRangeEnd, new IpComparator());
 		this.filterConfigurationManager = filterConfigurationManager;
-		
+
 		try {
 			load();
 		} catch (IOException e) {
@@ -68,6 +71,8 @@ public class FilterRulesManager implements PacketListener {
 
 	@Override
 	public void gotPacket(PcapPacket packet) {
+		System.out.println("GOT PACKET");
+		
 		if (packet.getPacket() instanceof EthernetPacket && isTcpPacket(packet)) {
 			TcpHeader tcpHeader = ((TcpPacket) packet.getPacket().getPayload().getPayload()).getHeader();
 
@@ -140,7 +145,7 @@ public class FilterRulesManager implements PacketListener {
 			FilterRule filterRule = FilterRule.valueOf(rule);
 			LinkedHashMap<String, Object> configurationManagerData = (LinkedHashMap<String, Object>) filterConfigurations; //Map of <FilterConfiguration, FilterOptions>
 			filterConfigurationManager.load(configurationManagerData);
-			
+
 			configuration.put(filterRule, filterConfigurationManager);
 		});
 

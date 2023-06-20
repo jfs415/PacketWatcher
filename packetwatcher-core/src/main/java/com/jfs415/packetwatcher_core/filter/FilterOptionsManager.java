@@ -195,6 +195,10 @@ public class FilterOptionsManager {
 
 	@SuppressWarnings("unchecked")
 	private void setupLookupUtility() {
+		if (ipLookupUtility != null) {
+			return;
+		}
+		
 		try {
 			List<IFilter<?>> countryList = filterOptions.get(FilterOption.COUNTRY);
 			if (countryList == null || countryList.isEmpty()) {

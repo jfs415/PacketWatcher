@@ -71,8 +71,6 @@ public class FilterRulesManager implements PacketListener {
 
 	@Override
 	public void gotPacket(PcapPacket packet) {
-		System.out.println("GOT PACKET");
-		
 		if (packet.getPacket() instanceof EthernetPacket && isTcpPacket(packet)) {
 			TcpHeader tcpHeader = ((TcpPacket) packet.getPacket().getPayload().getPayload()).getHeader();
 

@@ -2,8 +2,6 @@ package com.jfs415.packetwatcher_api;
 
 import java.util.EnumSet;
 
-import javax.persistence.Persistence;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -24,21 +22,8 @@ public class PacketWatcherApi extends SpringBootServletInitializer {
 	private final Logger logger = LoggerFactory.getLogger(PacketWatcherApi.class);
 	private static final EnumSet<Authority> authoritySet = EnumSet.allOf(Authority.class);
 
-	public PacketWatcherApi() {
-		try {
-			onInit();
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail("Encountered an exception creating the PacketWatcherAPI Instance");
-		}
-	}
-
 	public static EnumSet<Authority> getAuthoritySet() {
 		return authoritySet;
-	}
-
-	private void onInit() {
-		Persistence.createEntityManagerFactory("packetwatcher-api").createEntityManager();
 	}
 
 	public void fail(String message) {

@@ -15,23 +15,15 @@ public class PacketWatcherApiTasks {
 
 	private final Logger logger = LoggerFactory.getLogger(PacketWatcherApiTasks.class);
 	private final UserService userService;
-	private final PropertiesManager propertiesManager;
 
 	@Autowired
-	public PacketWatcherApiTasks(UserService userService, PropertiesManager propertiesManager) {
+	public PacketWatcherApiTasks(UserService userService) {
 		this.userService = userService;
-		this.propertiesManager = propertiesManager;
 	}
 
 	@Scheduled(fixedDelay = 1, timeUnit = TimeUnit.MINUTES)
 	public void refreshDashboard() {
 		//TODO: implement
-	}
-
-	@Scheduled(fixedDelay = 1, timeUnit = TimeUnit.MINUTES)
-	public void refreshConfig() {
-		propertiesManager.refresh();
-		logger.debug("PacketWatcher config has been refreshed");
 	}
 
 	@Scheduled(fixedDelay = 5, timeUnit = TimeUnit.MINUTES)

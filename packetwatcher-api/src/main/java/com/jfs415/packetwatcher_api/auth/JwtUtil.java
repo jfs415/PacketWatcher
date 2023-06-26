@@ -19,7 +19,7 @@ public class JwtUtil implements Serializable {
 
 	public static final long JWT_TOKEN_VALIDITY = 15 * 60;
 	
-	@Value("${jwt.secret}")
+	@Value("${packetwatcher-api.jwt.secret}")
 	private String SECRET_KEY = "secret";
 
 	public String getUsername(String token) {

@@ -1,6 +1,6 @@
 package com.jfs415.packetwatcher_api.auth;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,20 +13,14 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-import com.jfs415.packetwatcher_api.PropertiesManager;
-
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
-	private final PropertiesManager propertiesManager;
-
 	private PasswordEncoder encoder;
-
-	@Autowired
-	public SecurityConfig(PropertiesManager propertiesManager) {
-		this.propertiesManager = propertiesManager;
-	}
+	
+	@Value("${packetwatcher-api.password-strength}")
+	private int passwordStrength;
 
 	@Bean
 	public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
@@ -36,7 +30,7 @@ public class SecurityConfig {
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		if (encoder == null) {
-			encoder = new BCryptPasswordEncoder(propertiesManager.getPasswordStrength());
+			encoder = new BCryptPasswordEncoder(passwordStrength);
 		}
 
 		return encoder;

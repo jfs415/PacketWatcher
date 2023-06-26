@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.jfs415.packetwatcher_api.views.collections.CapturedPacketsCollectionView;
 import com.jfs415.packetwatcher_api.views.FlaggedPacketView;
-import com.jfs415.packetwatcher_core.services.PacketService;
+import com.jfs415.packetwatcher_core.model.services.PacketService;
 
 @RestController
 public class PacketsController {

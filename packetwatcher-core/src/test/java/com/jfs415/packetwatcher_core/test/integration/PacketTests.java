@@ -5,21 +5,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.jfs415.packetwatcher_core.model.packets.FlaggedPacketRecord;
-import com.jfs415.packetwatcher_core.model.services.PacketService;
+import com.jfs415.packetwatcher_core.model.services.PacketServiceImpl;
 
 @SpringBootTest()
-public class PacketTests {
+class PacketTests {
 
-	private final PacketService packetService;
+    private final PacketServiceImpl packetService;
 
-	@Autowired
-	public PacketTests(PacketService packetService) {
-		this.packetService = packetService;
-	}
+    @Autowired
+    public PacketTests(PacketServiceImpl packetService) {
+        this.packetService = packetService;
+    }
 
-	@Test
-	public void addTestPacket() {
-		packetService.savePacketRecord(FlaggedPacketRecord.createTestPacket());
-	}
+    @Test
+    void addTestPacket() {
+        packetService.savePacketRecord(FlaggedPacketRecord.createTestPacket());
+    }
 
 }

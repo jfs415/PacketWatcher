@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.jfs415.packetwatcher_core.PacketWatcherCore;
 import com.jfs415.packetwatcher_core.model.packets.FlaggedPacketRecord;
 import com.jfs415.packetwatcher_core.model.packets.PacketRecordKey;
-import com.jfs415.packetwatcher_core.model.services.PacketService;
+import com.jfs415.packetwatcher_core.model.services.PacketServiceImpl;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -34,7 +34,7 @@ public class FilterOptionsManager {
     private final EnumMap<FilterOption, List<IFilter<?>>> filterOptions = new EnumMap<>(FilterOption.class);
 
     @JsonIgnore
-    private final PacketService packetService;
+    private final PacketServiceImpl packetService;
 
     @JsonIgnore
     private final PacketWatcherCore packetWatcherCore;
@@ -53,7 +53,7 @@ public class FilterOptionsManager {
     private boolean surviveRirException;
 
     @Autowired
-    private FilterOptionsManager(PacketService packetService, PacketWatcherCore packetWatcherCore) {
+    private FilterOptionsManager(PacketServiceImpl packetService, PacketWatcherCore packetWatcherCore) {
         this.packetService = packetService;
         this.packetWatcherCore = packetWatcherCore;
     }

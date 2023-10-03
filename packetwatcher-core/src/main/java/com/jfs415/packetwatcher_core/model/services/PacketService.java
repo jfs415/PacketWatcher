@@ -1,97 +1,22 @@
 package com.jfs415.packetwatcher_core.model.services;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.ArrayList;
+import com.jfs415.packetwatcher_core.model.packets.FlaggedPacketRecord;
+
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+public interface PacketService {
 
-import com.jfs415.packetwatcher_core.model.packets.FlaggedPacketRecord;
-import com.jfs415.packetwatcher_core.model.repositories.FlaggedPacketRepository;
+    void savePacketRecord(FlaggedPacketRecord packetRecord);
 
-@Service
-public class PacketService {
-	
-	private final FlaggedPacketRepository flaggedPacketRepo;
-	
-	private static final Logger logger = LoggerFactory.getLogger(PacketService.class);
+    void addToSaveQueue(FlaggedPacketRecord packetRecord);
 
-	private final ArrayList<FlaggedPacketRecord> flaggedPacketSaveQueue = new ArrayList<>();
-	
-	@Value("${packetwatcher-core.flagged-packet-retention-days}")
-	private int flaggedPacketRetentionDays; //TODO implement retention period removal query
-	
-	@Autowired
-	public PacketService(FlaggedPacketRepository flaggedPacketRepo) {
-		this.flaggedPacketRepo = flaggedPacketRepo;
-	}
+    void flushSaveQueues();
 
-	@Transactional
-	public void savePacketRecord(FlaggedPacketRecord record) {
-		validateRecord(record);
-		flaggedPacketRepo.saveAndFlush(record);
-	}
+    void addBatchToFlaggedPacketSaveQueue(List<FlaggedPacketRecord> packetRecords);
 
-	private void processFlaggedPacketSaveQueue() {
-		ArrayList<FlaggedPacketRecord> flaggedSaveQueueCopy;
+    List<FlaggedPacketRecord> getAllFlaggedPacketRecords();
 
-		synchronized (flaggedPacketSaveQueue) {
-			flaggedSaveQueueCopy = new ArrayList<>(flaggedPacketSaveQueue);
-			flaggedPacketSaveQueue.clear();
-		}
+    List<FlaggedPacketRecord> getLast30FlaggedPacketRecords();
 
-		int size = flaggedSaveQueueCopy.size();
-		flaggedPacketRepo.saveAllAndFlush(flaggedSaveQueueCopy);
-		logger.debug("Saved " + size + " flagged packets from the queue");
-	}
-
-	@Transactional
-	public void flushSaveQueues() {
-		processFlaggedPacketSaveQueue();
-	}
-
-	public void addToSaveQueue(FlaggedPacketRecord record) {
-		synchronized (flaggedPacketSaveQueue) {
-			flaggedPacketSaveQueue.add(record);
-		}
-	}
-
-	public void addBatchToFlaggedPacketSaveQueue(List<FlaggedPacketRecord> records) {
-		validateNotNullOrEmpty(records);
-
-		synchronized (flaggedPacketSaveQueue) {
-			flaggedPacketSaveQueue.addAll(records);
-		}
-	}
-
-	public List<FlaggedPacketRecord> getAllFlaggedPacketRecords() {
-		return flaggedPacketRepo.findAll();
-	}
-
-	public List<FlaggedPacketRecord> getLast30FlaggedPacketRecords() {
-		return flaggedPacketRepo.findTop30ByOrderByKey_TimestampDesc();
-	}
-
-	private long convertLocalDateTimeToEpochSecond(LocalDateTime localDateTime, int offset) {
-		return localDateTime.minusDays(offset).atZone(ZoneId.systemDefault()).toEpochSecond();
-	}
-
-	private void validateNotNullOrEmpty(List<FlaggedPacketRecord> records) {
-		if (records == null || records.isEmpty()) {
-			throw new IllegalArgumentException("PacketRecord Lists cannot be null or empty!");
-		}
-	}
-
-	public void validateRecord(FlaggedPacketRecord record) {
-		if (record == null) {
-			throw new IllegalArgumentException("The PacketRecord cannot be null!");
-		}
-	}
-
+    void validateRecord(FlaggedPacketRecord packetRecord);
 }

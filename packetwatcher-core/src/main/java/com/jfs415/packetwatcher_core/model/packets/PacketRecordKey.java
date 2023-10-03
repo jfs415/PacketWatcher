@@ -1,10 +1,18 @@
 package com.jfs415.packetwatcher_core.model.packets;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import javax.persistence.Column;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
-import javax.persistence.Column;
-
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class PacketRecordKey implements Serializable {
 
 	@Column(name = "timestamp")
@@ -21,58 +29,6 @@ public class PacketRecordKey implements Serializable {
 	
 	@Column(name = "source_port")
 	public String sourcePort;
-	
-	public PacketRecordKey() {
-
-	}
-
-	public PacketRecordKey(Timestamp timestamp, String destinationIp, String destinationPort, String sourceHost, String sourcePort) {
-		this.timestamp = timestamp;
-		this.destinationIp = destinationIp;
-		this.destinationPort = destinationPort;
-		this.sourceHost = sourceHost;
-		this.sourcePort = sourcePort;
-	}
-
-	public Timestamp getTimestamp() {
-		return this.timestamp;
-	}
-
-	public void setTimestamp(Timestamp timestamp) {
-		this.timestamp = timestamp;
-	}
-
-	public String getDestinationPort() {
-		return destinationPort;
-	}
-
-	public void setDestinationPort(String destinationPort) {
-		this.destinationPort = destinationPort;
-	}
-
-	public String getDestinationIp() {
-		return destinationIp;
-	}
-
-	public void setDestinationIp(String destinationIp) {
-		this.destinationIp = destinationIp;
-	}
-	
-	public void setSourceHost(String sourceHost) {
-		this.sourceHost = sourceHost;
-	}
-	
-	public String getSourceHost() {
-		return this.sourceHost;
-	}
-
-	public void setSourcePort(String sourcePort) {
-		this.sourceHost = sourceHost;
-	}
-
-	public String getSourcePort() {
-		return this.sourcePort;
-	}
 
 	@Override
 	public String toString() {

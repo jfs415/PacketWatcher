@@ -16,81 +16,81 @@ import java.util.List;
 
 @Service
 public class PacketServiceImpl implements PacketService {
-	
-	private final FlaggedPacketRepository flaggedPacketRepo;
-	
-	private static final Logger logger = LoggerFactory.getLogger(PacketServiceImpl.class);
 
-	private final ArrayList<FlaggedPacketRecord> flaggedPacketSaveQueue = new ArrayList<>();
-	
-	@Value("${packetwatcher-core.flagged-packet-retention-days}")
-	private int flaggedPacketRetentionDays; //TODO implement retention period removal query
-	
-	@Autowired
-	public PacketServiceImpl(FlaggedPacketRepository flaggedPacketRepo) {
-		this.flaggedPacketRepo = flaggedPacketRepo;
-	}
+    private final FlaggedPacketRepository flaggedPacketRepo;
 
-	@Transactional
-	public void savePacketRecord(FlaggedPacketRecord packetRecord) {
-		validateRecord(packetRecord);
-		flaggedPacketRepo.saveAndFlush(packetRecord);
-	}
+    private static final Logger logger = LoggerFactory.getLogger(PacketServiceImpl.class);
 
-	private void processFlaggedPacketSaveQueue() {
-		ArrayList<FlaggedPacketRecord> flaggedSaveQueueCopy;
+    private final ArrayList<FlaggedPacketRecord> flaggedPacketSaveQueue = new ArrayList<>();
 
-		synchronized (flaggedPacketSaveQueue) {
-			flaggedSaveQueueCopy = new ArrayList<>(flaggedPacketSaveQueue);
-			flaggedPacketSaveQueue.clear();
-		}
+    @Value("${packetwatcher-core.flagged-packet-retention-days}")
+    private int flaggedPacketRetentionDays; //TODO implement retention period removal query
 
-		int size = flaggedSaveQueueCopy.size();
-		flaggedPacketRepo.saveAllAndFlush(flaggedSaveQueueCopy);
-		logger.debug("Saved " + size + " flagged packets from the queue");
-	}
+    @Autowired
+    public PacketServiceImpl(FlaggedPacketRepository flaggedPacketRepo) {
+        this.flaggedPacketRepo = flaggedPacketRepo;
+    }
 
-	@Transactional
-	public void flushSaveQueues() {
-		processFlaggedPacketSaveQueue();
-	}
+    @Transactional
+    public void savePacketRecord(FlaggedPacketRecord packetRecord) {
+        validateRecord(packetRecord);
+        flaggedPacketRepo.saveAndFlush(packetRecord);
+    }
 
-	public void addToSaveQueue(FlaggedPacketRecord packetRecord) {
-		synchronized (flaggedPacketSaveQueue) {
-			flaggedPacketSaveQueue.add(packetRecord);
-		}
-	}
+    private void processFlaggedPacketSaveQueue() {
+        ArrayList<FlaggedPacketRecord> flaggedSaveQueueCopy;
 
-	public void addBatchToFlaggedPacketSaveQueue(List<FlaggedPacketRecord> packetRecords) {
-		validateNotNullOrEmpty(packetRecords);
+        synchronized (flaggedPacketSaveQueue) {
+            flaggedSaveQueueCopy = new ArrayList<>(flaggedPacketSaveQueue);
+            flaggedPacketSaveQueue.clear();
+        }
 
-		synchronized (flaggedPacketSaveQueue) {
-			flaggedPacketSaveQueue.addAll(packetRecords);
-		}
-	}
+        int size = flaggedSaveQueueCopy.size();
+        flaggedPacketRepo.saveAllAndFlush(flaggedSaveQueueCopy);
+        logger.debug("Saved " + size + " flagged packets from the queue");
+    }
 
-	public List<FlaggedPacketRecord> getAllFlaggedPacketRecords() {
-		return flaggedPacketRepo.findAll();
-	}
+    @Transactional
+    public void flushSaveQueues() {
+        processFlaggedPacketSaveQueue();
+    }
 
-	public List<FlaggedPacketRecord> getLast30FlaggedPacketRecords() {
-		return flaggedPacketRepo.findTop30ByOrderByKey_TimestampDesc();
-	}
+    public void addToSaveQueue(FlaggedPacketRecord packetRecord) {
+        synchronized (flaggedPacketSaveQueue) {
+            flaggedPacketSaveQueue.add(packetRecord);
+        }
+    }
 
-	private long convertLocalDateTimeToEpochSecond(LocalDateTime localDateTime, int offset) {
-		return localDateTime.minusDays(offset).atZone(ZoneId.systemDefault()).toEpochSecond();
-	}
+    public void addBatchToFlaggedPacketSaveQueue(List<FlaggedPacketRecord> packetRecords) {
+        validateNotNullOrEmpty(packetRecords);
 
-	private void validateNotNullOrEmpty(List<FlaggedPacketRecord> records) {
-		if (records == null || records.isEmpty()) {
-			throw new IllegalArgumentException("PacketRecord Lists cannot be null or empty!");
-		}
-	}
+        synchronized (flaggedPacketSaveQueue) {
+            flaggedPacketSaveQueue.addAll(packetRecords);
+        }
+    }
 
-	public void validateRecord(FlaggedPacketRecord packetRecord) {
-		if (packetRecord == null) {
-			throw new IllegalArgumentException("The PacketRecord cannot be null!");
-		}
-	}
+    public List<FlaggedPacketRecord> getAllFlaggedPacketRecords() {
+        return flaggedPacketRepo.findAll();
+    }
+
+    public List<FlaggedPacketRecord> getLast30FlaggedPacketRecords() {
+        return flaggedPacketRepo.findTop30ByOrderByKey_TimestampDesc();
+    }
+
+    private long convertLocalDateTimeToEpochSecond(LocalDateTime localDateTime, int offset) {
+        return localDateTime.minusDays(offset).atZone(ZoneId.systemDefault()).toEpochSecond();
+    }
+
+    private void validateNotNullOrEmpty(List<FlaggedPacketRecord> records) {
+        if (records == null || records.isEmpty()) {
+            throw new IllegalArgumentException("PacketRecord Lists cannot be null or empty!");
+        }
+    }
+
+    public void validateRecord(FlaggedPacketRecord packetRecord) {
+        if (packetRecord == null) {
+            throw new IllegalArgumentException("The PacketRecord cannot be null!");
+        }
+    }
 
 }

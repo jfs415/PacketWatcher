@@ -12,15 +12,15 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication
 public class PacketWatcherCore {
 
-	private final Logger logger = LoggerFactory.getLogger(PacketWatcherCore.class);
+    private final Logger logger = LoggerFactory.getLogger(PacketWatcherCore.class);
 
-	public void fail(String message) {
-		logger.error(message);
-		System.exit(1);
-	}
+    public void fail(String message) {
+        logger.error(message);
+        System.exit(1);
+    }
 
-	public static void main(String... args) {
-		SpringApplication.run(PacketWatcherCore.class);
-	}
+    public static void main(String... args) {
+        SpringApplication.run(PacketWatcherCore.class);
+    }
 
 }

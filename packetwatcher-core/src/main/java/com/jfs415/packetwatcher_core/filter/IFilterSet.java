@@ -5,10 +5,10 @@ import java.util.Set;
 
 public interface IFilterSet<T> extends IFilter<T> {
 
-	boolean containsAll(List<T> values);
+    boolean containsAll(List<T> values);
 
-	boolean containsAny(List<T> values);
-	
-	Set<T> getDataSet();
+    boolean containsAny(List<T> values);
+
+    Set<T> getDataSet();
 
 }

@@ -4,18 +4,18 @@ import java.util.List;
 
 public interface IRangedFilter<T extends Comparable<T>> extends IFilter<T> {
 
-	T getRangeStart();
-	
-	T getRangeEnd();
+    T getRangeStart();
 
-	boolean isInRangeExclusive(T value);
+    T getRangeEnd();
 
-	boolean isInRangeLowerInclusiveUpperExclusive(T value);
+    boolean isInRangeExclusive(T value);
 
-	boolean isInRangeLowerExclusiveUpperInclusive(T value);
+    boolean isInRangeLowerInclusiveUpperExclusive(T value);
 
-	boolean anyInRange(List<T> values);
+    boolean isInRangeLowerExclusiveUpperInclusive(T value);
 
-	boolean hasRangedComparator();
+    boolean anyInRange(List<T> values);
+
+    boolean hasRangedComparator();
 
 }

@@ -6,6 +6,6 @@ package com.jfs415.packetwatcher_core.filter;
  * Egress filtering specifically targets packets leaving the network.
  */
 public enum FilterRule {
-	INGRESS,
-	EGRESS;
+    INGRESS,
+    EGRESS;
 }

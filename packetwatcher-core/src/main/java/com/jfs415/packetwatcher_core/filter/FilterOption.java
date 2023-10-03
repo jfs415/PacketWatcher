@@ -12,30 +12,30 @@ package com.jfs415.packetwatcher_core.filter;
  * for their to be a 1:N relationship between these objects.</P>
  */
 public enum FilterOption {
-	COUNTRY(FilterSet.class),
-	DESTINATION_IP(FilterSet.class),
-	SOURCE_IP(FilterSet.class),
-	DESTINATION_HOST(FilterSet.class),
-	SOURCE_HOST(FilterSet.class),
-	DESTINATION_IP_RANGE(RangedFilter.class),
-	SOURCE_IP_RANGE(RangedFilter.class),
-	EXCLUDED_HOSTS(FilterSet.class),
-	EXCLUDED_HOSTS_Range(RangedFilter.class),
-	DESTINATION_PORT(FilterSet.class),
-	SOURCE_PORT(FilterSet.class),
-	DESTINATION_PORT_RANGE(RangedFilter.class),
-	SOURCE_PORT_RANGE(RangedFilter.class);
+    COUNTRY(FilterSet.class),
+    DESTINATION_IP(FilterSet.class),
+    SOURCE_IP(FilterSet.class),
+    DESTINATION_HOST(FilterSet.class),
+    SOURCE_HOST(FilterSet.class),
+    DESTINATION_IP_RANGE(RangedFilter.class),
+    SOURCE_IP_RANGE(RangedFilter.class),
+    EXCLUDED_HOSTS(FilterSet.class),
+    EXCLUDED_HOSTS_RANGE(RangedFilter.class),
+    DESTINATION_PORT(FilterSet.class),
+    SOURCE_PORT(FilterSet.class),
+    DESTINATION_PORT_RANGE(RangedFilter.class),
+    SOURCE_PORT_RANGE(RangedFilter.class);
 
-	@SuppressWarnings("rawtypes")
-	private final Class<? extends IFilter> filterType;
+    @SuppressWarnings("rawtypes")
+    private final Class<? extends IFilter> filterType;
 
-	@SuppressWarnings("rawtypes")
-	FilterOption(Class<? extends IFilter> filterType) {
-		this.filterType = filterType;
-	}
+    @SuppressWarnings("rawtypes")
+    FilterOption(Class<? extends IFilter> filterType) {
+        this.filterType = filterType;
+    }
 
-	@SuppressWarnings("rawtypes")
-	public Class<? extends IFilter> getFilterType() {
-		return filterType;
-	}
+    @SuppressWarnings("rawtypes")
+    public Class<? extends IFilter> getFilterType() {
+        return filterType;
+    }
 }

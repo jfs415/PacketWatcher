@@ -1,68 +1,67 @@
 package com.jfs415.packetwatcher_core.test.unit;
 
+import com.axlabs.ip2asn2cc.Ip2Asn2Cc;
+import com.axlabs.ip2asn2cc.exception.RIRNotDownloadedException;
+import org.junit.jupiter.api.Test;
+
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import org.junit.jupiter.api.Test;
+class Ip2Asn2CcTest {
 
-import com.axlabs.ip2asn2cc.Ip2Asn2Cc;
-import com.axlabs.ip2asn2cc.exception.RIRNotDownloadedException;
+    private Ip2Asn2Cc ipLookupUtility = null;
 
-public class Ip2Asn2CcTest {
+    @Test
+    void testIp2Cc() {
+        assert getIpLookupUtility().getRIRCountryCode("8.8.8.8").equals("US");
+        assert getIpLookupUtility().getRIRCountryCode("221.192.199.49").equals(FlaggedCountries.CHINA.getCountryCode());
+        assert getIpLookupUtility().getRIRCountryCode("80.92.32.0").equals(FlaggedCountries.RUSSIA.getCountryCode());
+        assert getIpLookupUtility().getRIRCountryCode("37.212.59.152").equals(FlaggedCountries.BELARUS.getCountryCode());
+        assert getIpLookupUtility().getRIRCountryCode("190.15.150.165").equals(FlaggedCountries.CUBA.getCountryCode());
+        assert getIpLookupUtility().getRIRCountryCode("5.134.128.0").equals(FlaggedCountries.IRAN.getCountryCode());
+    }
 
-	private Ip2Asn2Cc ipLookupUtility = null;
+    private Ip2Asn2Cc getIpLookupUtility() {
+        if (ipLookupUtility == null) {
+            ipLookupUtility = createIp2AsnInstance();
+        }
 
-	@Test
-	public void testIp2Cc() {
-		assert getIpLookupUtility().getRIRCountryCode("8.8.8.8").equals("US");
-		assert getIpLookupUtility().getRIRCountryCode("221.192.199.49").equals(FlaggedCountries.CHINA.getCountryCode());
-		assert getIpLookupUtility().getRIRCountryCode("80.92.32.0").equals(FlaggedCountries.RUSSIA.getCountryCode());
-		assert getIpLookupUtility().getRIRCountryCode("37.212.59.152").equals(FlaggedCountries.BELARUS.getCountryCode());
-		assert getIpLookupUtility().getRIRCountryCode("190.15.150.165").equals(FlaggedCountries.CUBA.getCountryCode());
-		assert getIpLookupUtility().getRIRCountryCode("5.134.128.0").equals(FlaggedCountries.IRAN.getCountryCode());
-	}
+        Objects.requireNonNull(ipLookupUtility, "Unable to create ipLookupUtility");
+        return ipLookupUtility;
+    }
 
-	private Ip2Asn2Cc getIpLookupUtility() {
-		if (ipLookupUtility == null) {
-			ipLookupUtility = createIp2AsnInstance();
-		}
+    private Ip2Asn2Cc createIp2AsnInstance() {
+        try {
+            List<String> flaggedCountries = EnumSet.allOf(FlaggedCountries.class).stream().map(FlaggedCountries::getCountryCode).collect(Collectors.toList());
+            flaggedCountries.add("US");
+            ipLookupUtility = new Ip2Asn2Cc(flaggedCountries);
+        } catch (RIRNotDownloadedException e) {
+            e.printStackTrace();
+        }
 
-		Objects.requireNonNull(ipLookupUtility, "Unable to create ipLookupUtility");
-		return ipLookupUtility;
-	}
+        return ipLookupUtility;
+    }
 
-	private Ip2Asn2Cc createIp2AsnInstance() {
-		try {
-			List<String> flaggedCountries = EnumSet.allOf(FlaggedCountries.class).stream().map(FlaggedCountries::getCountryCode).collect(Collectors.toList());
-			flaggedCountries.add("US");
-			ipLookupUtility = new Ip2Asn2Cc(flaggedCountries);
-		} catch (RIRNotDownloadedException e) {
-			e.printStackTrace();
-		}
+    private enum FlaggedCountries {
 
-		return ipLookupUtility;
-	}
+        CHINA("CN"),
+        RUSSIA("RU"),
+        BELARUS("BY"),
+        IRAN("IR"),
+        CUBA("CU");
 
-	private enum FlaggedCountries {
+        private final String countryCode;
 
-		CHINA("CN"),
-		RUSSIA("RU"),
-		BELARUS("BY"),
-		IRAN("IR"),
-		CUBA("CU");
+        FlaggedCountries(String countryCode) {
+            this.countryCode = countryCode;
+        }
 
-		private final String countryCode;
+        public String getCountryCode() {
+            return countryCode;
+        }
 
-		FlaggedCountries(String countryCode) {
-			this.countryCode = countryCode;
-		}
-
-		public String getCountryCode() {
-			return countryCode;
-		}
-
-	}
+    }
 
 }

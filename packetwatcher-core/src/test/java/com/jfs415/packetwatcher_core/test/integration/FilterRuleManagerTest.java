@@ -1,11 +1,10 @@
 package com.jfs415.packetwatcher_core.test.integration;
 
+import com.jfs415.packetwatcher_core.PacketWatcherCore;
+import com.jfs415.packetwatcher_core.filter.FilterRulesManager;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import com.jfs415.packetwatcher_core.PacketWatcherCore;
-import com.jfs415.packetwatcher_core.filter.FilterRulesManager;
 
 @SpringBootTest(classes = PacketWatcherCore.class)
 class FilterRuleManagerTest {

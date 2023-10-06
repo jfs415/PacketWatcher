@@ -14,7 +14,6 @@ import org.pcap4j.packet.TcpPacket.TcpHeader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.yaml.snakeyaml.Yaml;
@@ -32,23 +31,19 @@ import java.util.Map;
 @Component
 public class FilterRulesManager implements PacketListener {
 
-    private static final String FILENAME = "packetwatcher-core/filter-rules.yml";
     private static final Logger logger = LoggerFactory.getLogger(FilterRulesManager.class);
 
     private final EnumMap<FilterRule, FilterConfigurationManager> configuration = new EnumMap<>(FilterRule.class);
     private final FilterConfigurationManager filterConfigurationManager;
     private final RangedFilter<String> localNetRange;
 
-    @Value("${packetwatcher-core.local-ip-range-start}")
-    private String localIpRangeStart;
-
-    @Value("${packetwatcher-core.local-ip-range-end}")
-    private String localIpRangeEnd;
+    private final FilterYamlConfiguration filterYamlConfiguration;
 
     @Autowired
-    public FilterRulesManager(FilterConfigurationManager filterConfigurationManager) {
-        this.localNetRange = new RangedFilter<>(localIpRangeStart, localIpRangeEnd, new IpComparator());
+    public FilterRulesManager(FilterConfigurationManager filterConfigurationManager, FilterYamlConfiguration filterYamlConfiguration) {
+        this.filterYamlConfiguration = filterYamlConfiguration;
         this.filterConfigurationManager = filterConfigurationManager;
+        this.localNetRange = new RangedFilter<>(filterYamlConfiguration.getLocalIpRangeStart(), filterYamlConfiguration.getLocalIpRangeEnd(), new IpComparator());
 
         try {
             load();
@@ -124,7 +119,7 @@ public class FilterRulesManager implements PacketListener {
 
     @SuppressWarnings("unchecked")
     public void load() throws IOException {
-        InputStream inputStream = new FileInputStream(FILENAME);
+        InputStream inputStream = new FileInputStream(filterYamlConfiguration.getFilterRulesPath());
 
         Yaml yaml = new Yaml();
         Map<String, Object> fileData = yaml.load(inputStream); //Map of <FilterRule, FilterConfiguration>
@@ -163,7 +158,7 @@ public class FilterRulesManager implements PacketListener {
     public void write() throws IOException {
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory().enable(YAMLGenerator.Feature.INDENT_ARRAYS_WITH_INDICATOR));
         mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY); //Allow access to private fields
-        mapper.writeValue(new File(FILENAME), configuration);
+        mapper.writeValue(new File(filterYamlConfiguration.getFilterRulesPath()), configuration);
     }
 
 }

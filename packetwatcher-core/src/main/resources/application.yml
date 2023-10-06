@@ -1,4 +1,3 @@
-#Spring database settings
 spring:
   application:
     name: Packetwatcher-Core
@@ -23,12 +22,14 @@ server:
 
 logging:
   level:
-    com: TRACE
+    com: info
     org:
-      springframework: TRACE
+      springframework: info
       
 packetwatcher-core:
   survive-rir-exception: true
-  local-ip-range-start: 192.168.1.1
-  local-ip-range-end: 192.168.1.255
   flagged-packet-retention-days: 90
+  filter:
+    local-ip-range-start: 192.168.1.1
+    local-ip-range-end: 192.168.1.255
+    filter-rules-path: ${FILTER_RULES_PATH:/packetwatcher-core/filter-rules.yml}

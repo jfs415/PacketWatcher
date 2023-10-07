@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import java.sql.Timestamp;
 import java.util.EnumMap;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 @Component
 public class FilterConfigurationManager {
@@ -30,7 +31,7 @@ public class FilterConfigurationManager {
     }
 
     @SuppressWarnings("unchecked")
-    public void load(LinkedHashMap<String, Object> configManagerData) { //Map of <FilterConfiguration, FilterOptions>
+    public void load(Map<String, Object> configManagerData) { //Map of <FilterConfiguration, FilterOptions>
         configManagerData.forEach((config, options) -> {
             if (!LinkedHashMap.class.isAssignableFrom(options.getClass())) {
                 throw new FilterException("Filter-Rules configuration data is not in the proper format!");

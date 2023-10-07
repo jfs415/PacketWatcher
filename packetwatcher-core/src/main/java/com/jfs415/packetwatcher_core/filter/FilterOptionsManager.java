@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @JsonSerialize(using = FilterOptionsDataSerializer.class)
@@ -78,7 +79,7 @@ public class FilterOptionsManager {
         });
     }
 
-    public void load(LinkedHashMap<String, Object> configOptionData) {
+    public void load(Map<String, Object> configOptionData) {
         configOptionData.forEach((option, data) -> {
             if (List.class.isAssignableFrom(data.getClass())) {
                 processOptionData(FilterOption.valueOf(option), data);
@@ -102,9 +103,7 @@ public class FilterOptionsManager {
             if (optionData.get(0) instanceof String) {
                 processFilterSet(option, (ArrayList<String>) optionData);
             } else if (LinkedHashMap.class.isAssignableFrom(optionData.get(0).getClass())) {
-                optionData.forEach(value -> {
-                    processRangedFilter(option, (LinkedHashMap<String, Object>) value);
-                });
+                optionData.forEach(value -> processRangedFilter(option, (LinkedHashMap<String, Object>) value));
             } else {
                 throw new FilterException("Filter-Rules option data is not in the proper format!");
             }

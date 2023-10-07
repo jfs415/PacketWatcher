@@ -1,10 +1,5 @@
 package com.jfs415.packetwatcher_core.filter;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 import org.pcap4j.core.PacketListener;
 import org.pcap4j.core.PcapPacket;
 import org.pcap4j.packet.EthernetPacket;
@@ -18,8 +13,6 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.yaml.snakeyaml.Yaml;
 
-import javax.annotation.PreDestroy;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -52,16 +45,6 @@ public class FilterRulesManager implements PacketListener {
         }
     }
 
-    @PreDestroy
-    public void destroy() {
-        try {
-            shutdown();
-        } catch (IOException e) {
-            e.printStackTrace();
-            logger.warn("Encountered an exception shutting down FilterRulesManager");
-        }
-    }
-
     @Override
     public void gotPacket(PcapPacket packet) {
         if (packet.getPacket() instanceof EthernetPacket && isTcpPacket(packet)) {
@@ -71,8 +54,10 @@ public class FilterRulesManager implements PacketListener {
                 switch (k) {
                     case INGRESS:
                         processIngressPacket(v, packet, tcpHeader);
+                        break;
                     case EGRESS:
                         processEgressPacket(v, packet, tcpHeader);
+                        break;
                     default:
                         throw new UnknownFilterRuleException();
                 }
@@ -149,16 +134,6 @@ public class FilterRulesManager implements PacketListener {
 
     public boolean isIpInLocalRange(@Nullable String ipToTest) {
         return localNetRange.isFilterValue(ipToTest);
-    }
-
-    public void shutdown() throws IOException {
-        write();
-    }
-
-    public void write() throws IOException {
-        ObjectMapper mapper = new ObjectMapper(new YAMLFactory().enable(YAMLGenerator.Feature.INDENT_ARRAYS_WITH_INDICATOR));
-        mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY); //Allow access to private fields
-        mapper.writeValue(new File(filterYamlConfiguration.getFilterRulesPath()), configuration);
     }
 
 }

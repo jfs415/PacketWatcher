@@ -11,16 +11,8 @@ public final class FilterSet<T> implements IFilterSet<T> {
 
     private final Set<T> filteredValues = ConcurrentHashMap.newKeySet();
 
-    public FilterSet(T value) {
-        this.filteredValues.add(value);
-    }
-
     public FilterSet(List<T> values) {
         this.filteredValues.addAll(values);
-    }
-
-    public Set<T> getFilteredValues() {
-        return filteredValues;
     }
 
     @Override

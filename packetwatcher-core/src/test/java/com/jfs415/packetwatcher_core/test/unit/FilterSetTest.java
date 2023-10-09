@@ -22,8 +22,8 @@ class FilterSetTest {
         assert !stringList.isEmpty();
         assert !intList.isEmpty();
 
-        assert stringFilterSet.getFilteredValues() != null;
-        assert !stringFilterSet.getFilteredValues().isEmpty();
+        assert stringFilterSet.getDataSet() != null;
+        assert !stringFilterSet.getDataSet().isEmpty();
 
         assert stringFilterSet.containsAll(stringList);
         assert stringFilterSet.containsAny(stringList);
@@ -39,8 +39,8 @@ class FilterSetTest {
         assert !intList.isEmpty();
         assert !doubleList.isEmpty();
 
-        assert intFilterSet.getFilteredValues() != null;
-        assert !intFilterSet.getFilteredValues().isEmpty();
+        assert intFilterSet.getDataSet() != null;
+        assert !intFilterSet.getDataSet().isEmpty();
 
         assert intFilterSet.containsAll(intList);
         assert intFilterSet.containsAny(intList);
@@ -56,8 +56,8 @@ class FilterSetTest {
         assert !doubleList.isEmpty();
         assert !floatList.isEmpty();
 
-        assert doubleFilterSet.getFilteredValues() != null;
-        assert !doubleFilterSet.getFilteredValues().isEmpty();
+        assert doubleFilterSet.getDataSet() != null;
+        assert !doubleFilterSet.getDataSet().isEmpty();
 
         assert doubleFilterSet.containsAll(doubleList);
         assert doubleFilterSet.containsAny(doubleList);
@@ -73,8 +73,8 @@ class FilterSetTest {
         assert !floatList.isEmpty();
         assert !intList.isEmpty();
 
-        assert floatFilterSet.getFilteredValues() != null;
-        assert !floatFilterSet.getFilteredValues().isEmpty();
+        assert floatFilterSet.getDataSet() != null;
+        assert !floatFilterSet.getDataSet().isEmpty();
 
         assert floatFilterSet.containsAll(floatList);
         assert floatFilterSet.containsAny(floatList);

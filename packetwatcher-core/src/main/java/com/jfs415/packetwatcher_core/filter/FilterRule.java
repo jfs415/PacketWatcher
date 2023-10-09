@@ -7,5 +7,5 @@ package com.jfs415.packetwatcher_core.filter;
  */
 public enum FilterRule {
     INGRESS,
-    EGRESS;
+    EGRESS
 }

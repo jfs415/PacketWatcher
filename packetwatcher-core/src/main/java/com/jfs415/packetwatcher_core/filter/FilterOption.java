@@ -1,5 +1,8 @@
 package com.jfs415.packetwatcher_core.filter;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 /**
  * <P>This enum denotes the different filtering options for each filter configuration.
  * FilterSets have a 1:1 relationship with their filter option, meaning that 1
@@ -11,6 +14,8 @@ package com.jfs415.packetwatcher_core.filter;
  * there could be multiple disjointed ranges i.e 1-5, 7-8, etc. This necessitates the need
  * for their to be a 1:N relationship between these objects.</P>
  */
+@AllArgsConstructor
+@Getter
 public enum FilterOption {
     COUNTRY(FilterSet.class),
     DESTINATION_IP(FilterSet.class),
@@ -28,14 +33,5 @@ public enum FilterOption {
 
     @SuppressWarnings("rawtypes")
     private final Class<? extends IFilter> filterType;
-
-    @SuppressWarnings("rawtypes")
-    FilterOption(Class<? extends IFilter> filterType) {
-        this.filterType = filterType;
-    }
-
-    @SuppressWarnings("rawtypes")
-    public Class<? extends IFilter> getFilterType() {
-        return filterType;
-    }
+    
 }

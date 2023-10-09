@@ -1,11 +1,16 @@
 package com.jfs415.packetwatcher_core.filter;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 import java.util.List;
 
 /**
  * This is the top level configuration for ingress and egress filtering.
  * These enums hold the different options available for each configuration.
  */
+@AllArgsConstructor
+@Getter
 public enum FilterConfiguration {
 
     COUNTRY_ONLY(List.of(FilterOption.COUNTRY)),
@@ -16,12 +21,4 @@ public enum FilterConfiguration {
     HOST_ONLY(List.of(FilterOption.DESTINATION_HOST, FilterOption.SOURCE_HOST, FilterOption.EXCLUDED_HOSTS));
 
     private final List<FilterOption> options;
-
-    FilterConfiguration(List<FilterOption> options) {
-        this.options = options;
-    }
-
-    public List<FilterOption> getOptions() {
-        return options;
-    }
 }

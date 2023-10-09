@@ -1,59 +1,44 @@
 package com.jfs415.packetwatcher_api.model.analytics;
 
-import java.io.Serializable;
-import java.sql.Timestamp;
+import com.jfs415.packetwatcher_api.annotations.PacketWatcherStats;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.io.Serializable;
 
 @Entity
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@PacketWatcherStats
 @Table(name = "country_stats_records", schema = "packetwatcher")
 public class CountryStatsRecord extends StatsRecord implements Serializable {
 
-	@Column(name = "most_caught_hostname")
-	private String mostCaughtHostname;
+    @Column(name = "most_caught_hostname")
+    private String mostCaughtHostname;
 
-	@Column(name = "most_caught_hostname_count")
-	private int mostCaughtHostnameCount;
+    @Column(name = "most_caught_hostname_count")
+    private int mostCaughtHostnameCount;
 	
-	public CountryStatsRecord() { }
+    @Override
+    public boolean equals(Object other) {
+        if (other instanceof CountryStatsRecord) {
+            CountryStatsRecord obj = (CountryStatsRecord) other;
+            return super.equals(obj) && this.mostCaughtHostname.equals(obj.mostCaughtHostname) && this.mostCaughtHostnameCount == obj.mostCaughtHostnameCount;
+        }
 
-	public CountryStatsRecord(String countryName, int recordsCaught, String mostCaughtHostname, int mostCaughtHostnameCount, Timestamp firstCaught, Timestamp lastCaught) {
-		super(countryName, recordsCaught, firstCaught, lastCaught);
-		this.mostCaughtHostname = mostCaughtHostname;
-		this.mostCaughtHostnameCount = mostCaughtHostnameCount;
-	}
+        return false;
+    }
 
-	public String getMostCaughtHostname() {
-		return mostCaughtHostname;
-	}
-
-	public void setMostCaughtHostname(String mostCaughtHostname) {
-		this.mostCaughtHostname = mostCaughtHostname;
-	}
-
-	public int getMostCaughtHostnameCount() {
-		return mostCaughtHostnameCount;
-	}
-
-	public void setMostCaughtHostnameCount(int mostCaughtHostnameCount) {
-		this.mostCaughtHostnameCount = mostCaughtHostnameCount;
-	}
-
-	@Override
-	public boolean equals(Object other) {
-		if (other instanceof CountryStatsRecord) {
-			CountryStatsRecord obj = (CountryStatsRecord) other;
-			return super.equals(obj) && this.mostCaughtHostname.equals(obj.mostCaughtHostname) && this.mostCaughtHostnameCount == obj.mostCaughtHostnameCount;
-		}
-
-		return false;
-	}
-
-	@Override
-	public int hashCode() {
-		return 31 * (super.hashCode() + mostCaughtHostname.hashCode() + mostCaughtHostnameCount);
-	}
+    @Override
+    public int hashCode() {
+        return 31 * (super.hashCode() + mostCaughtHostname.hashCode() + mostCaughtHostnameCount);
+    }
 
 }

@@ -1,21 +1,15 @@
 package com.jfs415.packetwatcher_api.views;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import org.hibernate.annotations.Immutable;
+
+@AllArgsConstructor
+@Getter
+@Immutable
 public class SystemSettingView {
 
-	private final String settingKey;
-	private final String settingValue;
-
-	public SystemSettingView(String settingKey, String settingValue) {
-		this.settingKey = settingKey;
-		this.settingValue = settingValue;
-	}
-
-	public String getSettingKey() {
-		return settingKey;
-	}
-
-	public String getSettingValue() {
-		return settingValue;
-	}
+    private final String settingKey;
+    private final String settingValue;
 
 }

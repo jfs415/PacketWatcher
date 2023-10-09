@@ -1,43 +1,18 @@
 package com.jfs415.packetwatcher_api.auth;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 public class UserPasswordResetRequest {
 
-	private String username;
-	private String password;
-	private String token;
-
-	public UserPasswordResetRequest() {
-		
-	}
-
-	public UserPasswordResetRequest(String username, String password, String token) {
-		this.username = username;
-		this.password = password;
-		this.token = token;
-	}
-
-	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-	public String getToken() {
-		return token;
-	}
-
-	public void setToken(String token) {
-		this.token = token;
-	}
+    private String username;
+    private String password;
+    private String token;
 
 }

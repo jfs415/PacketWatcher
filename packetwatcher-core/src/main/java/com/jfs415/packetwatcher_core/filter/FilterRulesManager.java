@@ -41,7 +41,7 @@ public class FilterRulesManager implements PacketListener {
         try {
             load();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
     }
 

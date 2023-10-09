@@ -3,6 +3,8 @@ package com.jfs415.packetwatcher_core;
 import com.jfs415.packetwatcher_core.filter.FilterRulesManager;
 import org.pcap4j.core.*;
 import org.pcap4j.util.NifSelector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -15,6 +17,8 @@ import java.util.concurrent.CompletableFuture;
 
 @Component
 public class PacketCaptureThread implements CommandLineRunner {
+
+    private static final Logger logger = LoggerFactory.getLogger(PacketCaptureThread.class);
 
     private static final int SNAPLEN = 65536; //[bytes]
     private static final int READ_TIMEOUT = 10; //In ms
@@ -38,7 +42,7 @@ public class PacketCaptureThread implements CommandLineRunner {
             nif = choosePcapNetworkInterface();
             handle = nif.openLive(SNAPLEN, PcapNetworkInterface.PromiscuousMode.PROMISCUOUS, READ_TIMEOUT);
         } catch (PcapNativeException | IOException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             packetWatcherCore.fail("Encountered an exception creating live view, application is exiting");
         }
 
@@ -70,13 +74,14 @@ public class PacketCaptureThread implements CommandLineRunner {
             try {
                 handle.loop(-1, filterRulesManager);
             } catch (NotOpenException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
                 packetWatcherCore.fail("Packet Handler is not open");
             } catch (InterruptedException ie) {
-                ie.printStackTrace();
+                Thread.currentThread().interrupt(); //"InterruptedException" and "ThreadDeath" should not be ignored - java:S2142
+                logger.error(ie.getMessage(), ie);
                 packetWatcherCore.fail("Live packet capturing interrupted");
             } catch (PcapNativeException pne) {
-                pne.printStackTrace();
+                logger.error(pne.getMessage(), pne);
                 packetWatcherCore.fail("Encountered an exception opening a live capture view");
             }
         });

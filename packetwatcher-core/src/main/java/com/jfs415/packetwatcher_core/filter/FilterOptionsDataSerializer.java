@@ -3,11 +3,15 @@ package com.jfs415.packetwatcher_core.filter;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.List;
 
 public class FilterOptionsDataSerializer extends JsonSerializer<FilterOptionsManager> {
+
+    private static final Logger logger = LoggerFactory.getLogger(FilterOptionsDataSerializer.class);
 
     @Override
     public void serialize(FilterOptionsManager filterOptionsManager, JsonGenerator gen, SerializerProvider serializers) throws IOException {
@@ -17,7 +21,7 @@ public class FilterOptionsDataSerializer extends JsonSerializer<FilterOptionsMan
             try {
                 processFilterOption(option, filterList, gen);
             } catch (IOException filterDataIoe) {
-                filterDataIoe.printStackTrace();
+                logger.error(filterDataIoe.getMessage(), filterDataIoe);
             }
         });
 
@@ -32,7 +36,7 @@ public class FilterOptionsDataSerializer extends JsonSerializer<FilterOptionsMan
             try {
                 processFilterList(listValue, gen);
             } catch (IOException filterListIoe) {
-                filterListIoe.printStackTrace();
+                logger.error(filterListIoe.getMessage(), filterListIoe);
             }
         });
 
@@ -42,11 +46,11 @@ public class FilterOptionsDataSerializer extends JsonSerializer<FilterOptionsMan
     private void processFilterList(IFilter<?> listValue, JsonGenerator gen) throws IOException {
         if (listValue instanceof FilterSet) {
             FilterSet<?> filterSet = (FilterSet<?>) listValue;
-            filterSet.getFilteredValues().forEach(setValue -> {
+            filterSet.getDataSet().forEach(setValue -> {
                 try {
                     gen.writeString(setValue.toString());
                 } catch (IOException filterValuesIoe) {
-                    filterValuesIoe.printStackTrace();
+                    logger.error(filterValuesIoe.getMessage(), filterValuesIoe);
                 }
             });
         } else {

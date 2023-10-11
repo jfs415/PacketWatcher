@@ -1,30 +1,32 @@
 package com.jfs415.packetwatcher_api.model.services;
 
+import com.jfs415.packetwatcher_api.annotations.PacketWatcherEvent;
+import com.jfs415.packetwatcher_api.exceptions.EventAnnotationNotFoundException;
+import com.jfs415.packetwatcher_api.exceptions.InvalidEventArgumentException;
+import com.jfs415.packetwatcher_api.model.events.EventMappedSuperclass;
+import com.jfs415.packetwatcher_api.model.repositories.PacketWatcherEventRepository;
+import com.jfs415.packetwatcher_api.util.RangedSearchTimeframe;
+import com.jfs415.packetwatcher_api.util.SearchTimeframe;
+import com.jfs415.packetwatcher_api.views.collections.EventsCollectionView;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.Entity;
 import java.io.Serializable;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import javax.persistence.Entity;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import com.jfs415.packetwatcher_api.annotations.PacketWatcherEvent;
-import com.jfs415.packetwatcher_api.exceptions.EventAnnotationNotFoundException;
-import com.jfs415.packetwatcher_api.exceptions.InvalidEventArgumentException;
-import com.jfs415.packetwatcher_api.util.DualSearchTimeframe;
-import com.jfs415.packetwatcher_api.model.events.EventMappedSuperclass;
-import com.jfs415.packetwatcher_api.util.SearchTimeframe;
-import com.jfs415.packetwatcher_api.model.repositories.PacketWatcherEventRepository;
-import com.jfs415.packetwatcher_api.views.collections.EventsCollectionView;
-
 @Service
 public class EventService {
-
+	
+	private final RepositoryManager repositoryManager;
+	
 	@Autowired
-	private RepositoryManager repositoryManager;
+	public EventService(RepositoryManager repositoryManager) {
+		this.repositoryManager = repositoryManager;
+	}
 
 	@Transactional
 	public void save(EventMappedSuperclass event) throws InvalidEventArgumentException {
@@ -34,7 +36,7 @@ public class EventService {
 			e.printStackTrace();
 		}
 
-		PacketWatcherEventRepository<EventMappedSuperclass, Serializable> repository = repositoryManager.getRepository(event.getClass());
+		PacketWatcherEventRepository<EventMappedSuperclass, Serializable> repository = repositoryManager.getEventRepository(event.getClass());
 		repository.save(event);
 	}
 
@@ -46,7 +48,7 @@ public class EventService {
 			return new EventsCollectionView();
 		}
 
-		PacketWatcherEventRepository<EventMappedSuperclass, Serializable> repository = repositoryManager.getRepository(eventType);
+		PacketWatcherEventRepository<EventMappedSuperclass, Serializable> repository = repositoryManager.getEventRepository(eventType);
 		Stream<EventMappedSuperclass> events = StreamSupport.stream(repository.findAllByIpAddress(ipAddress).spliterator(), true);
 		
 		return new EventsCollectionView(events.map(EventMappedSuperclass::toEventView).collect(Collectors.toList()));
@@ -60,7 +62,7 @@ public class EventService {
 			return new EventsCollectionView();
 		}
 
-		PacketWatcherEventRepository<EventMappedSuperclass, Serializable> repository = repositoryManager.getRepository(eventType);
+		PacketWatcherEventRepository<EventMappedSuperclass, Serializable> repository = repositoryManager.getEventRepository(eventType);
 		return lookupEventsWithIpAddressAndTimeframe(repository, ipAddress, timeframe);
 	}
 
@@ -72,7 +74,7 @@ public class EventService {
 			return new EventsCollectionView();
 		}
 
-		PacketWatcherEventRepository<EventMappedSuperclass, Serializable> repository = repositoryManager.getRepository(eventType);
+		PacketWatcherEventRepository<EventMappedSuperclass, Serializable> repository = repositoryManager.getEventRepository(eventType);
 		Stream<EventMappedSuperclass> events = StreamSupport.stream(repository.findAllByIpAddressAndUsername(ipAddress, username).spliterator(), false);
 		
 		return new EventsCollectionView(events.map(EventMappedSuperclass::toEventView).collect(Collectors.toList()));
@@ -86,7 +88,7 @@ public class EventService {
 			return new EventsCollectionView();
 		}
 
-		return lookupEventsWithUsernameAndIpAddressAndTimeframe(repositoryManager.getRepository(eventType), username, ipAddress, timeframe);
+		return lookupEventsWithUsernameAndIpAddressAndTimeframe(repositoryManager.getEventRepository(eventType), username, ipAddress, timeframe);
 	}
 
 	public EventsCollectionView getEventsByTypeAndUsernameWithTimeframe(Class<?> eventType, String username, SearchTimeframe timeframe) {
@@ -97,7 +99,7 @@ public class EventService {
 			return new EventsCollectionView();
 		}
 
-		return lookupEventsWithUsernameAndTimeframe(repositoryManager.getRepository(eventType), username, timeframe);
+		return lookupEventsWithUsernameAndTimeframe(repositoryManager.getEventRepository(eventType), username, timeframe);
 	}
 
 	public EventsCollectionView getEventsByTypeAndUsername(Class<?> eventType, String username) {
@@ -108,7 +110,7 @@ public class EventService {
 			return new EventsCollectionView();
 		}
 
-		PacketWatcherEventRepository<EventMappedSuperclass, Serializable> repository = repositoryManager.getRepository(eventType);
+		PacketWatcherEventRepository<EventMappedSuperclass, Serializable> repository = repositoryManager.getEventRepository(eventType);
 		Stream<EventMappedSuperclass> events = StreamSupport.stream(repository.findAllByUsername(username).spliterator(), true);
 
 		return new EventsCollectionView(events.map(EventMappedSuperclass::toEventView).collect(Collectors.toList()));
@@ -122,7 +124,7 @@ public class EventService {
 			return new EventsCollectionView();
 		}
 
-		return lookupEventsWithTimeframeOnly(repositoryManager.getRepository(eventType), timeframe);
+		return lookupEventsWithTimeframeOnly(repositoryManager.getEventRepository(eventType), timeframe);
 	}
 
 	public EventsCollectionView getEventsByType(Class<?> eventType) {
@@ -133,7 +135,7 @@ public class EventService {
 			return new EventsCollectionView();
 		}
 
-		PacketWatcherEventRepository<EventMappedSuperclass, Serializable> repository = repositoryManager.getRepository(eventType);
+		PacketWatcherEventRepository<EventMappedSuperclass, Serializable> repository = repositoryManager.getEventRepository(eventType);
 
 		return new EventsCollectionView(repository.findAll().stream().map(EventMappedSuperclass::toEventView).collect(Collectors.toList()));
 	}
@@ -149,7 +151,7 @@ public class EventService {
 				events = StreamSupport.stream(repository.findAllByUsernameAndIpAddressAndTimestampAfter(username, ipAddress, searchTimeframe.getTimestamp()).spliterator(), true);
 				return new EventsCollectionView(events.map(EventMappedSuperclass::toEventView).collect(Collectors.toList()));
 			case BETWEEN:
-				DualSearchTimeframe dualTimeframe = (DualSearchTimeframe) searchTimeframe;
+				RangedSearchTimeframe dualTimeframe = (RangedSearchTimeframe) searchTimeframe;
 				events = StreamSupport.stream(repository.findAllByUsernameAndIpAddressAndTimestampBetween(username, ipAddress, dualTimeframe.getStart(), dualTimeframe.getEnd()).spliterator(), true);
 				return new EventsCollectionView(events.map(EventMappedSuperclass::toEventView).collect(Collectors.toList()));
 			default:
@@ -168,7 +170,7 @@ public class EventService {
 				events = StreamSupport.stream(repository.findAllByIpAddressAndTimestampAfter(ipAddress, searchTimeframe.getTimestamp()).spliterator(), true);
 				return new EventsCollectionView(events.map(EventMappedSuperclass::toEventView).collect(Collectors.toList()));
 			case BETWEEN:
-				DualSearchTimeframe dualTimeframe = (DualSearchTimeframe) searchTimeframe;
+				RangedSearchTimeframe dualTimeframe = (RangedSearchTimeframe) searchTimeframe;
 				events = StreamSupport.stream(repository.findAllByIpAddressAndTimestampBetween(ipAddress, dualTimeframe.getStart(), dualTimeframe.getEnd()).spliterator(), true);
 				return new EventsCollectionView(events.map(EventMappedSuperclass::toEventView).collect(Collectors.toList()));
 			default:
@@ -187,7 +189,7 @@ public class EventService {
 				events = StreamSupport.stream(repository.findAllByUsernameAndTimestampAfter(username, searchTimeframe.getTimestamp()).spliterator(), true);
 				return new EventsCollectionView(events.map(EventMappedSuperclass::toEventView).collect(Collectors.toList()));
 			case BETWEEN:
-				DualSearchTimeframe dualTimeframe = (DualSearchTimeframe) searchTimeframe;
+				RangedSearchTimeframe dualTimeframe = (RangedSearchTimeframe) searchTimeframe;
 				events = StreamSupport.stream(repository.findAllByUsernameAndTimestampBetween(username, dualTimeframe.getStart(), dualTimeframe.getEnd()).spliterator(), true);
 				return new EventsCollectionView(events.map(EventMappedSuperclass::toEventView).collect(Collectors.toList()));
 			default:
@@ -206,7 +208,7 @@ public class EventService {
 				events = StreamSupport.stream(repository.findAllByTimestampAfter(searchTimeframe.getTimestamp()).spliterator(), true);
 				return new EventsCollectionView(events.map(EventMappedSuperclass::toEventView).collect(Collectors.toList()));
 			case BETWEEN:
-				DualSearchTimeframe dualTimeframe = (DualSearchTimeframe) searchTimeframe;
+				RangedSearchTimeframe dualTimeframe = (RangedSearchTimeframe) searchTimeframe;
 				events = StreamSupport.stream(repository.findAllByTimestampBetween(dualTimeframe.getStart(), dualTimeframe.getEnd()).spliterator(), true);
 				return new EventsCollectionView(events.map(EventMappedSuperclass::toEventView).collect(Collectors.toList()));
 			default:

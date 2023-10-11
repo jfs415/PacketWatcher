@@ -1,25 +1,30 @@
 package com.jfs415.packetwatcher_api.model.services;
 
-import java.io.Serializable;
-
+import com.jfs415.packetwatcher_api.model.analytics.StatsRecord;
+import com.jfs415.packetwatcher_api.model.events.EventMappedSuperclass;
+import com.jfs415.packetwatcher_api.model.repositories.PacketWatcherEventRepository;
+import com.jfs415.packetwatcher_api.model.repositories.PacketWatcherStatsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.support.Repositories;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.jfs415.packetwatcher_api.model.events.EventMappedSuperclass;
-import com.jfs415.packetwatcher_api.model.repositories.PacketWatcherEventRepository;
+import java.io.Serializable;
 
 @Service
 public class RepositoryManager {
-
-	@Autowired
-	WebApplicationContext webApplicationContext;
+	
+	private final WebApplicationContext webApplicationContext;
 
 	private Repositories repositories;
 
+	@Autowired
+	public RepositoryManager(WebApplicationContext webApplicationContext) {
+		this.webApplicationContext = webApplicationContext;
+	}
+
 	@SuppressWarnings("unchecked")
-	public <T extends EventMappedSuperclass, E extends Serializable> PacketWatcherEventRepository<T, E> getRepository(Class<?> entity) {
+	public <T extends EventMappedSuperclass, E extends Serializable> PacketWatcherEventRepository<T, E> getEventRepository(Class<?> entity) {
 		ensureRepositoriesInstantiated();
 		Object repository = repositories.getRepositoryFor(entity).orElseThrow(RuntimeException::new);
 
@@ -28,6 +33,18 @@ public class RepositoryManager {
 		}
 
 		return (PacketWatcherEventRepository<T, E>) repository;
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T extends StatsRecord, E extends Serializable> PacketWatcherStatsRepository<T, E> getStatsRepository(Class<?> entity) {
+		ensureRepositoriesInstantiated();
+		Object repository = repositories.getRepositoryFor(entity).orElseThrow(RuntimeException::new);
+
+		if (!(repository instanceof PacketWatcherStatsRepository)) {
+			throw new RuntimeException("Found repository is not instanceof PacketWatcherStatsRepository");
+		}
+
+		return (PacketWatcherStatsRepository<T, E>) repository;
 	}
 
 	private void ensureRepositoriesInstantiated() {

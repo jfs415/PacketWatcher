@@ -4,6 +4,7 @@ import com.jfs415.packetwatcher_api.model.analytics.StatsRecord;
 import com.jfs415.packetwatcher_api.model.events.EventMappedSuperclass;
 import com.jfs415.packetwatcher_api.model.repositories.PacketWatcherEventRepository;
 import com.jfs415.packetwatcher_api.model.repositories.PacketWatcherStatsRepository;
+import com.jfs415.packetwatcher_api.model.services.inf.RepositoryManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.support.Repositories;
 import org.springframework.stereotype.Service;
@@ -12,14 +13,14 @@ import org.springframework.web.context.WebApplicationContext;
 import java.io.Serializable;
 
 @Service
-public class RepositoryManager {
+public class RepositoryManagerImpl implements RepositoryManager {
 
     private final WebApplicationContext webApplicationContext;
 
     private Repositories repositories;
 
     @Autowired
-    public RepositoryManager(WebApplicationContext webApplicationContext) {
+    public RepositoryManagerImpl(WebApplicationContext webApplicationContext) {
         this.webApplicationContext = webApplicationContext;
     }
 

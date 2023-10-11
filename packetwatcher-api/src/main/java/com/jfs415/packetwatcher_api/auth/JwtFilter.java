@@ -1,6 +1,6 @@
 package com.jfs415.packetwatcher_api.auth;
 
-import com.jfs415.packetwatcher_api.model.services.UserService;
+import com.jfs415.packetwatcher_api.model.services.inf.UserService;
 import io.jsonwebtoken.lang.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

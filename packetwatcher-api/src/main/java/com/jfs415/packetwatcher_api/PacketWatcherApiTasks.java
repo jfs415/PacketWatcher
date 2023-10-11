@@ -1,6 +1,7 @@
 package com.jfs415.packetwatcher_api;
 
-import com.jfs415.packetwatcher_api.model.services.UserService;
+import com.jfs415.packetwatcher_api.model.services.UserServiceImpl;
+import com.jfs415.packetwatcher_api.model.services.inf.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,8 +1,8 @@
 package com.jfs415.packetwatcher_api.events.authentication;
 
 import com.jfs415.packetwatcher_api.events.PacketWatcherParentEvent;
-import com.jfs415.packetwatcher_api.model.services.EventService;
-import com.jfs415.packetwatcher_api.model.services.UserActivationStateService;
+import com.jfs415.packetwatcher_api.model.services.inf.EventService;
+import com.jfs415.packetwatcher_api.model.services.inf.UserActivationStateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

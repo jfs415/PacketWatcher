@@ -3,7 +3,7 @@ package com.jfs415.packetwatcher_api.controllers;
 import com.jfs415.packetwatcher_api.auth.JwtUtil;
 import com.jfs415.packetwatcher_api.auth.UserPasswordResetRequest;
 import com.jfs415.packetwatcher_api.exceptions.UserNotFoundException;
-import com.jfs415.packetwatcher_api.model.services.UserService;
+import com.jfs415.packetwatcher_api.model.services.inf.UserService;
 import com.jfs415.packetwatcher_api.model.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

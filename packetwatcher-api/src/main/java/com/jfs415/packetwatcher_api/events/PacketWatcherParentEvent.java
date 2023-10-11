@@ -5,7 +5,7 @@ import com.jfs415.packetwatcher_api.events.authorization.AuthorizationEventType;
 import com.jfs415.packetwatcher_api.exceptions.InvalidEventArgumentException;
 import com.jfs415.packetwatcher_api.model.events.AuthenticationEvent;
 import com.jfs415.packetwatcher_api.model.events.AuthorizationEvent;
-import com.jfs415.packetwatcher_api.model.services.EventService;
+import com.jfs415.packetwatcher_api.model.services.inf.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

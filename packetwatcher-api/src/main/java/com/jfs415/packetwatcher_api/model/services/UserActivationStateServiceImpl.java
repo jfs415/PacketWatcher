@@ -2,6 +2,8 @@ package com.jfs415.packetwatcher_api.model.services;
 
 import com.jfs415.packetwatcher_api.exceptions.UserNotFoundException;
 import com.jfs415.packetwatcher_api.model.repositories.LockedUserHistoryRepository;
+import com.jfs415.packetwatcher_api.model.services.inf.UserActivationStateService;
+import com.jfs415.packetwatcher_api.model.services.inf.UserService;
 import com.jfs415.packetwatcher_api.model.user.LockedUserHistory;
 import com.jfs415.packetwatcher_api.model.user.User;
 import com.jfs415.packetwatcher_api.model.user.UserActivationState;
@@ -13,7 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.stream.Collectors;
 
 @Service
-public class UserActivationStateService {
+public class UserActivationStateServiceImpl implements UserActivationStateService {
 
     private final LockedUserHistoryRepository lockedUserHistoryRepo;
 
@@ -22,7 +24,7 @@ public class UserActivationStateService {
     private static final int LOGIN_ATTEMPT_THRESHOLD = 3;
 
     @Autowired
-    public UserActivationStateService(LockedUserHistoryRepository lockedUserHistoryRepo, UserService userService) {
+    public UserActivationStateServiceImpl(LockedUserHistoryRepository lockedUserHistoryRepo, UserServiceImpl userService) {
         this.lockedUserHistoryRepo = lockedUserHistoryRepo;
         this.userService = userService;
     }

@@ -1,15 +1,14 @@
 package com.jfs415.packetwatcher_api.controllers;
 
+import com.jfs415.packetwatcher_api.model.events.AuthenticationEvent;
+import com.jfs415.packetwatcher_api.model.services.inf.EventService;
+import com.jfs415.packetwatcher_api.util.RangedSearchTimeframe;
+import com.jfs415.packetwatcher_api.util.SearchTimeframe;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import com.jfs415.packetwatcher_api.model.events.AuthenticationEvent;
-import com.jfs415.packetwatcher_api.util.RangedSearchTimeframe;
-import com.jfs415.packetwatcher_api.util.SearchTimeframe;
-import com.jfs415.packetwatcher_api.model.services.EventService;
 
 @Controller
 public class AuthenticationEventController {

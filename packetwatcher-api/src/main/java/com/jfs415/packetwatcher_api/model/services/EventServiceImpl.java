@@ -5,6 +5,8 @@ import com.jfs415.packetwatcher_api.exceptions.EventAnnotationNotFoundException;
 import com.jfs415.packetwatcher_api.exceptions.InvalidEventArgumentException;
 import com.jfs415.packetwatcher_api.model.events.EventMappedSuperclass;
 import com.jfs415.packetwatcher_api.model.repositories.PacketWatcherEventRepository;
+import com.jfs415.packetwatcher_api.model.services.inf.EventService;
+import com.jfs415.packetwatcher_api.model.services.inf.RepositoryManager;
 import com.jfs415.packetwatcher_api.util.RangedSearchTimeframe;
 import com.jfs415.packetwatcher_api.util.SearchTimeframe;
 import com.jfs415.packetwatcher_api.views.collections.EventsCollectionView;
@@ -19,12 +21,12 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 @Service
-public class EventService {
+public class EventServiceImpl implements EventService {
 
     private final RepositoryManager repositoryManager;
 
     @Autowired
-    public EventService(RepositoryManager repositoryManager) {
+    public EventServiceImpl(RepositoryManager repositoryManager) {
         this.repositoryManager = repositoryManager;
     }
 

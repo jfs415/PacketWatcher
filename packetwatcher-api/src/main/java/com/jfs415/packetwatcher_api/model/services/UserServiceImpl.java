@@ -3,6 +3,7 @@ package com.jfs415.packetwatcher_api.model.services;
 import com.jfs415.packetwatcher_api.auth.SecurityConfig;
 import com.jfs415.packetwatcher_api.exceptions.UserNotFoundException;
 import com.jfs415.packetwatcher_api.model.repositories.UserRepository;
+import com.jfs415.packetwatcher_api.model.services.inf.UserService;
 import com.jfs415.packetwatcher_api.model.user.Authority;
 import com.jfs415.packetwatcher_api.model.user.User;
 import com.jfs415.packetwatcher_api.model.user.UserActivationState;
@@ -26,7 +27,7 @@ import java.util.HashMap;
 import java.util.stream.Collectors;
 
 @Service
-public class UserService implements UserDetailsService {
+public class UserServiceImpl implements UserDetailsService, UserService {
 
     private final UserRepository userRepo;
 
@@ -42,7 +43,7 @@ public class UserService implements UserDetailsService {
     private static final long FIVE_MINUTES = 300000;
 
     @Autowired
-    public UserService(UserRepository userRepo, JavaMailSender mailSender, SecurityConfig securityConfig) {
+    public UserServiceImpl(UserRepository userRepo, JavaMailSender mailSender, SecurityConfig securityConfig) {
         this.userRepo = userRepo;
         this.mailSender = mailSender;
         this.securityConfig = securityConfig;

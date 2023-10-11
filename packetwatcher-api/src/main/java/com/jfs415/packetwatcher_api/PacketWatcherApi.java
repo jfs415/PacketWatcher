@@ -1,7 +1,6 @@
 package com.jfs415.packetwatcher_api;
 
-import java.util.EnumSet;
-
+import com.jfs415.packetwatcher_api.model.user.Authority;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -11,7 +10,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-import com.jfs415.packetwatcher_api.model.user.Authority;
+import java.util.EnumSet;
+import java.util.Set;
 
 @SpringBootApplication()
 @EnableJpaRepositories()
@@ -19,20 +19,20 @@ import com.jfs415.packetwatcher_api.model.user.Authority;
 @EnableScheduling
 public class PacketWatcherApi extends SpringBootServletInitializer {
 
-	private final Logger logger = LoggerFactory.getLogger(PacketWatcherApi.class);
-	private static final EnumSet<Authority> authoritySet = EnumSet.allOf(Authority.class);
+    private final Logger logger = LoggerFactory.getLogger(PacketWatcherApi.class);
+    private static final EnumSet<Authority> authoritySet = EnumSet.allOf(Authority.class);
 
-	public static EnumSet<Authority> getAuthoritySet() {
-		return authoritySet;
-	}
+    public static Set<Authority> getAuthoritySet() {
+        return authoritySet;
+    }
 
-	public void fail(String message) {
-		logger.error(message);
-		System.exit(1);
-	}
+    public void fail(String message) {
+        logger.error(message);
+        System.exit(1);
+    }
 
-	public static void main(String... args) {
-		SpringApplication.run(PacketWatcherApi.class);
-	}
+    public static void main(String... args) {
+        SpringApplication.run(PacketWatcherApi.class);
+    }
 
 }

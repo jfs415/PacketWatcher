@@ -1,13 +1,7 @@
 package com.jfs415.packetwatcher_api.auth;
 
-import java.io.IOException;
-
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.core.HttpHeaders;
-
+import com.jfs415.packetwatcher_api.model.services.UserService;
+import io.jsonwebtoken.lang.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,48 +10,51 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.jfs415.packetwatcher_api.model.services.UserService;
-
-import io.jsonwebtoken.lang.Strings;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.core.HttpHeaders;
+import java.io.IOException;
 
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 
-	private final JwtUtil jwtUtil;
-	private final UserService userService;
+    private final JwtUtil jwtUtil;
+    private final UserService userService;
 
-	@Autowired
-	public JwtFilter(JwtUtil jwtUtil, UserService userService) {
-		this.jwtUtil = jwtUtil;
-		this.userService = userService;
-	}
+    @Autowired
+    public JwtFilter(JwtUtil jwtUtil, UserService userService) {
+        this.jwtUtil = jwtUtil;
+        this.userService = userService;
+    }
 
-	@Override
-	public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
+    @Override
+    public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
 
-		// Get authorization header and validate
-		final String header = request.getHeader(HttpHeaders.AUTHORIZATION);
-		if (header == null || Strings.hasText(header) || !header.startsWith("Bearer ")) {
-			chain.doFilter(request, response);
-			return;
-		}
+        // Get authorization header and validate
+        final String header = request.getHeader(HttpHeaders.AUTHORIZATION);
+        if (header == null || Strings.hasText(header) || !header.startsWith("Bearer ")) {
+            chain.doFilter(request, response);
+            return;
+        }
 
-		// Get jwt token and validate (bearer dsa.sadasdasdsa -> ([bearer] [dsa.sadasdasdsa])
-		final String token = header.split(" ")[1].trim();
+        // Get jwt token and validate (bearer dsa.sadasdasdsa -> ([bearer] [dsa.sadasdasdsa])
+        final String token = header.split(" ")[1].trim();
 
-		// Get user identity and set it on the spring security context
-		UserDetails userDetails = userService.getUserByUsername(jwtUtil.getUsername(token));
+        // Get user identity and set it on the spring security context
+        UserDetails userDetails = userService.getUserByUsername(jwtUtil.getUsername(token));
 
-		if (userDetails == null || !jwtUtil.validateToken(token, userDetails)) {
-			chain.doFilter(request, response);
-			return;
-		}
+        if (userDetails == null || !jwtUtil.validateToken(token, userDetails)) {
+            chain.doFilter(request, response);
+            return;
+        }
 
-		UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
-		authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-		SecurityContextHolder.getContext().setAuthentication(authentication);
-		chain.doFilter(request, response);
-	}
+        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        chain.doFilter(request, response);
+    }
 
 }

@@ -22,27 +22,27 @@ import com.jfs415.packetwatcher_api.model.user.User;
 @RequestMapping(value = "/", produces = "application/json", method = { RequestMethod.GET })
 public class AuthController {
 
-	private final AuthenticationManager authenticationManager;
-	private final JwtUtil jwtUtil;
+    private final AuthenticationManager authenticationManager;
+    private final JwtUtil jwtUtil;
 
-	@Autowired
-	public AuthController(AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
-		this.authenticationManager = authenticationManager;
-		this.jwtUtil = jwtUtil;
-	}
+    @Autowired
+    public AuthController(AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
+        this.authenticationManager = authenticationManager;
+        this.jwtUtil = jwtUtil;
+    }
 
-	@PostMapping("login")
-	public ResponseEntity<?> processLogin(@RequestBody AuthenticationRequest request) {
+    @PostMapping("login")
+    public ResponseEntity<?> processLogin(@RequestBody AuthenticationRequest request) {
 
-		try {
-			Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+        try {
+            Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
 
-			User user = (User) authenticate.getPrincipal();
+            User user = (User) authenticate.getPrincipal();
 
-			return ResponseEntity.ok().header(HttpHeaders.AUTHORIZATION, jwtUtil.generateToken(user)).body(user.toUserProfileView());
-		} catch (BadCredentialsException e) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-		}
-	}
+            return ResponseEntity.ok().header(HttpHeaders.AUTHORIZATION, jwtUtil.generateToken(user)).body(user.toUserProfileView());
+        } catch (BadCredentialsException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+    }
 
 }

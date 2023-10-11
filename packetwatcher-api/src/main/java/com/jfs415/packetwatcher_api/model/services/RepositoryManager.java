@@ -13,49 +13,49 @@ import java.io.Serializable;
 
 @Service
 public class RepositoryManager {
-	
-	private final WebApplicationContext webApplicationContext;
 
-	private Repositories repositories;
+    private final WebApplicationContext webApplicationContext;
 
-	@Autowired
-	public RepositoryManager(WebApplicationContext webApplicationContext) {
-		this.webApplicationContext = webApplicationContext;
-	}
+    private Repositories repositories;
 
-	@SuppressWarnings("unchecked")
-	public <T extends EventMappedSuperclass, E extends Serializable> PacketWatcherEventRepository<T, E> getEventRepository(Class<?> entity) {
-		ensureRepositoriesInstantiated();
-		Object repository = repositories.getRepositoryFor(entity).orElseThrow(RuntimeException::new);
+    @Autowired
+    public RepositoryManager(WebApplicationContext webApplicationContext) {
+        this.webApplicationContext = webApplicationContext;
+    }
 
-		if (!(repository instanceof PacketWatcherEventRepository)) {
-			throw new RuntimeException("Found repository is not instanceof PacketWatcherEventRepository");
-		}
+    @SuppressWarnings("unchecked")
+    public <T extends EventMappedSuperclass, E extends Serializable> PacketWatcherEventRepository<T, E> getEventRepository(Class<?> entity) {
+        ensureRepositoriesInstantiated();
+        Object repository = repositories.getRepositoryFor(entity).orElseThrow(RuntimeException::new);
 
-		return (PacketWatcherEventRepository<T, E>) repository;
-	}
+        if (!(repository instanceof PacketWatcherEventRepository)) {
+            throw new RuntimeException("Found repository is not instanceof PacketWatcherEventRepository");
+        }
 
-	@SuppressWarnings("unchecked")
-	public <T extends StatsRecord, E extends Serializable> PacketWatcherStatsRepository<T, E> getStatsRepository(Class<?> entity) {
-		ensureRepositoriesInstantiated();
-		Object repository = repositories.getRepositoryFor(entity).orElseThrow(RuntimeException::new);
+        return (PacketWatcherEventRepository<T, E>) repository;
+    }
 
-		if (!(repository instanceof PacketWatcherStatsRepository)) {
-			throw new RuntimeException("Found repository is not instanceof PacketWatcherStatsRepository");
-		}
+    @SuppressWarnings("unchecked")
+    public <T extends StatsRecord, E extends Serializable> PacketWatcherStatsRepository<T, E> getStatsRepository(Class<?> entity) {
+        ensureRepositoriesInstantiated();
+        Object repository = repositories.getRepositoryFor(entity).orElseThrow(RuntimeException::new);
 
-		return (PacketWatcherStatsRepository<T, E>) repository;
-	}
+        if (!(repository instanceof PacketWatcherStatsRepository)) {
+            throw new RuntimeException("Found repository is not instanceof PacketWatcherStatsRepository");
+        }
 
-	private void ensureRepositoriesInstantiated() {
+        return (PacketWatcherStatsRepository<T, E>) repository;
+    }
+
+    private void ensureRepositoriesInstantiated() {
 		/*
 			The repositories' field needs to be lazily instantiated in order to prevent
 			a null ListableBeanFactory (WebApplicationContext) from being passed. This
 			will happen if this Service is loaded before the WebApplicationContext.
 		 */
-		if (repositories == null) {
-			repositories = new Repositories(webApplicationContext);
-		}
-	}
+        if (repositories == null) {
+            repositories = new Repositories(webApplicationContext);
+        }
+    }
 
 }

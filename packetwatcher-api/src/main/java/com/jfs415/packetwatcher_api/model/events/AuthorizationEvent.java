@@ -20,10 +20,10 @@ public class AuthorizationEvent extends EventMappedSuperclass implements Seriali
     @Column(name = "event_type")
     private AuthorizationEventType eventType;
 
-	public AuthorizationEvent(long time, String ipAddress, AuthorizationEventType eventType) {
-		super(new Timestamp(time), null, ipAddress);
-		this.eventType = eventType;
-	}
+    public AuthorizationEvent(long time, String ipAddress, AuthorizationEventType eventType) {
+        super(new Timestamp(time), null, ipAddress);
+        this.eventType = eventType;
+    }
 
     public AuthorizationEvent(long time, String ipAddress, String username, AuthorizationEventType eventType) {
         super(new Timestamp(time), username, ipAddress);

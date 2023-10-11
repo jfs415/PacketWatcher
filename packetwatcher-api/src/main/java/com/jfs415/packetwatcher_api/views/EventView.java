@@ -16,29 +16,29 @@ import java.sql.Timestamp;
 @Immutable
 public class EventView {
 
-	private final Timestamp timestamp;
+    private final Timestamp timestamp;
 
-	private final String username;
+    private final String username;
 
-	private final String ipAddress;
+    private final String ipAddress;
 
-	private final IAuthEventType eventType;
+    private final IAuthEventType eventType;
 
-	public EventView(EventMappedSuperclass event) {
+    public EventView(EventMappedSuperclass event) {
         this.timestamp = event.getTimestamp();
         this.username = event.getUsername();
         this.ipAddress = event.getIpAddress();
         this.eventType = getEventTypeFromSuperEvent(event);
     }
 
-	private IAuthEventType getEventTypeFromSuperEvent(EventMappedSuperclass event) {
-		if (event instanceof AuthorizationEvent) {
-			return ((AuthorizationEvent) event).getEventType();
-		} else if (event instanceof AuthenticationEvent) {
-			return ((AuthenticationEvent) event).getEventType();
-		} else {
-			throw new InvalidEventArgumentException();
-		}
-	}
+    private IAuthEventType getEventTypeFromSuperEvent(EventMappedSuperclass event) {
+        if (event instanceof AuthorizationEvent) {
+            return ((AuthorizationEvent) event).getEventType();
+        } else if (event instanceof AuthenticationEvent) {
+            return ((AuthenticationEvent) event).getEventType();
+        } else {
+            throw new InvalidEventArgumentException();
+        }
+    }
 
 }

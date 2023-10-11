@@ -25,7 +25,7 @@ public class CountryStatsRecord extends StatsRecord implements Serializable {
 
     @Column(name = "most_caught_hostname_count")
     private int mostCaughtHostnameCount;
-	
+
     @Override
     public boolean equals(Object other) {
         if (other instanceof CountryStatsRecord) {

@@ -16,33 +16,33 @@ import com.jfs415.packetwatcher_api.views.UserProfileView;
 @RestController
 public class UsersController {
 
-	private final UserService userService;
-	private final UserActivationStateService userActivationStateService;
+    private final UserService userService;
+    private final UserActivationStateService userActivationStateService;
 
-	@Autowired
-	public UsersController(UserService userService, UserActivationStateService userActivationStateService) {
-		this.userService = userService;
-		this.userActivationStateService = userActivationStateService;
-	}
+    @Autowired
+    public UsersController(UserService userService, UserActivationStateService userActivationStateService) {
+        this.userService = userService;
+        this.userActivationStateService = userActivationStateService;
+    }
 
-	@GetMapping("/users")
-	public ResponseEntity<?> getAllUsers(@AuthenticationPrincipal User user) {
-		return ResponseEntity.ok(userService.getAllUserProfilesWithLevelLessThanEqual(user.getLevel()));
-	}
+    @GetMapping("/users")
+    public ResponseEntity<?> getAllUsers(@AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(userService.getAllUserProfilesWithLevelLessThanEqual(user.getLevel()));
+    }
 
-	@GetMapping("/users/locked/history")
-	public ResponseEntity<?> getAllLockedUserHistory() {
-		return ResponseEntity.ok(userActivationStateService.getAllLockedUserHistoryRecords());
-	}
+    @GetMapping("/users/locked/history")
+    public ResponseEntity<?> getAllLockedUserHistory() {
+        return ResponseEntity.ok(userActivationStateService.getAllLockedUserHistoryRecords());
+    }
 
-	@GetMapping("/users/locked")
-	public ResponseEntity<?> getAllLockedAccounts() {
-		return ResponseEntity.ok(userService.getLockedUserProfiles());
-	}
+    @GetMapping("/users/locked")
+    public ResponseEntity<?> getAllLockedAccounts() {
+        return ResponseEntity.ok(userService.getLockedUserProfiles());
+    }
 
-	@PutMapping("/profile/update")
-	public ResponseEntity<?> updateUserProfile(@AuthenticationPrincipal User user, @RequestBody UserProfileView updatedUserProfile) {
-		return ResponseEntity.ok(userService.updateUser(user, updatedUserProfile));
-	}
+    @PutMapping("/profile/update")
+    public ResponseEntity<?> updateUserProfile(@AuthenticationPrincipal User user, @RequestBody UserProfileView updatedUserProfile) {
+        return ResponseEntity.ok(userService.updateUser(user, updatedUserProfile));
+    }
 
 }

@@ -21,15 +21,15 @@ public class AuthenticationEvent extends EventMappedSuperclass implements Serial
     @Enumerated(EnumType.STRING)
     @Column(name = "event_type")
     private AuthenticationEventType eventType;
-	
-	public AuthenticationEvent(long time, String ipAddress, AuthenticationEventType eventType) {
-		super(new Timestamp(time), null, ipAddress);
-		this.eventType = eventType;
-	}
 
-	public AuthenticationEvent(long time, String ipAddress, String attemptedUsername, AuthenticationEventType eventType) {
-		super(new Timestamp(time), attemptedUsername, ipAddress);
-		this.eventType = eventType;
-	}
+    public AuthenticationEvent(long time, String ipAddress, AuthenticationEventType eventType) {
+        super(new Timestamp(time), null, ipAddress);
+        this.eventType = eventType;
+    }
+
+    public AuthenticationEvent(long time, String ipAddress, String attemptedUsername, AuthenticationEventType eventType) {
+        super(new Timestamp(time), attemptedUsername, ipAddress);
+        this.eventType = eventType;
+    }
 
 }

@@ -4,10 +4,10 @@ import java.sql.Timestamp;
 
 public interface IPacketWatcherEvent {
 
-	Timestamp getTimestamp();
+    Timestamp getTimestamp();
 
-	String getUsername();
+    String getUsername();
 
-	String getIpAddress();
+    String getIpAddress();
 
 }

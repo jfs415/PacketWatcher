@@ -1,5 +1,6 @@
 package com.jfs415.packetwatcher_core.test.unit;
 
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.pcap4j.core.PcapAddress;
 import org.pcap4j.core.PcapNativeException;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
 
+@Order(3)
 class Pcap4jTests {
 
     private static final String HOST_ADDR = "192.168";

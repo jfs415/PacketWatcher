@@ -2,6 +2,7 @@ package com.jfs415.packetwatcher_core.test.unit;
 
 import com.axlabs.ip2asn2cc.Ip2Asn2Cc;
 import com.axlabs.ip2asn2cc.exception.RIRNotDownloadedException;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
 import java.util.EnumSet;
@@ -9,6 +10,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+@Order(4)
 class Ip2Asn2CcTest {
 
     private Ip2Asn2Cc ipLookupUtility = null;

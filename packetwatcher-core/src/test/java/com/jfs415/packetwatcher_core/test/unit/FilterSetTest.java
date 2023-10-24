@@ -1,11 +1,13 @@
 package com.jfs415.packetwatcher_core.test.unit;
 
 import com.jfs415.packetwatcher_core.filter.FilterSet;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Order(1)
 class FilterSetTest {
 
     private final List<String> stringList = List.of("CN", "RU", "BY", "IR", "CU");

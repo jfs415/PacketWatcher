@@ -1,10 +1,12 @@
 package com.jfs415.packetwatcher_core.test.unit;
 
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
 import com.jfs415.packetwatcher_core.filter.IpComparator;
 import com.jfs415.packetwatcher_core.filter.RangedFilter;
 
+@Order(2)
 class RangedFilterTest {
 
     private final RangedFilter<String> ipRangedFilter = new RangedFilter<>("192.168.1.1", "192.168.1.255", new IpComparator());

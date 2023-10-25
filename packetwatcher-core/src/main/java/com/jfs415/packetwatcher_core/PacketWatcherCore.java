@@ -25,7 +25,7 @@ public class PacketWatcherCore {
     @Autowired
     public PacketWatcherCore(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
-        ((ConfigurableApplicationContext) applicationContext).registerShutdownHook();
+        ((ConfigurableApplicationContext) this.applicationContext).registerShutdownHook();
     }
 
     public synchronized void fail(String message) {

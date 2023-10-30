@@ -4,6 +4,7 @@ import org.pcap4j.core.PacketListener;
 import org.pcap4j.core.PcapPacket;
 import org.pcap4j.packet.EthernetPacket;
 import org.pcap4j.packet.IpV4Packet.IpV4Header;
+import org.pcap4j.packet.IpV6Packet.IpV6Header;
 import org.pcap4j.packet.TcpPacket;
 import org.pcap4j.packet.TcpPacket.TcpHeader;
 import org.slf4j.Logger;
@@ -20,6 +21,7 @@ import java.sql.Timestamp;
 import java.util.EnumMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Component
 public class FilterRulesManager implements PacketListener {
@@ -66,40 +68,37 @@ public class FilterRulesManager implements PacketListener {
     }
 
     private void processIngressPacket(FilterConfigurationManager filterConfigurationManager, PcapPacket pcapPacket, TcpHeader tcpHeader) {
-        IpV4Header ipv4Header = getIpv4Header(pcapPacket);
-        String ipToTest = getDestinationIp(ipv4Header);
-        Timestamp timestamp = new Timestamp(pcapPacket.getTimestamp().getEpochSecond());
+        if (pcapPacket.getPacket() instanceof EthernetPacket ethernetPacket && isTcpPacket(pcapPacket)) {
+            getDestinationIp(ethernetPacket).ifPresent(ipToTest -> {
+                Timestamp timestamp = new Timestamp(pcapPacket.getTimestamp().getEpochSecond());
 
-        if (ipv4Header != null && ipToTest.isBlank() && isIpInLocalRange(ipToTest)) {
-            filterConfigurationManager.checkFilterConfiguration(timestamp, ipv4Header, tcpHeader);
+                if (!ipToTest.isBlank() && !isIpInLocalRange(ipToTest)) {
+                    filterConfigurationManager.checkFilterConfiguration(timestamp, ethernetPacket, tcpHeader);
+                }
+            });
         }
     }
 
     private void processEgressPacket(FilterConfigurationManager filterConfigurationManager, PcapPacket pcapPacket, TcpHeader tcpHeader) {
-        IpV4Header ipv4Header = getIpv4Header(pcapPacket);
-        String ipToTest = getDestinationIp(ipv4Header);
-        Timestamp timestamp = new Timestamp(pcapPacket.getTimestamp().getEpochSecond());
+        if (pcapPacket.getPacket() instanceof EthernetPacket ethernetPacket && isTcpPacket(pcapPacket)) {
+            getDestinationIp(ethernetPacket).ifPresent(ipToTest -> {
+                Timestamp timestamp = new Timestamp(pcapPacket.getTimestamp().getEpochSecond());
 
-        if (ipv4Header != null && ipToTest.isBlank() && !isIpInLocalRange(ipToTest)) {
-            filterConfigurationManager.checkFilterConfiguration(timestamp, ipv4Header, tcpHeader);
+                if (!ipToTest.isBlank() && !isIpInLocalRange(ipToTest)) {
+                    filterConfigurationManager.checkFilterConfiguration(timestamp, ethernetPacket, tcpHeader);
+                }
+            });
         }
     }
 
-    private IpV4Header getIpv4Header(PcapPacket pcapPacket) {
-        if (pcapPacket.getPacket() instanceof EthernetPacket && isTcpPacket(pcapPacket)) {
-            EthernetPacket eth = (EthernetPacket) pcapPacket.getPacket();
-            return ((IpV4Header) eth.getPayload().getHeader());
+    private Optional<String> getDestinationIp(EthernetPacket ethernetPacket) {
+        if (ethernetPacket.getPayload().getHeader() instanceof IpV4Header ipV4Header) {
+            return Optional.of(ipV4Header.getDstAddr().getHostAddress());
+        } else if (ethernetPacket.getPayload().getHeader() instanceof IpV6Header ipV6Header) {
+            return Optional.of(ipV6Header.getDstAddr().getHostAddress());
         }
 
-        return null;
-    }
-
-    private String getDestinationIp(IpV4Header ipv4Header) {
-        if (ipv4Header != null) {
-            return ipv4Header.getDstAddr().getHostAddress();
-        }
-
-        return null;
+        return Optional.empty();
     }
 
     @SuppressWarnings("unchecked")

@@ -2,7 +2,7 @@ package com.jfs415.packetwatcher_core.filter;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonValue;
-import org.pcap4j.packet.IpV4Packet.IpV4Header;
+import org.pcap4j.packet.EthernetPacket;
 import org.pcap4j.packet.TcpPacket.TcpHeader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -26,8 +26,8 @@ public class FilterConfigurationManager {
         this.filterOptionsManager = filterOptionsManager;
     }
 
-    protected void checkFilterConfiguration(Timestamp timestamp, IpV4Header ipV4Header, TcpHeader tcpHeader) {
-        configurationOptions.forEach((k, v) -> v.checkFilterOptions(timestamp, ipV4Header, tcpHeader));
+    protected void checkFilterConfiguration(Timestamp timestamp, EthernetPacket ethernetPacket, TcpHeader tcpHeader) {
+        configurationOptions.forEach((k, v) -> v.checkFilterOptions(timestamp, ethernetPacket, tcpHeader));
     }
 
     @SuppressWarnings("unchecked")

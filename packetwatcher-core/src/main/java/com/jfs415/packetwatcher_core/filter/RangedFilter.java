@@ -42,8 +42,12 @@ public final class RangedFilter<T extends Comparable<T>> implements IRangedFilte
 
     @Override
     public boolean isFilterValue(T value) {
-        return rangedComparator == null ? value.compareTo(rangeStart) >= 0 && value.compareTo(rangeEnd) <= 0
-                : rangedComparator.isInRangeInclusive(value, rangeStart, rangeEnd);
+        if (isType(value.getClass())) {
+            return rangedComparator == null ? value.compareTo(rangeStart) >= 0 && value.compareTo(rangeEnd) <= 0
+                    : rangedComparator.isInRangeInclusive(value, rangeStart, rangeEnd);
+        }
+
+        return false;
     }
 
     @Override
@@ -65,22 +69,29 @@ public final class RangedFilter<T extends Comparable<T>> implements IRangedFilte
 
     @Override
     public boolean isInRangeLowerExclusiveUpperInclusive(T value) {
-        return rangedComparator == null ? value.compareTo(rangeStart) > 0 && value.compareTo(rangeEnd) <= 0
-                : rangedComparator.isInRangeLowerExclusiveUpperInclusive(value, rangeStart, rangeEnd);
+        if (isType(value.getClass())) {
+            return rangedComparator == null ? value.compareTo(rangeStart) > 0 && value.compareTo(rangeEnd) <= 0
+                    : rangedComparator.isInRangeLowerExclusiveUpperInclusive(value, rangeStart, rangeEnd);
+        }
+
+        return false;
     }
 
     @Override
     public boolean anyInRange(List<T> values) {
         return values.stream().anyMatch(v -> {
-            return rangedComparator == null ? v.compareTo(rangeStart) >= 0 && v.compareTo(rangeEnd) <= 0
-                    : rangedComparator.isInRangeInclusive(v, rangeStart, rangeEnd);
+            if (isType(v.getClass())) {
+                return rangedComparator == null ? v.compareTo(rangeStart) >= 0 && v.compareTo(rangeEnd) <= 0
+                        : rangedComparator.isInRangeInclusive(v, rangeStart, rangeEnd);
+            }
+
+            return false;
         });
     }
 
     @Override
     public boolean equals(Object other) {
-        if (other instanceof RangedFilter<?>) {
-            RangedFilter<?> otherFilter = (RangedFilter<?>) other;
+        if (other instanceof RangedFilter<?> otherFilter) {
             return this.rangeStart.equals(otherFilter.rangeStart) && this.rangeEnd.equals(otherFilter.rangeEnd);
         }
 

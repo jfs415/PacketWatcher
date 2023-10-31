@@ -9,7 +9,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
@@ -18,7 +17,6 @@ import java.util.Set;
 
 @SpringBootApplication()
 @EnableJpaRepositories()
-@ComponentScan(basePackages = { "com.jfs415.packetwatcher_core", "com.jfs415.packetwatcher_api" })
 @EnableScheduling
 public class PacketWatcherApi extends SpringBootServletInitializer {
 

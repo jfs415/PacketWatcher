@@ -14,9 +14,5 @@ public interface PacketService {
 
     void addBatchToFlaggedPacketSaveQueue(List<FlaggedPacketRecord> packetRecords);
 
-    List<FlaggedPacketRecord> getAllFlaggedPacketRecords();
-
-    List<FlaggedPacketRecord> getLast30FlaggedPacketRecords();
-
     void validateRecord(FlaggedPacketRecord packetRecord);
 }

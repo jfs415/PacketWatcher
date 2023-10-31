@@ -21,13 +21,13 @@ import java.sql.Timestamp;
 public class FlaggedPacketRecord implements Serializable {
 
     @EmbeddedId
-    private PacketRecordKey key;
+    public PacketRecordKey key;
 
     @Column(name = "destination_host")
     public String destinationHost;
 
     @Column(name = "flagged_country")
-    private String flaggedCountry;
+    public String flaggedCountry;
 
     public static FlaggedPacketRecord createTestPacket() {
         PacketRecordKey key = new PacketRecordKey(new Timestamp(System.currentTimeMillis()), "127.0.0.1", "00000", "127.0.0.1", "00000");

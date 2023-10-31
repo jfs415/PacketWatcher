@@ -1,6 +1,6 @@
 package com.jfs415.packetwatcher_api.views.collections;
 
-import com.jfs415.packetwatcher_api.views.FlaggedPacketView;
+import com.jfs415.packetwatcher_api.views.RawPacketView;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.data.annotation.Immutable;
@@ -11,11 +11,11 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Immutable
-public class CapturedPacketsCollectionView {
+public class RawPacketsCollectionView {
 
-    private final List<FlaggedPacketView> packets;
+    private final List<RawPacketView> packets;
 
-    public CapturedPacketsCollectionView() {
+    public RawPacketsCollectionView() {
         this.packets = new ArrayList<>();
     }
 

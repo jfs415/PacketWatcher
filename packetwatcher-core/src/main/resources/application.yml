@@ -26,6 +26,9 @@ logging:
     org:
       springframework: info
       
+application:
+  version: 1.0.0
+      
 packetwatcher-core:
   survive-rir-exception: true
   flagged-packet-retention-days: 90

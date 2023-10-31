@@ -38,6 +38,10 @@ logging:
     org:
       springframework: TRACE
     com: TRACE
+
+application:
+  version: 1.0.0
+    
 packetwatcher-api:
   password-strength: 12
   jwt:

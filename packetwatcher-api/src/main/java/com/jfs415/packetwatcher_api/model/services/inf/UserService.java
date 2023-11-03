@@ -17,7 +17,7 @@ public interface UserService {
 
     void deleteUser(User user);
 
-    User updateUser(User user, UserProfileView updatedProfile);
+    UserProfileView updateUser(UserProfileView existingProfile, UserProfileView updatedProfile);
 
     User getUserByUsername(String username) throws UserNotFoundException;
 

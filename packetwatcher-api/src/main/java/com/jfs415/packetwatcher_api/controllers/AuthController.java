@@ -1,5 +1,6 @@
 package com.jfs415.packetwatcher_api.controllers;
 
+import com.jfs415.packetwatcher_api.views.UserProfileView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -32,7 +33,7 @@ public class AuthController {
     }
 
     @PostMapping("login")
-    public ResponseEntity<?> processLogin(@RequestBody AuthenticationRequest request) {
+    public ResponseEntity<UserProfileView> processLogin(@RequestBody AuthenticationRequest request) {
 
         try {
             Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));

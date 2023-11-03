@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -71,11 +72,18 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Transactional
-    public User updateUser(User user, UserProfileView updatedProfile) {
-        user.updateFromProfile(updatedProfile);
-        saveUser(user);
+    public UserProfileView updateUser(UserProfileView existingProfile, UserProfileView updatedProfile) {
+        Optional<User> user = userRepo.findByUsername(existingProfile.getUsername());
+        
+        if (user.isEmpty()) {
+            throw new UserNotFoundException();
+        }
+        
+        User existingUser = user.get();
+        existingUser.updateFromProfile(updatedProfile);
+        saveUser(existingUser);
 
-        return user;
+        return updatedProfile;
     }
 
     @Transactional

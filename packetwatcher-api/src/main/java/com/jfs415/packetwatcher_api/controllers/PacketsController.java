@@ -8,8 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.stream.Collectors;
-
 @RestController
 public class PacketsController {
 
@@ -21,8 +19,8 @@ public class PacketsController {
     }
 
     @GetMapping("/packets")
-    public ResponseEntity<?> getDefaultCapturedPacketsView() {
-        return ResponseEntity.ok(new RawPacketsCollectionView(packetService.getLast30FlaggedPacketRecords().stream().map(RawPacketView::new).collect(Collectors.toList())));
+    public ResponseEntity<RawPacketsCollectionView> getDefaultCapturedPacketsView() {
+        return ResponseEntity.ok(new RawPacketsCollectionView(packetService.getLast30FlaggedPacketRecords().stream().map(RawPacketView::new).toList()));
     }
 
 }

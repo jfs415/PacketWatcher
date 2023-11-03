@@ -6,12 +6,14 @@ import com.jfs415.packetwatcher_api.exceptions.UserNotFoundException;
 import com.jfs415.packetwatcher_api.model.services.inf.UserService;
 import com.jfs415.packetwatcher_api.model.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Map;
 import java.util.Objects;
@@ -63,14 +65,14 @@ public class RecoverAccountController {
             User user = userService.getUserByUsername(request.getUsername());
 
             if (!userService.isCorrectPasswordResetToken(request.getToken(), user.getPasswordResetToken())) {
-                return ResponseEntity.notFound().build();
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Incorrect Username or Password");
             }
 
             userService.updatePassword(user, request.getPassword());
 
             return ResponseEntity.ok(true);
         } catch (UserNotFoundException e) {
-            return ResponseEntity.notFound().build();
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
     }
 

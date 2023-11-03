@@ -23,7 +23,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
+
+/**
+ * Concrete implementation class that handles functionality outlined in the UserService interface.
+ * The adding, accessing, and removal of password reset requests in the underlying storage
+ * of this implementation is thread safe.
+ * 
+ * @see UserService
+ */
 
 @Service
 public class UserServiceImpl implements UserDetailsService, UserService {
@@ -37,7 +45,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     @Value("${spring.mail.password}")
     private String sender;
 
-    private final HashMap<String, Long> passwordResetTimestamps = new HashMap<>();
+    private final ConcurrentHashMap<String, Long> passwordResetTimestamps = new ConcurrentHashMap<>();
 
     private static final long FIVE_MINUTES = 300000;
 

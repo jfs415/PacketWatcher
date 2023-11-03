@@ -1,9 +1,11 @@
 package com.jfs415.packetwatcher_api.controllers;
 
+import com.jfs415.packetwatcher_api.model.services.UserServiceImpl;
 import com.jfs415.packetwatcher_api.model.services.inf.UserActivationStateService;
-import com.jfs415.packetwatcher_api.model.services.inf.UserService;
 import com.jfs415.packetwatcher_api.model.user.User;
 import com.jfs415.packetwatcher_api.views.UserProfileView;
+import com.jfs415.packetwatcher_api.views.collections.LockedUserHistoryCollectionView;
+import com.jfs415.packetwatcher_api.views.collections.UserProfilesCollectionView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -15,11 +17,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class UsersController {
 
-    private final UserService userService;
+    private final UserServiceImpl userService;
     private final UserActivationStateService userActivationStateService;
 
     @Autowired
-    public UsersController(UserService userService, UserActivationStateService userActivationStateService) {
+    public UsersController(UserServiceImpl userService, UserActivationStateService userActivationStateService) {
         this.userService = userService;
         this.userActivationStateService = userActivationStateService;
     }

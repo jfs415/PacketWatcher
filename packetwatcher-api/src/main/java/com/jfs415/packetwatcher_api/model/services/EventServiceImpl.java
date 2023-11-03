@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.Entity;
 import java.io.Serializable;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -30,37 +29,37 @@ public class EventServiceImpl implements EventService {
         this.repositoryManager = repositoryManager;
     }
 
-    @Transactional
+    @Transactional(noRollbackFor = EventAnnotationNotFoundException.class)
     public void save(EventMappedSuperclass event) throws InvalidEventArgumentException {
         try {
             validate(event.getClass());
-        } catch (EventAnnotationNotFoundException e) {
-            e.printStackTrace();
+        } catch (EventAnnotationNotFoundException ignored) {
+            return;
         }
 
         PacketWatcherEventRepository<EventMappedSuperclass, Serializable> repository = repositoryManager.getEventRepository(event.getClass());
         repository.save(event);
     }
 
+    @Transactional(noRollbackFor = EventAnnotationNotFoundException.class)
     public EventsCollectionView getEventsByTypeAndIpAddress(Class<?> eventType, String ipAddress) {
         try {
             validate(eventType);
-        } catch (EventAnnotationNotFoundException e) {
-            e.printStackTrace();
+        } catch (EventAnnotationNotFoundException ignored) {
             return new EventsCollectionView();
         }
 
         PacketWatcherEventRepository<EventMappedSuperclass, Serializable> repository = repositoryManager.getEventRepository(eventType);
         Stream<EventMappedSuperclass> events = StreamSupport.stream(repository.findAllByIpAddress(ipAddress).spliterator(), true);
 
-        return new EventsCollectionView(events.map(EventMappedSuperclass::toEventView).collect(Collectors.toList()));
+        return new EventsCollectionView(events.map(EventMappedSuperclass::toEventView).toList());
     }
 
+    @Transactional(noRollbackFor = EventAnnotationNotFoundException.class)
     public EventsCollectionView getEventsByTypeAndIpAddressWithTimeframe(Class<?> eventType, String ipAddress, SearchTimeframe timeframe) {
         try {
             validate(eventType);
-        } catch (EventAnnotationNotFoundException e) {
-            e.printStackTrace();
+        } catch (EventAnnotationNotFoundException ignored) {
             return new EventsCollectionView();
         }
 
@@ -68,78 +67,78 @@ public class EventServiceImpl implements EventService {
         return lookupEventsWithIpAddressAndTimeframe(repository, ipAddress, timeframe);
     }
 
+    @Transactional(noRollbackFor = EventAnnotationNotFoundException.class)
     public EventsCollectionView getEventsByTypeAndIpAddressAndUsername(Class<?> eventType, String ipAddress, String username) {
         try {
             validate(eventType);
-        } catch (EventAnnotationNotFoundException e) {
-            e.printStackTrace();
+        } catch (EventAnnotationNotFoundException ignored) {
             return new EventsCollectionView();
         }
 
         PacketWatcherEventRepository<EventMappedSuperclass, Serializable> repository = repositoryManager.getEventRepository(eventType);
         Stream<EventMappedSuperclass> events = StreamSupport.stream(repository.findAllByIpAddressAndUsername(ipAddress, username).spliterator(), false);
 
-        return new EventsCollectionView(events.map(EventMappedSuperclass::toEventView).collect(Collectors.toList()));
+        return new EventsCollectionView(events.map(EventMappedSuperclass::toEventView).toList());
     }
 
+    @Transactional(noRollbackFor = EventAnnotationNotFoundException.class)
     public EventsCollectionView getEventsByTypeAndIpAddressAndUsernameWithTimeframe(Class<?> eventType, String ipAddress, String username, SearchTimeframe timeframe) {
         try {
             validate(eventType);
-        } catch (EventAnnotationNotFoundException e) {
-            e.printStackTrace();
+        } catch (EventAnnotationNotFoundException ignored) {
             return new EventsCollectionView();
         }
 
         return lookupEventsWithUsernameAndIpAddressAndTimeframe(repositoryManager.getEventRepository(eventType), username, ipAddress, timeframe);
     }
 
+    @Transactional(noRollbackFor = EventAnnotationNotFoundException.class)
     public EventsCollectionView getEventsByTypeAndUsernameWithTimeframe(Class<?> eventType, String username, SearchTimeframe timeframe) {
         try {
             validate(eventType);
-        } catch (EventAnnotationNotFoundException e) {
-            e.printStackTrace();
+        } catch (EventAnnotationNotFoundException ignored) {
             return new EventsCollectionView();
         }
 
         return lookupEventsWithUsernameAndTimeframe(repositoryManager.getEventRepository(eventType), username, timeframe);
     }
 
+    @Transactional(noRollbackFor = EventAnnotationNotFoundException.class)
     public EventsCollectionView getEventsByTypeAndUsername(Class<?> eventType, String username) {
         try {
             validate(eventType);
-        } catch (EventAnnotationNotFoundException e) {
-            e.printStackTrace();
+        } catch (EventAnnotationNotFoundException ignored) {
             return new EventsCollectionView();
         }
 
         PacketWatcherEventRepository<EventMappedSuperclass, Serializable> repository = repositoryManager.getEventRepository(eventType);
         Stream<EventMappedSuperclass> events = StreamSupport.stream(repository.findAllByUsername(username).spliterator(), true);
 
-        return new EventsCollectionView(events.map(EventMappedSuperclass::toEventView).collect(Collectors.toList()));
+        return new EventsCollectionView(events.map(EventMappedSuperclass::toEventView).toList());
     }
 
+    @Transactional(noRollbackFor = EventAnnotationNotFoundException.class)
     public EventsCollectionView getEventsByTypeWithTimeframe(Class<?> eventType, SearchTimeframe timeframe) {
         try {
             validate(eventType);
-        } catch (EventAnnotationNotFoundException e) {
-            e.printStackTrace();
+        } catch (EventAnnotationNotFoundException ignored) {
             return new EventsCollectionView();
         }
 
         return lookupEventsWithTimeframeOnly(repositoryManager.getEventRepository(eventType), timeframe);
     }
 
+    @Transactional(noRollbackFor = EventAnnotationNotFoundException.class)
     public EventsCollectionView getEventsByType(Class<?> eventType) {
         try {
             validate(eventType);
-        } catch (EventAnnotationNotFoundException e) {
-            e.printStackTrace();
+        } catch (EventAnnotationNotFoundException ignored) {
             return new EventsCollectionView();
         }
 
         PacketWatcherEventRepository<EventMappedSuperclass, Serializable> repository = repositoryManager.getEventRepository(eventType);
 
-        return new EventsCollectionView(repository.findAll().stream().map(EventMappedSuperclass::toEventView).collect(Collectors.toList()));
+        return new EventsCollectionView(repository.findAll().stream().map(EventMappedSuperclass::toEventView).toList());
     }
 
     private EventsCollectionView lookupEventsWithUsernameAndIpAddressAndTimeframe(PacketWatcherEventRepository<EventMappedSuperclass, Serializable> repository, String username, String ipAddress, SearchTimeframe searchTimeframe) {
@@ -148,14 +147,14 @@ public class EventServiceImpl implements EventService {
         switch (searchTimeframe.getTimeframe()) {
             case BEFORE:
                 events = StreamSupport.stream(repository.findAllByUsernameAndIpAddressAndTimestampBefore(username, ipAddress, searchTimeframe.getTimestamp()).spliterator(), true);
-                return new EventsCollectionView(events.map(EventMappedSuperclass::toEventView).collect(Collectors.toList()));
+                return new EventsCollectionView(events.map(EventMappedSuperclass::toEventView).toList());
             case AFTER:
                 events = StreamSupport.stream(repository.findAllByUsernameAndIpAddressAndTimestampAfter(username, ipAddress, searchTimeframe.getTimestamp()).spliterator(), true);
-                return new EventsCollectionView(events.map(EventMappedSuperclass::toEventView).collect(Collectors.toList()));
+                return new EventsCollectionView(events.map(EventMappedSuperclass::toEventView).toList());
             case BETWEEN:
                 RangedSearchTimeframe dualTimeframe = (RangedSearchTimeframe) searchTimeframe;
                 events = StreamSupport.stream(repository.findAllByUsernameAndIpAddressAndTimestampBetween(username, ipAddress, dualTimeframe.getStart(), dualTimeframe.getEnd()).spliterator(), true);
-                return new EventsCollectionView(events.map(EventMappedSuperclass::toEventView).collect(Collectors.toList()));
+                return new EventsCollectionView(events.map(EventMappedSuperclass::toEventView).toList());
             default:
                 return new EventsCollectionView();
         }
@@ -167,14 +166,14 @@ public class EventServiceImpl implements EventService {
         switch (searchTimeframe.getTimeframe()) {
             case BEFORE:
                 events = StreamSupport.stream(repository.findAllByIpAddressAndTimestampBefore(ipAddress, searchTimeframe.getTimestamp()).spliterator(), true);
-                return new EventsCollectionView(events.map(EventMappedSuperclass::toEventView).collect(Collectors.toList()));
+                return new EventsCollectionView(events.map(EventMappedSuperclass::toEventView).toList());
             case AFTER:
                 events = StreamSupport.stream(repository.findAllByIpAddressAndTimestampAfter(ipAddress, searchTimeframe.getTimestamp()).spliterator(), true);
-                return new EventsCollectionView(events.map(EventMappedSuperclass::toEventView).collect(Collectors.toList()));
+                return new EventsCollectionView(events.map(EventMappedSuperclass::toEventView).toList());
             case BETWEEN:
                 RangedSearchTimeframe dualTimeframe = (RangedSearchTimeframe) searchTimeframe;
                 events = StreamSupport.stream(repository.findAllByIpAddressAndTimestampBetween(ipAddress, dualTimeframe.getStart(), dualTimeframe.getEnd()).spliterator(), true);
-                return new EventsCollectionView(events.map(EventMappedSuperclass::toEventView).collect(Collectors.toList()));
+                return new EventsCollectionView(events.map(EventMappedSuperclass::toEventView).toList());
             default:
                 return new EventsCollectionView();
         }
@@ -186,14 +185,14 @@ public class EventServiceImpl implements EventService {
         switch (searchTimeframe.getTimeframe()) {
             case BEFORE:
                 events = StreamSupport.stream(repository.findAllByUsernameAndTimestampBefore(username, searchTimeframe.getTimestamp()).spliterator(), true);
-                return new EventsCollectionView(events.map(EventMappedSuperclass::toEventView).collect(Collectors.toList()));
+                return new EventsCollectionView(events.map(EventMappedSuperclass::toEventView).toList());
             case AFTER:
                 events = StreamSupport.stream(repository.findAllByUsernameAndTimestampAfter(username, searchTimeframe.getTimestamp()).spliterator(), true);
-                return new EventsCollectionView(events.map(EventMappedSuperclass::toEventView).collect(Collectors.toList()));
+                return new EventsCollectionView(events.map(EventMappedSuperclass::toEventView).toList());
             case BETWEEN:
                 RangedSearchTimeframe dualTimeframe = (RangedSearchTimeframe) searchTimeframe;
                 events = StreamSupport.stream(repository.findAllByUsernameAndTimestampBetween(username, dualTimeframe.getStart(), dualTimeframe.getEnd()).spliterator(), true);
-                return new EventsCollectionView(events.map(EventMappedSuperclass::toEventView).collect(Collectors.toList()));
+                return new EventsCollectionView(events.map(EventMappedSuperclass::toEventView).toList());
             default:
                 return new EventsCollectionView();
         }
@@ -205,14 +204,14 @@ public class EventServiceImpl implements EventService {
         switch (searchTimeframe.getTimeframe()) {
             case BEFORE:
                 events = StreamSupport.stream(repository.findAllByTimestampBefore(searchTimeframe.getTimestamp()).spliterator(), true);
-                return new EventsCollectionView(events.map(EventMappedSuperclass::toEventView).collect(Collectors.toList()));
+                return new EventsCollectionView(events.map(EventMappedSuperclass::toEventView).toList());
             case AFTER:
                 events = StreamSupport.stream(repository.findAllByTimestampAfter(searchTimeframe.getTimestamp()).spliterator(), true);
-                return new EventsCollectionView(events.map(EventMappedSuperclass::toEventView).collect(Collectors.toList()));
+                return new EventsCollectionView(events.map(EventMappedSuperclass::toEventView).toList());
             case BETWEEN:
                 RangedSearchTimeframe dualTimeframe = (RangedSearchTimeframe) searchTimeframe;
                 events = StreamSupport.stream(repository.findAllByTimestampBetween(dualTimeframe.getStart(), dualTimeframe.getEnd()).spliterator(), true);
-                return new EventsCollectionView(events.map(EventMappedSuperclass::toEventView).collect(Collectors.toList()));
+                return new EventsCollectionView(events.map(EventMappedSuperclass::toEventView).toList());
             default:
                 return new EventsCollectionView();
         }

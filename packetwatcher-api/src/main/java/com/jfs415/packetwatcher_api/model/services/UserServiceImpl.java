@@ -24,7 +24,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.util.HashMap;
-import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserDetailsService, UserService {
@@ -71,38 +70,42 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         return user;
     }
 
+    @Transactional
     public User getUserByUsername(String username) throws UserNotFoundException {
         return userRepo.findByUsername(username).orElseThrow(UserNotFoundException::new);
     }
 
+    @Transactional
     public User getUserByEmail(String email) throws UserNotFoundException {
         return userRepo.findByEmail(email).orElseThrow(UserNotFoundException::new);
     }
 
+    @Transactional
     public UserProfilesCollectionView getAllUserProfilesWithLevelLessThanEqual(Authority authority) {
-        return new UserProfilesCollectionView(userRepo.findAllByLevelIsLessThanEqual(authority).stream().map(User::toUserProfileView).collect(Collectors.toList()));
+        return new UserProfilesCollectionView(userRepo.findAllByLevelIsLessThanEqual(authority).stream().map(User::toUserProfileView).toList());
     }
 
-    //    public UserProfilesCollectionView getAllProfiles() {
-    //        return new UserProfilesCollectionView(userRepo.findAll().stream().map(User::toUserProfileView).collect(Collectors.toList())); //TODO: Testing method only, do not push to production
-    //    }
-
+    @Transactional
     public UserProfilesCollectionView getLockedUserProfiles() {
-        return new UserProfilesCollectionView(userRepo.findAllByUserActivationState(UserActivationState.LOCKED).stream().map(User::toUserProfileView).collect(Collectors.toList()));
+        return new UserProfilesCollectionView(userRepo.findAllByUserActivationState(UserActivationState.LOCKED).stream().map(User::toUserProfileView).toList());
     }
 
+    @Transactional
     public boolean isEmailInUse(String email) {
         return userRepo.existsByEmail(email);
     }
 
+    @Transactional
     public boolean isUsernameInUse(String username) {
         return userRepo.existsByUsername(username);
     }
 
+    @Transactional
     public boolean isCorrectPasswordResetToken(String requestToken, String storedToken) {
         return securityConfig.passwordEncoder().matches(requestToken, storedToken);
     }
 
+    @Transactional
     public void setPasswordResetToken(String email, String token) throws UserNotFoundException {
         User user = getUserByEmail(email);
         user.setPasswordResetToken(securityConfig.passwordEncoder().encode(token));
@@ -110,6 +113,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         saveUser(user);
     }
 
+    @Transactional
     public void updatePassword(User user, String password) {
         String encodedPassword = securityConfig.passwordEncoder().encode(password);
         user.setPassword(encodedPassword);
@@ -148,7 +152,8 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     public void purgeExpiredPasswordResetRequests() {
         passwordResetTimestamps.entrySet().removeIf(e -> e.getValue() <= System.currentTimeMillis() - FIVE_MINUTES);
     }
-
+    
+    @Transactional
     public void handleAccountRecoveryInitiation(long timestamp, String email) throws MessagingException {
         String token = RandomString.make(30);
         setPasswordResetToken(email, token);

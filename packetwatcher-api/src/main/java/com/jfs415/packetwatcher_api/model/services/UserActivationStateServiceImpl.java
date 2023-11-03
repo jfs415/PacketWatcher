@@ -11,8 +11,7 @@ import com.jfs415.packetwatcher_api.views.LockedUserHistoryView;
 import com.jfs415.packetwatcher_api.views.collections.LockedUserHistoryCollectionView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.stream.Collectors;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserActivationStateServiceImpl implements UserActivationStateService {
@@ -29,6 +28,7 @@ public class UserActivationStateServiceImpl implements UserActivationStateServic
         this.userService = userService;
     }
 
+    @Transactional
     public void handleFailedUserLogin(String username, long time) throws UserNotFoundException {
         User user = userService.getUserByUsername(username);
         int loginAttempts = user.getFailedLoginAttempts();
@@ -42,17 +42,19 @@ public class UserActivationStateServiceImpl implements UserActivationStateServic
             userService.saveUser(user);
         }
     }
-
-    private void updateLockedUserHistory(User user, long time) {
-
+    
+    public void updateLockedUserHistory(User user, long time) {
+        throw new UnsupportedOperationException();
     }
 
+    @Transactional()
     public LockedUserHistoryView getLockedUserHistoryRecordsByUsername(String username) {
         return lockedUserHistoryRepo.getReferenceById(username).toLockedUserHistoryView();
     }
 
+    @Transactional
     public LockedUserHistoryCollectionView getAllLockedUserHistoryRecords() {
-        return new LockedUserHistoryCollectionView(lockedUserHistoryRepo.findAll().stream().map(LockedUserHistory::toLockedUserHistoryView).collect(Collectors.toList()));
+        return new LockedUserHistoryCollectionView(lockedUserHistoryRepo.findAll().stream().map(LockedUserHistory::toLockedUserHistoryView).toList());
     }
 
 }

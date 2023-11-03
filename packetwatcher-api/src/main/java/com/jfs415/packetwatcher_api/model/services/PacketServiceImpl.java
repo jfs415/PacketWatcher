@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -24,10 +25,12 @@ public class PacketServiceImpl implements PacketService {
         this.packetRepository = packetRepository;
     }
 
+    @Transactional(readOnly = true)
     public List<RawPacketRecord> getAllFlaggedPacketRecords() {
         return packetRepository.findAll();
     }
 
+    @Transactional(readOnly = true)
     public List<RawPacketRecord> getLast30FlaggedPacketRecords() {
         return packetRepository.findTop30ByOrderByKey_TimestampDesc();
     }

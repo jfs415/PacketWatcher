@@ -1,6 +1,6 @@
 package com.jfs415.packetwatcher_api.model.services.inf;
 
-import com.jfs415.packetwatcher_api.exceptions.InvalidEventArgumentException;
+import com.jfs415.packetwatcher_api.exceptions.args.InvalidEventArgumentException;
 import com.jfs415.packetwatcher_api.model.events.EventMappedSuperclass;
 import com.jfs415.packetwatcher_api.util.SearchTimeframe;
 import com.jfs415.packetwatcher_api.views.collections.EventsCollectionView;

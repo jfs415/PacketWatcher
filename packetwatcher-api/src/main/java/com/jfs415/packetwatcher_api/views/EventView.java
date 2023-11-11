@@ -1,7 +1,7 @@
 package com.jfs415.packetwatcher_api.views;
 
 import com.jfs415.packetwatcher_api.events.IAuthEventType;
-import com.jfs415.packetwatcher_api.exceptions.InvalidEventArgumentException;
+import com.jfs415.packetwatcher_api.exceptions.args.InvalidEventArgumentException;
 import com.jfs415.packetwatcher_api.model.events.AuthenticationEvent;
 import com.jfs415.packetwatcher_api.model.events.AuthorizationEvent;
 import com.jfs415.packetwatcher_api.model.events.EventMappedSuperclass;
@@ -32,10 +32,10 @@ public class EventView {
     }
 
     private IAuthEventType getEventTypeFromSuperEvent(EventMappedSuperclass event) {
-        if (event instanceof AuthorizationEvent) {
-            return ((AuthorizationEvent) event).getEventType();
-        } else if (event instanceof AuthenticationEvent) {
-            return ((AuthenticationEvent) event).getEventType();
+        if (event instanceof AuthorizationEvent authorizationEvent) {
+            return authorizationEvent.getEventType();
+        } else if (event instanceof AuthenticationEvent authenticationEvent) {
+            return authenticationEvent.getEventType();
         } else {
             throw new InvalidEventArgumentException();
         }

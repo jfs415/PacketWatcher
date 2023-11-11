@@ -2,7 +2,7 @@ package com.jfs415.packetwatcher_api.model.services;
 
 import com.jfs415.packetwatcher_api.annotations.PacketWatcherEvent;
 import com.jfs415.packetwatcher_api.exceptions.EventAnnotationNotFoundException;
-import com.jfs415.packetwatcher_api.exceptions.InvalidEventArgumentException;
+import com.jfs415.packetwatcher_api.exceptions.args.InvalidEventArgumentException;
 import com.jfs415.packetwatcher_api.model.events.EventMappedSuperclass;
 import com.jfs415.packetwatcher_api.model.repositories.PacketWatcherEventRepository;
 import com.jfs415.packetwatcher_api.model.services.inf.EventService;

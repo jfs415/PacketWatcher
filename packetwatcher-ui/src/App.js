@@ -14,7 +14,7 @@ import Users from "./Components/Users";
 import AuthenticationEvents from "./Components/AuthenticationEvents";
 import AuthorizationEvents from "./Components/AuthorizationEvents";
 import LockedUserHistory from "./Components/LockedUserHistory";
-import Logout from "./Logout";
+import Logout from "./Components/Logout";
 
 function App() {
     return (

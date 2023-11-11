@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
+import java.time.Duration;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,7 +17,8 @@ import java.util.function.Function;
 @Component
 public class JwtUtil implements Serializable {
 
-    public static final long JWT_TOKEN_VALIDITY = 15 * 60;
+    @Value("${packetwatcher-api.jwt.token-expiry}")
+    private Duration tokenExpiry;
 
     @Value("${packetwatcher-api.jwt.secret}")
     private String secretKey = "secret";
@@ -43,13 +45,17 @@ public class JwtUtil implements Serializable {
     }
 
     public String generateToken(UserDetails userDetails) {
+        return generateToken(userDetails.getUsername());
+    }
+    
+    public String generateToken(String username) {
         Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, userDetails.getUsername());
+        return createToken(claims, username);
     }
 
     private String createToken(Map<String, Object> claims, String subject) {
         return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))
+                .setExpiration(new Date(System.currentTimeMillis() + tokenExpiry.toMillis()))
                 .signWith(SignatureAlgorithm.HS256, secretKey).compact();
     }
 
@@ -57,6 +63,5 @@ public class JwtUtil implements Serializable {
         final String lookedUpUsername = getUsername(token);
         return (lookedUpUsername.equals(username) && !isTokenExpired(token));
     }
-
-
+    
 }

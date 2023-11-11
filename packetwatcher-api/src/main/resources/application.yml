@@ -46,3 +46,4 @@ packetwatcher-api:
   password-strength: 12
   jwt:
     secret: ${PW_JWT:jwt}
+    token-expiry: 15m

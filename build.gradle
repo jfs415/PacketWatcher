@@ -23,6 +23,7 @@ allprojects {
     version '0.1.0-SNAPSHOT'
 
     test {
-        useJUnitPlatform()
+        systemProperty "PW_DB_USERNAME", System.getenv("PW_DB_USERNAME")
+        systemProperty "PW_DB_PASSWORD", System.getenv("PW_DB_PASSWORD")
     }
 }

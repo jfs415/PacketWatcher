@@ -22,11 +22,11 @@ function RequestPasswordReset() {
             },
             method: "post",
             body: JSON.stringify(reqBody),
-        }).then((response) => {
+        }).then(response => {
             return Promise.all([response.json(), response.headers]);
         }).then(() => {
             window.location.href = "/";
-        }).catch((message) => {
+        }).catch(message => {
             alert(message);
         });
     }

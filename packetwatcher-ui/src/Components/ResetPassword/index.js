@@ -21,9 +21,6 @@ function ResetPassword() {
             password: password,
             token: token,
         };
-        
-        console.log("REQUEST")
-        console.log(JSON.stringify(reqBody));
 
         fetch("/accounts/reset", {
             headers: {
@@ -31,7 +28,7 @@ function ResetPassword() {
             },
             method: "post",
             body: JSON.stringify(reqBody),
-        }).then((response) => {
+        }).then(response => {
             if (response.ok) {
                 return Promise.all([response.json(), response.headers]);
             } else {
@@ -39,7 +36,7 @@ function ResetPassword() {
             }
         }).then(() => {
             window.location.href = "/";
-        }).catch((message) => {
+        }).catch(message => {
             alert(message);
         });
     }

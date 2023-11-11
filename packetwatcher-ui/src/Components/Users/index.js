@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Navbar from "../Navbar";
 import { CDBCard, CDBCardBody, CDBDataTable } from "cdbreact";
+import secureLocalStorage from "react-secure-storage";
 
 const Users = () => {
 
@@ -36,7 +37,12 @@ const Users = () => {
     };
 
     useEffect(() => {
-        fetch("/users").then(response => {
+        fetch(`/users?token=${secureLocalStorage.getItem("jwt").replaceAll("\"", "")}`, {
+            headers: {
+                "Content-Type": "application/json"
+            },
+            method: "GET",
+        }).then(response => {
             if (response.ok) {
                 return response.json();
             }

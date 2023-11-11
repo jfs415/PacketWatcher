@@ -1,7 +1,6 @@
 package com.jfs415.packetwatcher_api.model.services.inf;
 
 import com.jfs415.packetwatcher_api.exceptions.UserNotFoundException;
-import com.jfs415.packetwatcher_api.model.user.Authority;
 import com.jfs415.packetwatcher_api.model.user.User;
 import com.jfs415.packetwatcher_api.model.user.UserParams;
 import com.jfs415.packetwatcher_api.views.UserProfileView;
@@ -23,7 +22,7 @@ public interface UserService {
 
     User getUserByEmail(String email) throws UserNotFoundException;
 
-    UserProfilesCollectionView getAllUserProfilesWithLevelLessThanEqual(Authority authority);
+    UserProfilesCollectionView getAllUserProfilesWithLevelLessThanEqual(String token);
 
     UserProfilesCollectionView getLockedUserProfiles();
 

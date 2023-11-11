@@ -9,11 +9,7 @@ import com.jfs415.packetwatcher_api.views.collections.UserProfilesCollectionView
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class UsersController {
@@ -27,9 +23,9 @@ public class UsersController {
         this.userActivationStateService = userActivationStateService;
     }
 
-    @GetMapping("/users")
-    public ResponseEntity<UserProfilesCollectionView> getAllUsers(@AuthenticationPrincipal UserProfileView userProfileView) {
-        return ResponseEntity.ok(userService.getAllUserProfilesWithLevelLessThanEqual(userProfileView.getLevel()));
+    @GetMapping(value = "/users", params = "token")
+    public ResponseEntity<UserProfilesCollectionView> getAllUsers(@RequestParam String token) {
+        return ResponseEntity.ok(userService.getAllUserProfilesWithLevelLessThanEqual(token));
     }
 
     @GetMapping("/users/locked/history")
@@ -43,7 +39,7 @@ public class UsersController {
     }
 
     @PutMapping("/profile/update")
-    public ResponseEntity<UserProfileView> updateUserProfile(@AuthenticationPrincipal UserProfileView existingProfile, @RequestBody UserProfileView updatedUserProfile) {
+    public ResponseEntity<UserProfileView> updateUserProfile(@RequestBody UserProfileView existingProfile, @RequestBody UserProfileView updatedUserProfile) {
         UserProfileView returnProfile;
         
         try {

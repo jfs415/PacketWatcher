@@ -45,7 +45,7 @@ public class JwtFilter extends OncePerRequestFilter {
         // Get user identity and set it on the spring security context
         UserDetails userDetails = userService.getUserByUsername(jwtUtil.getUsername(token));
 
-        if (userDetails == null || !jwtUtil.validateToken(token, userDetails)) {
+        if (userDetails == null || !jwtUtil.validateToken(token, userDetails.getUsername())) {
             chain.doFilter(request, response);
             return;
         }

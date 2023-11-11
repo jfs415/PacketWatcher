@@ -19,7 +19,7 @@ public class JwtUtil implements Serializable {
     public static final long JWT_TOKEN_VALIDITY = 15 * 60;
 
     @Value("${packetwatcher-api.jwt.secret}")
-    private String SECRET_KEY = "secret";
+    private String secretKey = "secret";
 
     public String getUsername(String token) {
         return getClaim(token, Claims::getSubject);
@@ -35,7 +35,7 @@ public class JwtUtil implements Serializable {
     }
 
     private Claims extractAllClaims(String token) {
-        return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
+        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
     }
 
     private Boolean isTokenExpired(String token) {
@@ -50,12 +50,12 @@ public class JwtUtil implements Serializable {
     private String createToken(Map<String, Object> claims, String subject) {
         return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))
-                .signWith(SignatureAlgorithm.HS256, SECRET_KEY).compact();
+                .signWith(SignatureAlgorithm.HS256, secretKey).compact();
     }
 
-    public Boolean validateToken(String token, UserDetails userDetails) {
-        final String username = getUsername(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+    public Boolean validateToken(String token, String username) {
+        final String lookedUpUsername = getUsername(token);
+        return (lookedUpUsername.equals(username) && !isTokenExpired(token));
     }
 
 

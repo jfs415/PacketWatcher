@@ -1,10 +1,10 @@
 package com.jfs415.packetwatcher_api.model.services;
 
+import com.jfs415.packetwatcher_api.auth.JwtUtil;
 import com.jfs415.packetwatcher_api.auth.SecurityConfig;
 import com.jfs415.packetwatcher_api.exceptions.UserNotFoundException;
 import com.jfs415.packetwatcher_api.model.repositories.UserRepository;
 import com.jfs415.packetwatcher_api.model.services.inf.UserService;
-import com.jfs415.packetwatcher_api.model.user.Authority;
 import com.jfs415.packetwatcher_api.model.user.User;
 import com.jfs415.packetwatcher_api.model.user.UserActivationState;
 import com.jfs415.packetwatcher_api.model.user.UserParams;
@@ -42,6 +42,8 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     private final JavaMailSender mailSender;
 
     private final SecurityConfig securityConfig;
+    
+    private final JwtUtil jwtUtil;
 
     @Value("${spring.mail.password}")
     private String sender;
@@ -51,10 +53,11 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     private static final long FIVE_MINUTES = 300000;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepo, JavaMailSender mailSender, SecurityConfig securityConfig) {
+    public UserServiceImpl(UserRepository userRepo, JavaMailSender mailSender, SecurityConfig securityConfig, JwtUtil jwtUtil) {
         this.userRepo = userRepo;
         this.mailSender = mailSender;
         this.securityConfig = securityConfig;
+        this.jwtUtil = jwtUtil;
     }
 
     public User createUser(UserParams userParams) {
@@ -97,8 +100,15 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Transactional
-    public UserProfilesCollectionView getAllUserProfilesWithLevelLessThanEqual(Authority authority) {
-        return new UserProfilesCollectionView(userRepo.findAllByLevelIsLessThanEqual(authority).stream().map(User::toUserProfileView).toList());
+    public UserProfilesCollectionView getAllUserProfilesWithLevelLessThanEqual(String token) throws UserNotFoundException {
+        String username = jwtUtil.getUsername(token);
+        Optional<User> optionalUser = userRepo.findByUsername(username);
+        
+        if (optionalUser.isEmpty()) {
+            throw new UserNotFoundException();
+        }
+        
+        return new UserProfilesCollectionView(userRepo.findAllByLevelIsLessThanEqual(optionalUser.get().getLevel()).stream().map(User::toUserProfileView).toList());
     }
 
     @Transactional

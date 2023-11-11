@@ -5,10 +5,10 @@ import com.jfs415.packetwatcher_api.auth.UserPasswordResetRequest;
 import com.jfs415.packetwatcher_api.exceptions.UserNotFoundException;
 import com.jfs415.packetwatcher_api.model.services.inf.UserService;
 import com.jfs415.packetwatcher_api.model.user.User;
+import com.jfs415.packetwatcher_api.views.UserProfileView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,9 +31,9 @@ public class RecoverAccountController {
     }
 
     @PostMapping(value = "/account/reset", produces = "application/json")
-    public ResponseEntity<?> processAuthenticatedUserPasswordReset(@CookieValue(name = "jwt") String token, @AuthenticationPrincipal User user) {
+    public ResponseEntity<?> processAuthenticatedUserPasswordReset(@CookieValue(name = "jwt") String token, @RequestBody UserProfileView userProfileView) {
         try {
-            Boolean isValidToken = jwtUtil.validateToken(token, user);
+            Boolean isValidToken = jwtUtil.validateToken(token, userProfileView.getUsername());
             return ResponseEntity.ok(isValidToken);
         } catch (Exception e) {
             return ResponseEntity.notFound().build();

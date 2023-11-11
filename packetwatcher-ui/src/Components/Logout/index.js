@@ -1,4 +1,5 @@
 import secureLocalStorage from "react-secure-storage";
+import {getFromLocalStorage} from "../../util/LocalStorage";
 
 function Logout() {
     fetch("/disconnect", {
@@ -6,7 +7,7 @@ function Logout() {
             "Content-Type": "application/json"
         },
         method: "post",
-        body: secureLocalStorage.getItem("jwt").replaceAll("\"", ""),
+        body: getFromLocalStorage("jwt"),
     }).then(response => {
         fetch("/logout", { // Call default spring /logout endpoint
         }).then();

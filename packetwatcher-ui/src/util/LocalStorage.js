@@ -15,4 +15,23 @@ function useLocalState(defaultValue, key) {
     return [value, setValue];
 }
 
-export { useLocalState };
+function getFromLocalStorage(key) {
+    let item = secureLocalStorage.getItem(key);
+    
+    if (item == null) {
+        throw SecureStorageItemNotFoundError;
+    }
+    
+    return item.replaceAll("\"", "");
+}
+
+class SecureStorageItemNotFoundError extends Error {
+
+    constructor() {
+        super("Secure Storage Item Not Found!");
+        this.name = "SecureStorageItemNotFoundError"
+    }
+    
+}
+
+export { useLocalState, getFromLocalStorage, SecureStorageItemNotFoundError };

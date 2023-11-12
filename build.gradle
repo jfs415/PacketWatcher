@@ -16,8 +16,8 @@ repositories {
 }
 
 allprojects {
-    sourceCompatibility = '11'
-    targetCompatibility = '11'
+    sourceCompatibility = '17'
+    targetCompatibility = '17'
 
     group 'com.jfs415'
     version '0.1.0-SNAPSHOT'

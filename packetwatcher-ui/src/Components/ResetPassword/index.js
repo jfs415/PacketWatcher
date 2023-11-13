@@ -1,5 +1,5 @@
-import React, { Component, useEffect, useState } from 'react';
-import { Button, Form, Stack } from "react-bootstrap";
+import React, { useState } from 'react';
+import { Button, Form } from "react-bootstrap";
 import PasswordChecklist from "react-password-checklist";
 
 

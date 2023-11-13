@@ -4,7 +4,7 @@ import { Navigate } from "react-router";
 
 const PrivateRoute = ({ children }) => {
 
-    const [jwt, setJwt] = useLocalState("", "jwt");
+    const jwt = useLocalState("", "jwt");
 
     return jwt ? children : <Navigate to={ "/" }/>;
 };

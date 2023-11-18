@@ -11,7 +11,7 @@ import { NavLink } from "react-bootstrap";
 
 const Navbar = () => {
     return (
-        <CDBSidebar textColor="#fff" backgroundColor="#333">
+        <CDBSidebar textColor="#fff" backgroundColor="#18191A">
             <CDBSidebarHeader prefix={ <i className="fa fa-bars fa-large"></i> }>
                 <a href="/dashboard" className="text-decoration-none" style={ { color: 'inherit' } }>
                     PacketWatcher

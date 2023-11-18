@@ -1,0 +1,29 @@
+.profile-card {
+    padding: 15%;
+}
+
+.profile-back-card {
+    align-content: center;
+    display: inline;
+    horiz-align: center;
+    vertical-align: baseline;
+    height: 100vh;
+    width: 100vw;
+    color: white;
+}
+
+.profile-field {
+    color: white;
+    margin-top: 1%;
+}
+
+.profile-input {
+    background-color: white;
+}
+
+
+.profile-header {
+    color: white;
+    margin-top: -14%;
+    margin-bottom: 3%;
+}

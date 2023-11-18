@@ -75,8 +75,8 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Transactional
-    public UserProfileView updateUser(UserProfileView existingProfile, UserProfileView updatedProfile) {
-        Optional<User> user = userRepo.findByUsername(existingProfile.getUsername());
+    public UserProfileView updateUser(UserProfileView updatedProfile) {
+        Optional<User> user = userRepo.findByUsername(updatedProfile.getUsername());
         
         if (user.isEmpty()) {
             throw new UserNotFoundException();
@@ -87,6 +87,12 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         saveUser(existingUser);
 
         return updatedProfile;
+    }
+
+    @Override
+    public UserProfileView getUserProfile(String token) throws UserNotFoundException {
+        String username = jwtUtil.getUsername(token);
+        return userRepo.findByUsername(username).orElseThrow(UserNotFoundException::new).toUserProfileView();
     }
 
     @Transactional

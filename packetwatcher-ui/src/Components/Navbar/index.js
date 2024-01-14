@@ -33,16 +33,19 @@ const Navbar = () => {
                         <CDBSidebarMenuItem icon="users">Users</CDBSidebarMenuItem>
                     </NavLink>
                     <NavLink href="/users/locked/history" className="activeClicked">
-                        <CDBSidebarMenuItem icon="users">Locked User History</CDBSidebarMenuItem>
+                        <CDBSidebarMenuItem icon="user-lock">Locked User History</CDBSidebarMenuItem>
                     </NavLink>
                     <NavLink href="/system/analytics" className="activeClicked">
                         <CDBSidebarMenuItem icon="chart-line">System Analytics</CDBSidebarMenuItem>
                     </NavLink>
                     <NavLink href="/events/authentication" className="activeClicked">
-                        <CDBSidebarMenuItem icon="star">Authentication Events</CDBSidebarMenuItem>
+                        <CDBSidebarMenuItem icon="user-check">Authentication Events</CDBSidebarMenuItem>
                     </NavLink>
                     <NavLink href="/events/authorization" className="activeClicked">
-                        <CDBSidebarMenuItem icon="star">Authorization Events</CDBSidebarMenuItem>
+                        <CDBSidebarMenuItem icon="money-check">Authorization Events</CDBSidebarMenuItem>
+                    </NavLink>
+                    <NavLink href="/console" className="activeClicked">
+                        <CDBSidebarMenuItem icon="terminal">Console</CDBSidebarMenuItem>
                     </NavLink>
                 </CDBSidebarMenu>
             </CDBSidebarContent>

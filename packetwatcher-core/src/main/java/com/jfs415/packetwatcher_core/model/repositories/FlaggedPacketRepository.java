@@ -2,10 +2,11 @@ package com.jfs415.packetwatcher_core.model.repositories;
 
 import com.jfs415.packetwatcher_core.model.packets.FlaggedPacketRecord;
 import com.jfs415.packetwatcher_core.model.packets.PacketRecordKey;
-import java.sql.Timestamp;
-import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
+import java.sql.Timestamp;
+import java.util.List;
 
 @Repository
 public interface FlaggedPacketRepository extends JpaRepository<FlaggedPacketRecord, PacketRecordKey> {

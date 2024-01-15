@@ -1,195 +1,85 @@
 package com.jfs415.packetwatcher_api.model.services;
 
-import com.jfs415.packetwatcher_api.annotations.PacketWatcherStats;
-import com.jfs415.packetwatcher_api.exceptions.EventAnnotationNotFoundException;
-import com.jfs415.packetwatcher_api.exceptions.StatsAnnotationNotFoundException;
-import com.jfs415.packetwatcher_api.model.analytics.StatsRecord;
-import com.jfs415.packetwatcher_api.model.repositories.PacketWatcherStatsRepository;
-import com.jfs415.packetwatcher_api.model.services.inf.RepositoryManager;
+import com.jfs415.packetwatcher_api.model.analytics.StatDashboardData;
+import com.jfs415.packetwatcher_api.model.analytics.StatOrderBy;
+import com.jfs415.packetwatcher_api.model.analytics.StatsDashboardTopic;
+import com.jfs415.packetwatcher_api.model.core.FlaggedPacketRecordProjection;
+import com.jfs415.packetwatcher_api.model.repositories.FlaggedPacketProjectionRepository;
 import com.jfs415.packetwatcher_api.model.services.inf.StatsService;
-import com.jfs415.packetwatcher_api.util.RangedSearchAmount;
-import com.jfs415.packetwatcher_api.util.RangedSearchTimeframe;
-import com.jfs415.packetwatcher_api.util.SearchAmount;
-import com.jfs415.packetwatcher_api.util.SearchTimeframe;
-import com.jfs415.packetwatcher_api.views.collections.StatsCollectionView;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.stream.Stream;
-import javax.persistence.Entity;
+import com.jfs415.packetwatcher_api.util.SearchFilter;
+import com.jfs415.packetwatcher_api.views.StatsTopNDashboardView;
+import com.jfs415.packetwatcher_api.views.collections.StatTimelineCollectionView;
+import com.jfs415.packetwatcher_api.views.collections.StatsTopNDashboardCollectionView;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class StatsServiceImpl implements StatsService {
 
-    private final RepositoryManager repositoryManagerImpl;
+    private final FlaggedPacketProjectionRepository flaggedPacketProjectionRepository;
 
     @Autowired
-    public StatsServiceImpl(RepositoryManagerImpl repositoryManagerImpl) {
-        this.repositoryManagerImpl = repositoryManagerImpl;
+    public StatsServiceImpl(FlaggedPacketProjectionRepository flaggedPacketProjectionRepository) {
+        this.flaggedPacketProjectionRepository = flaggedPacketProjectionRepository;
     }
 
     @Override
-    @Transactional(noRollbackFor = StatsAnnotationNotFoundException.class)
-    public StatsCollectionView getStatsByType(Class<?> statsType) {
-        try {
-            validate(statsType);
-        } catch (StatsAnnotationNotFoundException e) {
-            return new StatsCollectionView(new ArrayList<>());
+    public StatsTopNDashboardCollectionView getDashboardViews(
+            int count, StatsDashboardTopic topic, StatOrderBy orderBy, @Nullable SearchFilter searchFilter) {
+        List<FlaggedPacketRecordProjection> records = getProjectionRecordsFromTopic(count, topic);
+
+        StringBuilder titleBuilder = new StringBuilder("Top ");
+        titleBuilder.append(count).append(" ").append(topic.getTopicString());
+
+        if (orderBy != StatOrderBy.NONE) {
+            titleBuilder.append(" ordered by ").append(orderBy.getTopicString());
         }
 
-        PacketWatcherStatsRepository<StatsRecord, Serializable> repository =
-                repositoryManagerImpl.getStatsRepository(statsType);
+        if (searchFilter != null) {
+            titleBuilder.append(" ").append(searchFilter.getFilterString());
+        }
 
-        return new StatsCollectionView(
-                repository.findAll().stream().map(StatsRecord::toStatsView).toList());
+        List<StatsTopNDashboardView> dataViews = new ArrayList<>();
+        List<StatDashboardData> data = new ArrayList<>();
+
+        for (FlaggedPacketRecordProjection projection : records) {
+            data.add(new StatDashboardData(projection.projectionDataString(), projection.count()));
+        }
+
+        dataViews.add(new StatsTopNDashboardView(count, topic, orderBy, titleBuilder.toString(), data));
+
+        return new StatsTopNDashboardCollectionView(dataViews);
     }
 
     @Override
-    @Transactional(noRollbackFor = StatsAnnotationNotFoundException.class)
-    public StatsCollectionView getStatsByTypeAndLastCaughtWithTimeframe(Class<?> statsType, SearchTimeframe timeframe) {
-        try {
-            validate(statsType);
-        } catch (StatsAnnotationNotFoundException e) {
-            return new StatsCollectionView(new ArrayList<>());
-        }
-
-        return lookupStatsByLastCaughtAndTimeframe(repositoryManagerImpl.getStatsRepository(statsType), timeframe);
+    public StatTimelineCollectionView getTimelineStats(long startMillis, long endMillis, int days) {
+        return new StatTimelineCollectionView(days, flaggedPacketProjectionRepository.getTimelineData(startMillis, endMillis));
     }
 
-    @Override
-    @Transactional(noRollbackFor = StatsAnnotationNotFoundException.class)
-    public StatsCollectionView getStatsByTypeAndFirstCaughtWithTimeframe(
-            Class<?> statsType, SearchTimeframe timeframe) {
-        try {
-            validate(statsType);
-        } catch (StatsAnnotationNotFoundException e) {
-            return new StatsCollectionView(new ArrayList<>());
-        }
-
-        return lookupStatsByFirstCaughtAndTimeframe(repositoryManagerImpl.getStatsRepository(statsType), timeframe);
-    }
-
-    @Override
-    @Transactional(noRollbackFor = StatsAnnotationNotFoundException.class)
-    public StatsCollectionView getStatsByTypeWithRecordsCaughtAmount(Class<?> statsType, SearchAmount amount) {
-        try {
-            validate(statsType);
-        } catch (StatsAnnotationNotFoundException e) {
-            return new StatsCollectionView(new ArrayList<>());
-        }
-
-        return lookupStatsWithRecordsCaughtAmount(repositoryManagerImpl.getStatsRepository(statsType), amount);
-    }
-
-    private StatsCollectionView lookupStatsByLastCaughtAndTimeframe(
-            PacketWatcherStatsRepository<StatsRecord, Serializable> repository, SearchTimeframe timeframe) {
-        Stream<StatsRecord> stats;
-
-        switch (timeframe.getTimeframe()) {
-            case BEFORE -> {
-                stats = repository.findAllByLastCaughtBefore(timeframe.getTimestamp()).stream();
-                return new StatsCollectionView(
-                        stats.map(StatsRecord::toStatsView).toList());
+    private List<FlaggedPacketRecordProjection> getProjectionRecordsFromTopic(int count, StatsDashboardTopic topic) {
+        switch (topic) {
+            case COUNTRY -> {
+                return flaggedPacketProjectionRepository.getTopByCountry(count);
             }
-            case AFTER -> {
-                stats = repository.findAllByLastCaughtAfter(timeframe.getTimestamp()).stream();
-                return new StatsCollectionView(
-                        stats.map(StatsRecord::toStatsView).toList());
+            case HOSTNAME -> {
+                return flaggedPacketProjectionRepository.getTopByHostname(count);
             }
-            case BETWEEN -> {
-                RangedSearchTimeframe dualTimeframe = (RangedSearchTimeframe) timeframe;
-                stats =
-                        repository
-                                .findAllByLastCaughtBetween(dualTimeframe.getStart(), dualTimeframe.getEnd())
-                                .stream();
-                return new StatsCollectionView(
-                        stats.map(StatsRecord::toStatsView).toList());
+            case TIME_OF_DAY -> {
+                return flaggedPacketProjectionRepository.getTopByTimeOfDay(count);
+            }
+            case DAY_OF_WEEK -> {
+                return flaggedPacketProjectionRepository.getTopByDayOfWeek(count);
+            }
+            case DAY_OF_MONTH -> {
+                return flaggedPacketProjectionRepository.getTopByDayOfMonth(count);
             }
             default -> {
-                return new StatsCollectionView(new ArrayList<>());
+                return new ArrayList<>();
             }
-        }
-    }
-
-    private StatsCollectionView lookupStatsByFirstCaughtAndTimeframe(
-            PacketWatcherStatsRepository<StatsRecord, Serializable> repository, SearchTimeframe timeframe) {
-        Stream<StatsRecord> stats;
-
-        switch (timeframe.getTimeframe()) {
-            case BEFORE -> {
-                stats = repository.findAllByFirstCaughtBefore(timeframe.getTimestamp()).stream();
-                return new StatsCollectionView(
-                        stats.map(StatsRecord::toStatsView).toList());
-            }
-            case AFTER -> {
-                stats = repository.findAllByFirstCaughtAfter(timeframe.getTimestamp()).stream();
-                return new StatsCollectionView(
-                        stats.map(StatsRecord::toStatsView).toList());
-            }
-            case BETWEEN -> {
-                RangedSearchTimeframe dualTimeframe = (RangedSearchTimeframe) timeframe;
-                stats =
-                        repository
-                                .findAllByFirstCaughtBetween(dualTimeframe.getStart(), dualTimeframe.getEnd())
-                                .stream();
-                return new StatsCollectionView(
-                        stats.map(StatsRecord::toStatsView).toList());
-            }
-            default -> {
-                return new StatsCollectionView(new ArrayList<>());
-            }
-        }
-    }
-
-    private StatsCollectionView lookupStatsWithRecordsCaughtAmount(
-            PacketWatcherStatsRepository<StatsRecord, Serializable> repository, SearchAmount amount) {
-        Stream<StatsRecord> stats;
-
-        switch (amount.getOperator()) {
-            case LESS_THAN -> {
-                stats = repository.findAllByRecordsCaughtLessThan(amount.getAmount()).stream();
-                return new StatsCollectionView(
-                        stats.map(StatsRecord::toStatsView).toList());
-            }
-            case LESS_THAN_OR_EQUAL_TO -> {
-                stats = repository.findAllByRecordsCaughtLessThanEqual(amount.getAmount()).stream();
-                return new StatsCollectionView(
-                        stats.map(StatsRecord::toStatsView).toList());
-            }
-            case GREATER_THAN -> {
-                stats = repository.findAllByRecordsCaughtGreaterThan(amount.getAmount()).stream();
-                return new StatsCollectionView(
-                        stats.map(StatsRecord::toStatsView).toList());
-            }
-            case GREATER_THAN_OR_EQUAL_TO -> {
-                stats = repository.findAlByRecordsCaughtGreaterThanEqual(amount.getAmount()).stream();
-                return new StatsCollectionView(
-                        stats.map(StatsRecord::toStatsView).toList());
-            }
-            case BETWEEN -> {
-                RangedSearchAmount rangedAmount = (RangedSearchAmount) amount;
-                stats =
-                        repository
-                                .findAllByRecordsCaughtBetween(rangedAmount.getStart(), rangedAmount.getEnd())
-                                .stream();
-                return new StatsCollectionView(
-                        stats.map(StatsRecord::toStatsView).toList());
-            }
-            default -> {
-                return new StatsCollectionView(new ArrayList<>());
-            }
-        }
-    }
-
-    private void validate(Class<?> statsType) throws StatsAnnotationNotFoundException {
-        if (!statsType.isAnnotationPresent(PacketWatcherStats.class)) {
-            throw new StatsAnnotationNotFoundException();
-        }
-
-        if (!statsType.isAnnotationPresent(Entity.class)) {
-            throw new EventAnnotationNotFoundException("PacketWatcherStats must be annotated with @Entity!");
         }
     }
 }

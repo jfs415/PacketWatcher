@@ -3,7 +3,7 @@ import Navbar from "../Navbar";
 import { CDBCard, CDBCardBody, CDBDataTable } from "cdbreact";
 
 const LockedUserHistory = () => {
-    const [lockedUserHistory, setLockedUSerHistory] = useState([]);
+    const [lockedUserHistory, setLockedUserHistory] = useState([]);
 
     const data = {
         columns: [
@@ -43,7 +43,7 @@ const LockedUserHistory = () => {
                 lockedUserHistoryList = events;
             });
 
-            setLockedUSerHistory(lockedUserHistoryList);
+            setLockedUserHistory(lockedUserHistoryList);
         }).catch(error => {
             console.error(error);
         })

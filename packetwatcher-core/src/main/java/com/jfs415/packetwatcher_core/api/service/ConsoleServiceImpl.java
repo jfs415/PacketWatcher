@@ -1,8 +1,7 @@
 package com.jfs415.packetwatcher_core.api.service;
 
-import org.springframework.stereotype.Service;
-
 import java.io.OutputStream;
+import org.springframework.stereotype.Service;
 
 @Service
 public class ConsoleServiceImpl implements ConsoleService {
@@ -13,9 +12,7 @@ public class ConsoleServiceImpl implements ConsoleService {
     }
 
     @Override
-    public void processQuery() {
-        
-    }
+    public void processQuery() {}
 
     @Override
     public OutputStream display() {

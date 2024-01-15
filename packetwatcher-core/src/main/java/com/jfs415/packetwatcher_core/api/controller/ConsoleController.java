@@ -32,5 +32,4 @@ public class ConsoleController {
     public ResponseEntity<?> displayConsoleOutput() {
         return ResponseEntity.ok(null);
     }
-
 }

@@ -2,7 +2,7 @@ package com.jfs415.packetwatcher_api.model.services;
 
 import com.jfs415.packetwatcher_api.model.analytics.RawPacketRecord;
 import com.jfs415.packetwatcher_api.model.repositories.RawPacketRepository;
-import com.jfs415.packetwatcher_api.model.services.inf.PacketService;
+import com.jfs415.packetwatcher_api.model.services.inf.ApiPacketService;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
@@ -13,14 +13,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class PacketServiceImpl implements PacketService {
+public class ApiPacketServiceImpl implements ApiPacketService {
 
     private final RawPacketRepository packetRepository;
 
-    private static final Logger logger = LoggerFactory.getLogger(PacketServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(ApiPacketServiceImpl.class);
 
     @Autowired
-    public PacketServiceImpl(RawPacketRepository packetRepository) {
+    public ApiPacketServiceImpl(RawPacketRepository packetRepository) {
         this.packetRepository = packetRepository;
     }
 

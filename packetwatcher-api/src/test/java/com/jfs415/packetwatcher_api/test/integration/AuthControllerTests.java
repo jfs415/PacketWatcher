@@ -1,5 +1,7 @@
 package com.jfs415.packetwatcher_api.test.integration;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.jfs415.packetwatcher_api.PacketWatcherApi;
 import com.jfs415.packetwatcher_api.auth.AuthenticationRequest;
 import com.jfs415.packetwatcher_api.controllers.AuthController;
@@ -9,8 +11,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(classes = PacketWatcherApi.class)
 class AuthControllerTests {

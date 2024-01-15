@@ -1,6 +1,6 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css'; //Order matters, always ensure custom css is imported last
-import {Route, Routes} from "react-router";
+import { Route, Routes } from "react-router";
 import Login from "./Components/Login";
 import Dashboard from "./Components/Dashboard";
 import PrivateRoute from "./util/PrivateRoute";
@@ -16,98 +16,105 @@ import AuthorizationEvents from "./Components/AuthorizationEvents";
 import LockedUserHistory from "./Components/LockedUserHistory";
 import Logout from "./Components/Logout";
 import Console from "./Components/Console";
+import Stats from "./Components/Stats";
 
 function App() {
     return (
-        <>
-            <Routes>
-                <Route path="/" element={<Login/>}/>
-                <Route path="/login" element={<Login/>}/>
-                <Route path="/logout" element={<Logout/>}/>
-                <Route path="/reset-password" element={<RequestPasswordReset/>}/>
-                <Route path="/accounts/reset/*" element={<ResetPassword/>}/>
-                <Route
-                    path="/dashboard"
-                    element={
-                        <PrivateRoute>
-                            <Dashboard/>
-                        </PrivateRoute>
-                    }
-                />
-                <Route
-                    path="/packets"
-                    element={
-                        <PrivateRoute>
-                            <Packets/>
-                        </PrivateRoute>
-                    }
-                />
-                <Route
-                    path="/system/analytics"
-                    element={
-                        <PrivateRoute>
-                            <SystemAnalytics/>
-                        </PrivateRoute>
-                    }
-                />
-                <Route
-                    path="/system/settings"
-                    element={
-                        <PrivateRoute>
-                            <SystemSettings/>
-                        </PrivateRoute>
-                    }
-                />
-                <Route
-                    path="/profile"
-                    element={
-                        <PrivateRoute>
-                            <UserProfile/>
-                        </PrivateRoute>
-                    }
-                />
-                <Route
-                    path="/users"
-                    element={
-                        <PrivateRoute>
-                            <Users/>
-                        </PrivateRoute>
-                    }
-                />
-                <Route
-                    path="/events/authentication"
-                    element={
-                        <PrivateRoute>
-                            <AuthenticationEvents/>
-                        </PrivateRoute>
-                    }
-                />
-                <Route
-                    path="/events/authorization"
-                    element={
-                        <PrivateRoute>
-                            <AuthorizationEvents/>
-                        </PrivateRoute>
-                    }
-                />
-                <Route
-                    path="/users/locked/history"
-                    element={
-                        <PrivateRoute>
-                            <LockedUserHistory/>
-                        </PrivateRoute>
-                    }
-                />
-                <Route
-                    path="/console"
-                    element={
-                        <PrivateRoute>
-                            <Console/>
-                        </PrivateRoute>
-                    }
-                />
-            </Routes>
-        </>
+        <Routes>
+            <Route path="/" element={<Login/>}/>
+            <Route path="/login" element={<Login/>}/>
+            <Route path="/logout" element={<Logout/>}/>
+            <Route path="/reset-password" element={<RequestPasswordReset/>}/>
+            <Route path="/accounts/reset/*" element={<ResetPassword/>}/>
+            <Route
+                path="/dashboard"
+                element={
+                    <PrivateRoute>
+                        <Dashboard/>
+                    </PrivateRoute>
+                }
+            />
+            <Route
+                path="/packets"
+                element={
+                    <PrivateRoute>
+                        <Packets/>
+                    </PrivateRoute>
+                }
+            />
+            <Route
+                path="/system/analytics"
+                element={
+                    <PrivateRoute>
+                        <SystemAnalytics/>
+                    </PrivateRoute>
+                }
+            />
+            <Route
+                path="/system/settings"
+                element={
+                    <PrivateRoute>
+                        <SystemSettings/>
+                    </PrivateRoute>
+                }
+            />
+            <Route
+                path="/profile"
+                element={
+                    <PrivateRoute>
+                        <UserProfile/>
+                    </PrivateRoute>
+                }
+            />
+            <Route
+                path="/users"
+                element={
+                    <PrivateRoute>
+                        <Users/>
+                    </PrivateRoute>
+                }
+            />
+            <Route
+                path="/events/authentication"
+                element={
+                    <PrivateRoute>
+                        <AuthenticationEvents/>
+                    </PrivateRoute>
+                }
+            />
+            <Route
+                path="/events/authorization"
+                element={
+                    <PrivateRoute>
+                        <AuthorizationEvents/>
+                    </PrivateRoute>
+                }
+            />
+            <Route
+                path="/users/locked/history"
+                element={
+                    <PrivateRoute>
+                        <LockedUserHistory/>
+                    </PrivateRoute>
+                }
+            />
+            <Route
+                path="/stats/dashboard"
+                element={
+                    <PrivateRoute>
+                        <Stats/>
+                    </PrivateRoute>
+                }
+            />
+            <Route
+                path="/console"
+                element={
+                    <PrivateRoute>
+                        <Console/>
+                    </PrivateRoute>
+                }
+            />
+        </Routes>
     );
 }
 

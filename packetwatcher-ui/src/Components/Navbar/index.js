@@ -47,6 +47,9 @@ const Navbar = () => {
                     <NavLink href="/console" className="activeClicked">
                         <CDBSidebarMenuItem icon="terminal">Console</CDBSidebarMenuItem>
                     </NavLink>
+                    <NavLink href="/stats/dashboard" className="activeClicked">
+                        <CDBSidebarMenuItem icon="star">Stats</CDBSidebarMenuItem>
+                    </NavLink>
                 </CDBSidebarMenu>
             </CDBSidebarContent>
 

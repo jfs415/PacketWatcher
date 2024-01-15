@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.jfs415.packetwatcher_api.PacketWatcherApi;
 import com.jfs415.packetwatcher_api.model.analytics.RawPacketRecord;
-import com.jfs415.packetwatcher_api.model.services.PacketServiceImpl;
+import com.jfs415.packetwatcher_api.model.services.ApiPacketServiceImpl;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -17,10 +17,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 class PacketControllerTests {
 
     private static final Logger logger = LoggerFactory.getLogger(PacketControllerTests.class);
-    private final PacketServiceImpl packetService;
+    private final ApiPacketServiceImpl packetService;
 
     @Autowired
-    public PacketControllerTests(PacketServiceImpl packetService) {
+    public PacketControllerTests(ApiPacketServiceImpl packetService) {
         this.packetService = packetService;
     }
 

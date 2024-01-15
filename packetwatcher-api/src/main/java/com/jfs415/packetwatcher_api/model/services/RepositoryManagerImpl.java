@@ -1,9 +1,7 @@
 package com.jfs415.packetwatcher_api.model.services;
 
-import com.jfs415.packetwatcher_api.model.analytics.StatsRecord;
 import com.jfs415.packetwatcher_api.model.events.EventMappedSuperclass;
 import com.jfs415.packetwatcher_api.model.repositories.PacketWatcherEventRepository;
-import com.jfs415.packetwatcher_api.model.repositories.PacketWatcherStatsRepository;
 import com.jfs415.packetwatcher_api.model.services.inf.RepositoryManager;
 import java.io.Serializable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,20 +33,6 @@ public class RepositoryManagerImpl implements RepositoryManager {
         }
 
         return (PacketWatcherEventRepository<T, E>) repository;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <T extends StatsRecord, E extends Serializable> PacketWatcherStatsRepository<T, E> getStatsRepository(
-            Class<?> entity) {
-        ensureRepositoriesInstantiated();
-        Object repository = repositories.getRepositoryFor(entity).orElseThrow(RuntimeException::new);
-
-        if (!(repository instanceof PacketWatcherStatsRepository)) {
-            throw new RuntimeException("Found repository is not instanceof PacketWatcherStatsRepository");
-        }
-
-        return (PacketWatcherStatsRepository<T, E>) repository;
     }
 
     private void ensureRepositoriesInstantiated() {

@@ -3,13 +3,12 @@ package com.jfs415.packetwatcher_api;
 import com.jfs415.packetwatcher_api.model.services.UserAuthCacheServiceImpl;
 import com.jfs415.packetwatcher_api.model.services.inf.UserAuthCacheService;
 import com.jfs415.packetwatcher_api.model.services.inf.UserService;
+import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-
-import java.util.concurrent.TimeUnit;
 
 @Component
 public class PacketWatcherApiTasks {

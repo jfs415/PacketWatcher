@@ -11,6 +11,7 @@ import com.jfs415.packetwatcher_api.util.RangedSearchTimeframe;
 import com.jfs415.packetwatcher_api.util.SearchTimeframe;
 import com.jfs415.packetwatcher_api.views.collections.EventsCollectionView;
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -182,7 +183,7 @@ public class EventServiceImpl implements EventService {
                 events = StreamSupport.stream(
                         repository
                                 .findAllByUsernameAndIpAddressAndTimestampBefore(
-                                        username, ipAddress, searchTimeframe.getTimestamp())
+                                        username, ipAddress, Timestamp.valueOf(searchTimeframe.getTimestamp()))
                                 .spliterator(),
                         true);
                 return new EventsCollectionView(
@@ -192,7 +193,7 @@ public class EventServiceImpl implements EventService {
                 events = StreamSupport.stream(
                         repository
                                 .findAllByUsernameAndIpAddressAndTimestampAfter(
-                                        username, ipAddress, searchTimeframe.getTimestamp())
+                                        username, ipAddress, Timestamp.valueOf(searchTimeframe.getTimestamp()))
                                 .spliterator(),
                         true);
                 return new EventsCollectionView(
@@ -203,7 +204,10 @@ public class EventServiceImpl implements EventService {
                 events = StreamSupport.stream(
                         repository
                                 .findAllByUsernameAndIpAddressAndTimestampBetween(
-                                        username, ipAddress, dualTimeframe.getStart(), dualTimeframe.getEnd())
+                                        username,
+                                        ipAddress,
+                                        Timestamp.valueOf(dualTimeframe.getStart()),
+                                        Timestamp.valueOf(dualTimeframe.getEnd()))
                                 .spliterator(),
                         true);
                 return new EventsCollectionView(
@@ -225,7 +229,8 @@ public class EventServiceImpl implements EventService {
             case BEFORE -> {
                 events = StreamSupport.stream(
                         repository
-                                .findAllByIpAddressAndTimestampBefore(ipAddress, searchTimeframe.getTimestamp())
+                                .findAllByIpAddressAndTimestampBefore(
+                                        ipAddress, Timestamp.valueOf(searchTimeframe.getTimestamp()))
                                 .spliterator(),
                         true);
                 return new EventsCollectionView(
@@ -234,7 +239,8 @@ public class EventServiceImpl implements EventService {
             case AFTER -> {
                 events = StreamSupport.stream(
                         repository
-                                .findAllByIpAddressAndTimestampAfter(ipAddress, searchTimeframe.getTimestamp())
+                                .findAllByIpAddressAndTimestampAfter(
+                                        ipAddress, Timestamp.valueOf(searchTimeframe.getTimestamp()))
                                 .spliterator(),
                         true);
                 return new EventsCollectionView(
@@ -245,7 +251,9 @@ public class EventServiceImpl implements EventService {
                 events = StreamSupport.stream(
                         repository
                                 .findAllByIpAddressAndTimestampBetween(
-                                        ipAddress, dualTimeframe.getStart(), dualTimeframe.getEnd())
+                                        ipAddress,
+                                        Timestamp.valueOf(dualTimeframe.getStart()),
+                                        Timestamp.valueOf(dualTimeframe.getEnd()))
                                 .spliterator(),
                         true);
                 return new EventsCollectionView(
@@ -267,7 +275,8 @@ public class EventServiceImpl implements EventService {
             case BEFORE -> {
                 events = StreamSupport.stream(
                         repository
-                                .findAllByUsernameAndTimestampBefore(username, searchTimeframe.getTimestamp())
+                                .findAllByUsernameAndTimestampBefore(
+                                        username, Timestamp.valueOf(searchTimeframe.getTimestamp()))
                                 .spliterator(),
                         true);
                 return new EventsCollectionView(
@@ -276,7 +285,8 @@ public class EventServiceImpl implements EventService {
             case AFTER -> {
                 events = StreamSupport.stream(
                         repository
-                                .findAllByUsernameAndTimestampAfter(username, searchTimeframe.getTimestamp())
+                                .findAllByUsernameAndTimestampAfter(
+                                        username, Timestamp.valueOf(searchTimeframe.getTimestamp()))
                                 .spliterator(),
                         true);
                 return new EventsCollectionView(
@@ -287,7 +297,9 @@ public class EventServiceImpl implements EventService {
                 events = StreamSupport.stream(
                         repository
                                 .findAllByUsernameAndTimestampBetween(
-                                        username, dualTimeframe.getStart(), dualTimeframe.getEnd())
+                                        username,
+                                        Timestamp.valueOf(dualTimeframe.getStart()),
+                                        Timestamp.valueOf(dualTimeframe.getEnd()))
                                 .spliterator(),
                         true);
                 return new EventsCollectionView(
@@ -308,7 +320,7 @@ public class EventServiceImpl implements EventService {
             case BEFORE -> {
                 events = StreamSupport.stream(
                         repository
-                                .findAllByTimestampBefore(searchTimeframe.getTimestamp())
+                                .findAllByTimestampBefore(Timestamp.valueOf(searchTimeframe.getTimestamp()))
                                 .spliterator(),
                         true);
                 return new EventsCollectionView(
@@ -317,7 +329,7 @@ public class EventServiceImpl implements EventService {
             case AFTER -> {
                 events = StreamSupport.stream(
                         repository
-                                .findAllByTimestampAfter(searchTimeframe.getTimestamp())
+                                .findAllByTimestampAfter(Timestamp.valueOf(searchTimeframe.getTimestamp()))
                                 .spliterator(),
                         true);
                 return new EventsCollectionView(
@@ -327,7 +339,9 @@ public class EventServiceImpl implements EventService {
                 RangedSearchTimeframe dualTimeframe = (RangedSearchTimeframe) searchTimeframe;
                 events = StreamSupport.stream(
                         repository
-                                .findAllByTimestampBetween(dualTimeframe.getStart(), dualTimeframe.getEnd())
+                                .findAllByTimestampBetween(
+                                        Timestamp.valueOf(dualTimeframe.getStart()),
+                                        Timestamp.valueOf(dualTimeframe.getEnd()))
                                 .spliterator(),
                         true);
                 return new EventsCollectionView(

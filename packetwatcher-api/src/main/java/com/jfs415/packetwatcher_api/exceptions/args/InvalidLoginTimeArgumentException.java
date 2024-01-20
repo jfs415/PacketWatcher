@@ -7,5 +7,4 @@ public class InvalidLoginTimeArgumentException extends InvalidArgumentException 
     public InvalidLoginTimeArgumentException() {
         super(DEFAULT_MESSAGE);
     }
-
 }

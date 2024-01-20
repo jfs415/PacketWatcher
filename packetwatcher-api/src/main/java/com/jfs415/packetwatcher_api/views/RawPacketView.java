@@ -25,5 +25,4 @@ public class RawPacketView {
         this.sourcePort = rawPacketRecord.getKey().getSourcePort();
         this.flaggedCountry = rawPacketRecord.getFlaggedCountry();
     }
-
 }

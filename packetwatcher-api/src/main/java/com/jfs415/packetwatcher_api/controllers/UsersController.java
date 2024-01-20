@@ -37,7 +37,7 @@ public class UsersController {
     public ResponseEntity<UserProfilesCollectionView> getAllLockedAccounts() {
         return ResponseEntity.ok(userService.getLockedUserProfiles());
     }
-    
+
     @GetMapping(value = "/profile", params = "token")
     public ResponseEntity<UserProfileView> getUserProfile(@RequestParam String token) {
         try {
@@ -46,7 +46,6 @@ public class UsersController {
         } catch (UserNotFoundException ignored) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-        
     }
 
     @PutMapping("/profile/update")
@@ -54,9 +53,8 @@ public class UsersController {
         try {
             UserProfileView returnProfile = userService.updateUser(updatedUserProfile);
             return ResponseEntity.ok(returnProfile);
-        } catch(UserNotFoundException ignored) {
+        } catch (UserNotFoundException ignored) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
-
 }

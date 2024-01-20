@@ -5,11 +5,10 @@ import com.jfs415.packetwatcher_api.exceptions.args.InvalidEventArgumentExceptio
 import com.jfs415.packetwatcher_api.model.events.AuthenticationEvent;
 import com.jfs415.packetwatcher_api.model.events.AuthorizationEvent;
 import com.jfs415.packetwatcher_api.model.events.EventMappedSuperclass;
+import java.sql.Timestamp;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.data.annotation.Immutable;
-
-import java.sql.Timestamp;
 
 @AllArgsConstructor
 @Getter
@@ -40,5 +39,4 @@ public class EventView {
             throw new InvalidEventArgumentException();
         }
     }
-
 }

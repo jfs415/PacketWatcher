@@ -26,5 +26,4 @@ public final class UserProfileView {
         this.phone = user.getPhone();
         this.level = user.getLevel();
     }
-
 }

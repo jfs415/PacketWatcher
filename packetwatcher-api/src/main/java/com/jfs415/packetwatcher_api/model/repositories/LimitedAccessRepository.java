@@ -1,9 +1,8 @@
 package com.jfs415.packetwatcher_api.model.repositories;
 
+import java.util.Optional;
 import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.data.repository.Repository;
-
-import java.util.Optional;
 
 /**
  * <h1>LimitedAccessRepository</h1>
@@ -16,7 +15,6 @@ import java.util.Optional;
  * @param <T>  The Entity record Object type.
  * @param <ID> The primary key Object type of the Entity record.
  */
-
 @NoRepositoryBean
 interface LimitedAccessRepository<T, ID> extends Repository<T, ID> {
 
@@ -27,5 +25,4 @@ interface LimitedAccessRepository<T, ID> extends Repository<T, ID> {
     Iterable<T> findAllById(Iterable<ID> key);
 
     long count();
-
 }

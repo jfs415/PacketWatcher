@@ -1,14 +1,14 @@
 package com.jfs415.packetwatcher_api.model.repositories;
 
 import com.jfs415.packetwatcher_api.model.events.EventMappedSuperclass;
+import java.io.Serializable;
+import java.sql.Timestamp;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.NoRepositoryBean;
 
-import java.io.Serializable;
-import java.sql.Timestamp;
-
 @NoRepositoryBean
-public interface PacketWatcherEventRepository<T extends EventMappedSuperclass, E extends Serializable> extends JpaRepository<T, E> {
+public interface PacketWatcherEventRepository<T extends EventMappedSuperclass, E extends Serializable>
+        extends JpaRepository<T, E> {
 
     Iterable<T> findAllByUsername(String username);
 
@@ -36,8 +36,8 @@ public interface PacketWatcherEventRepository<T extends EventMappedSuperclass, E
 
     Iterable<T> findAllByUsernameAndIpAddressAndTimestampBefore(String username, String ipAddress, Timestamp timestamp);
 
-    Iterable<T> findAllByUsernameAndIpAddressAndTimestampBetween(String username, String ipAddress, Timestamp start, Timestamp end);
+    Iterable<T> findAllByUsernameAndIpAddressAndTimestampBetween(
+            String username, String ipAddress, Timestamp start, Timestamp end);
 
     Iterable<T> findAllByUsernameAndIpAddressAndTimestampAfter(String username, String ipAddress, Timestamp after);
-
 }

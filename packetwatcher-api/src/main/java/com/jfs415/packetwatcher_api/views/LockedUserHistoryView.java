@@ -1,11 +1,10 @@
 package com.jfs415.packetwatcher_api.views;
 
 import com.jfs415.packetwatcher_api.model.user.LockedUserHistory;
+import java.sql.Timestamp;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.data.annotation.Immutable;
-
-import java.sql.Timestamp;
 
 @AllArgsConstructor
 @Getter
@@ -23,5 +22,4 @@ public final class LockedUserHistoryView {
         this.lastLocked = lockedUserHistory.getLastLocked();
         this.numberOfTimesLocked = lockedUserHistory.getNumberOfTimesLocked();
     }
-
 }

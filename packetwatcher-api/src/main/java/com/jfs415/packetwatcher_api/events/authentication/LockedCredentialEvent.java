@@ -2,16 +2,16 @@ package com.jfs415.packetwatcher_api.events.authentication;
 
 import com.jfs415.packetwatcher_api.events.PacketWatcherParentEvent;
 import com.jfs415.packetwatcher_api.model.services.inf.EventService;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.event.AuthenticationFailureLockedEvent;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.http.HttpServletRequest;
-
 @Component
-public class LockedCredentialEvent extends PacketWatcherParentEvent implements ApplicationListener<AuthenticationFailureLockedEvent> {
+public class LockedCredentialEvent extends PacketWatcherParentEvent
+        implements ApplicationListener<AuthenticationFailureLockedEvent> {
 
     @Autowired
     public LockedCredentialEvent(HttpServletRequest request, EventService eventService) {
@@ -28,5 +28,4 @@ public class LockedCredentialEvent extends PacketWatcherParentEvent implements A
             saveDefaultAuthenticationEvent(event, ipAddress, AuthenticationEventType.LOCKED_LOGIN_ATTEMPT);
         }
     }
-
 }

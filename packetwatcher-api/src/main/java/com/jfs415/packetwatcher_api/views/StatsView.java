@@ -1,12 +1,11 @@
 package com.jfs415.packetwatcher_api.views;
 
 import com.jfs415.packetwatcher_api.model.analytics.StatsRecord;
+import java.io.Serializable;
+import java.sql.Timestamp;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.hibernate.annotations.Immutable;
-
-import java.io.Serializable;
-import java.sql.Timestamp;
 
 @AllArgsConstructor
 @Getter
@@ -26,5 +25,4 @@ public class StatsView implements Serializable {
         this.lastCaught = statsRecord.getLastCaught();
         this.lastCollectionTime = statsRecord.getLastCollectionTime();
     }
-
 }

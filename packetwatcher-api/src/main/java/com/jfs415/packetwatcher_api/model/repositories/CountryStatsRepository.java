@@ -1,10 +1,7 @@
 package com.jfs415.packetwatcher_api.model.repositories;
 
+import com.jfs415.packetwatcher_api.model.analytics.CountryStatsRecord;
 import org.springframework.stereotype.Repository;
 
-import com.jfs415.packetwatcher_api.model.analytics.CountryStatsRecord;
-
 @Repository
-public interface CountryStatsRepository extends PacketWatcherStatsRepository<CountryStatsRecord, String> {
-
-}
+public interface CountryStatsRepository extends PacketWatcherStatsRepository<CountryStatsRecord, String> {}

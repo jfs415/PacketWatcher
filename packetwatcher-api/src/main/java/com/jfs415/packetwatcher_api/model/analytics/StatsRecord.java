@@ -1,16 +1,15 @@
 package com.jfs415.packetwatcher_api.model.analytics;
 
 import com.jfs415.packetwatcher_api.views.StatsView;
+import java.io.Serializable;
+import java.sql.Timestamp;
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
-import java.io.Serializable;
-import java.sql.Timestamp;
 
 @Getter
 @Setter
@@ -44,8 +43,10 @@ public abstract class StatsRecord implements Serializable {
         if (other instanceof StatsRecord) {
             StatsRecord obj = (StatsRecord) other;
 
-            return this.name.equals(obj.getName()) && this.firstCaught.equals(obj.getFirstCaught())
-                    && this.lastCaught.equals(obj.getLastCaught()) && this.recordsCaught == obj.getRecordsCaught()
+            return this.name.equals(obj.getName())
+                    && this.firstCaught.equals(obj.getFirstCaught())
+                    && this.lastCaught.equals(obj.getLastCaught())
+                    && this.recordsCaught == obj.getRecordsCaught()
                     && this.lastCollectionTime.equals(obj.lastCollectionTime);
         }
 
@@ -54,7 +55,10 @@ public abstract class StatsRecord implements Serializable {
 
     @Override
     public int hashCode() {
-        return 31 * name.hashCode() + firstCaught.hashCode() + lastCaught.hashCode() + lastCollectionTime.hashCode() + recordsCaught;
+        return 31 * name.hashCode()
+                + firstCaught.hashCode()
+                + lastCaught.hashCode()
+                + lastCollectionTime.hashCode()
+                + recordsCaught;
     }
-
 }

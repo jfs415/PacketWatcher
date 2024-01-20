@@ -11,5 +11,4 @@ public class EventAnnotationNotFoundException extends RuntimeException {
     public EventAnnotationNotFoundException(String message) {
         super(message);
     }
-
 }

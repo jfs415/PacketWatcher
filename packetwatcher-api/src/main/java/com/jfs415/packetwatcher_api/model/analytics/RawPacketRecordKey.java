@@ -1,12 +1,11 @@
 package com.jfs415.packetwatcher_api.model.analytics;
 
+import java.io.Serializable;
+import java.sql.Timestamp;
+import javax.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.Column;
-import java.io.Serializable;
-import java.sql.Timestamp;
 
 @Getter
 @AllArgsConstructor

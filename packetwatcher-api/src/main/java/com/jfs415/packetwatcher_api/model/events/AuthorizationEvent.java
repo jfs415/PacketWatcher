@@ -2,13 +2,12 @@ package com.jfs415.packetwatcher_api.model.events;
 
 import com.jfs415.packetwatcher_api.annotations.PacketWatcherEvent;
 import com.jfs415.packetwatcher_api.events.authorization.AuthorizationEventType;
+import java.io.Serializable;
+import java.sql.Timestamp;
+import javax.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import javax.persistence.*;
-import java.io.Serializable;
-import java.sql.Timestamp;
 
 @Entity
 @Getter
@@ -31,5 +30,4 @@ public class AuthorizationEvent extends EventMappedSuperclass implements Seriali
         super(new Timestamp(time), username, ipAddress);
         this.eventType = eventType;
     }
-
 }

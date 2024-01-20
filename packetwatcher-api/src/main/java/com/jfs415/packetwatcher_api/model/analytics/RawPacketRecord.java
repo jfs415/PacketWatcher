@@ -1,14 +1,13 @@
 package com.jfs415.packetwatcher_api.model.analytics;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Immutable;
-
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Immutable;
 
 @Entity
 @Immutable
@@ -26,5 +25,4 @@ public class RawPacketRecord {
 
     @Column(name = "flagged_country")
     private String flaggedCountry;
-
 }

@@ -20,7 +20,8 @@ public class PacketsController {
 
     @GetMapping("/packets")
     public ResponseEntity<RawPacketsCollectionView> getDefaultCapturedPacketsView() {
-        return ResponseEntity.ok(new RawPacketsCollectionView(packetService.getLast30FlaggedPacketRecords().stream().map(RawPacketView::new).toList()));
+        return ResponseEntity.ok(new RawPacketsCollectionView(packetService.getLast30FlaggedPacketRecords().stream()
+                .map(RawPacketView::new)
+                .toList()));
     }
-
 }

@@ -23,7 +23,8 @@ public class UserActivationStateServiceImpl implements UserActivationStateServic
     private static final int LOGIN_ATTEMPT_THRESHOLD = 3;
 
     @Autowired
-    public UserActivationStateServiceImpl(LockedUserHistoryRepository lockedUserHistoryRepo, UserServiceImpl userService) {
+    public UserActivationStateServiceImpl(
+            LockedUserHistoryRepository lockedUserHistoryRepo, UserServiceImpl userService) {
         this.lockedUserHistoryRepo = lockedUserHistoryRepo;
         this.userService = userService;
     }
@@ -42,7 +43,7 @@ public class UserActivationStateServiceImpl implements UserActivationStateServic
             userService.saveUser(user);
         }
     }
-    
+
     public void updateLockedUserHistory(User user, long time) {
         throw new UnsupportedOperationException();
     }
@@ -54,7 +55,8 @@ public class UserActivationStateServiceImpl implements UserActivationStateServic
 
     @Transactional
     public LockedUserHistoryCollectionView getAllLockedUserHistoryRecords() {
-        return new LockedUserHistoryCollectionView(lockedUserHistoryRepo.findAll().stream().map(LockedUserHistory::toLockedUserHistoryView).toList());
+        return new LockedUserHistoryCollectionView(lockedUserHistoryRepo.findAll().stream()
+                .map(LockedUserHistory::toLockedUserHistoryView)
+                .toList());
     }
-
 }

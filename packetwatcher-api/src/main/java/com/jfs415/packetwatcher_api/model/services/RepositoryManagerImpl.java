@@ -23,6 +23,7 @@ public class RepositoryManagerImpl implements RepositoryManager {
         this.webApplicationContext = webApplicationContext;
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public <T extends EventMappedSuperclass, E extends Serializable>
             PacketWatcherEventRepository<T, E> getEventRepository(Class<?> entity) {
@@ -36,6 +37,7 @@ public class RepositoryManagerImpl implements RepositoryManager {
         return (PacketWatcherEventRepository<T, E>) repository;
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public <T extends StatsRecord, E extends Serializable> PacketWatcherStatsRepository<T, E> getStatsRepository(
             Class<?> entity) {

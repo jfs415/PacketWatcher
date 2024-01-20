@@ -24,11 +24,13 @@ public class PacketServiceImpl implements PacketService {
         this.packetRepository = packetRepository;
     }
 
+    @Override
     @Transactional(readOnly = true)
     public List<RawPacketRecord> getAllFlaggedPacketRecords() {
         return packetRepository.findAll();
     }
 
+    @Override
     @Transactional(readOnly = true)
     public List<RawPacketRecord> getLast30FlaggedPacketRecords() {
         return packetRepository.findTop30ByOrderByKey_TimestampDesc();

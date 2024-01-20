@@ -1,5 +1,6 @@
 package com.jfs415.packetwatcher_api.auth;
 
+import com.jfs415.packetwatcher_api.auth.inf.JwtUtil;
 import com.jfs415.packetwatcher_api.model.services.inf.UserService;
 import io.jsonwebtoken.lang.Strings;
 import java.io.IOException;
@@ -19,12 +20,12 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 
-    private final JwtUtil jwtUtil;
+    private final JwtUtil jwtUtilImpl;
     private final UserService userService;
 
     @Autowired
-    public JwtFilter(JwtUtil jwtUtil, UserService userService) {
-        this.jwtUtil = jwtUtil;
+    public JwtFilter(JwtUtilImpl jwtUtilImpl, UserService userService) {
+        this.jwtUtilImpl = jwtUtilImpl;
         this.userService = userService;
     }
 
@@ -43,9 +44,9 @@ public class JwtFilter extends OncePerRequestFilter {
         final String token = header.split(" ")[1].trim();
 
         // Get user identity and set it on the spring security context
-        UserDetails userDetails = userService.getUserByUsername(jwtUtil.getUsername(token));
+        UserDetails userDetails = userService.getUserByUsername(jwtUtilImpl.getUsername(token));
 
-        if (userDetails == null || !jwtUtil.validateToken(token, userDetails.getUsername())) {
+        if (userDetails == null || !jwtUtilImpl.validateToken(token, userDetails.getUsername())) {
             chain.doFilter(request, response);
             return;
         }

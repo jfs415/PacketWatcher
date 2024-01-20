@@ -3,18 +3,9 @@ package com.jfs415.packetwatcher_api.views.collections;
 import com.jfs415.packetwatcher_api.views.StatsView;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import org.springframework.data.annotation.Immutable;
 
-@AllArgsConstructor
-@Getter
-@Immutable
-public class StatsCollectionView {
-
-    private final List<StatsView> statsViews;
-
-    public StatsCollectionView() {
-        this.statsViews = new ArrayList<>();
+public record StatsCollectionView(List<StatsView> statsViews) {
+    public StatsCollectionView {
+        statsViews = statsViews == null ? new ArrayList<>() : statsViews;
     }
 }

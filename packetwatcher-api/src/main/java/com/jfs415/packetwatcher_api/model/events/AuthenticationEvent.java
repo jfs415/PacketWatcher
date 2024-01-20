@@ -2,6 +2,7 @@ package com.jfs415.packetwatcher_api.model.events;
 
 import com.jfs415.packetwatcher_api.annotations.PacketWatcherEvent;
 import com.jfs415.packetwatcher_api.events.authentication.AuthenticationEventType;
+import com.jfs415.packetwatcher_api.views.EventView;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import javax.persistence.*;
@@ -30,5 +31,10 @@ public class AuthenticationEvent extends EventMappedSuperclass implements Serial
             long time, String ipAddress, String attemptedUsername, AuthenticationEventType eventType) {
         super(new Timestamp(time), attemptedUsername, ipAddress);
         this.eventType = eventType;
+    }
+
+    @Override
+    public EventView toEventView() {
+        return new EventView(getTimestamp(), getUsername(), getIpAddress(), eventType);
     }
 }

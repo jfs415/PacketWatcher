@@ -34,6 +34,6 @@ public class LockedUserHistory implements Serializable {
     private int numberOfTimesLocked;
 
     public LockedUserHistoryView toLockedUserHistoryView() {
-        return new LockedUserHistoryView(this);
+        return new LockedUserHistoryView(username, firstLocked, lastLocked, numberOfTimesLocked);
     }
 }

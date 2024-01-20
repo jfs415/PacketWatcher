@@ -40,13 +40,12 @@ public class UserParams {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof UserParams) {
-            UserParams other = (UserParams) obj;
-            return this.username.equals(other.username)
-                    && this.password.equals(other.password)
-                    && this.first.equals(other.first)
-                    && this.last.equals(other.last)
-                    && this.email.equals(other.email);
+        if (obj instanceof UserParams userParams) {
+            return this.username.equals(userParams.username)
+                    && this.password.equals(userParams.password)
+                    && this.first.equals(userParams.first)
+                    && this.last.equals(userParams.last)
+                    && this.email.equals(userParams.email);
         }
 
         return false;

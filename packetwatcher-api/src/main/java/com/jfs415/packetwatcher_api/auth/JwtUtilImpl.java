@@ -1,5 +1,6 @@
 package com.jfs415.packetwatcher_api.auth;
 
+import com.jfs415.packetwatcher_api.auth.inf.JwtUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -14,7 +15,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 @Component
-public class JwtUtil implements Serializable {
+public class JwtUtilImpl implements JwtUtil, Serializable {
 
     @Value("${packetwatcher-api.jwt.token-expiry}")
     private Duration tokenExpiry;
@@ -22,34 +23,37 @@ public class JwtUtil implements Serializable {
     @Value("${packetwatcher-api.jwt.secret}")
     private String secretKey = "secret";
 
+    @Override
     public String getUsername(String token) {
         return getClaim(token, Claims::getSubject);
     }
 
+    @Override
     public Date getExpiration(String token) {
         return getClaim(token, Claims::getExpiration);
     }
 
+    @Override
     public <T> T getClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
 
-    private Claims extractAllClaims(String token) {
-        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
-    }
-
-    private Boolean isTokenExpired(String token) {
-        return getExpiration(token).before(new Date());
-    }
-
+    @Override
     public String generateToken(UserDetails userDetails) {
         return generateToken(userDetails.getUsername());
     }
 
+    @Override
     public String generateToken(String username) {
         Map<String, Object> claims = new HashMap<>();
         return createToken(claims, username);
+    }
+
+    @Override
+    public Boolean validateToken(String token, String username) {
+        final String lookedUpUsername = getUsername(token);
+        return (lookedUpUsername.equals(username) && !isTokenExpired(token));
     }
 
     private String createToken(Map<String, Object> claims, String subject) {
@@ -62,8 +66,11 @@ public class JwtUtil implements Serializable {
                 .compact();
     }
 
-    public Boolean validateToken(String token, String username) {
-        final String lookedUpUsername = getUsername(token);
-        return (lookedUpUsername.equals(username) && !isTokenExpired(token));
+    private Claims extractAllClaims(String token) {
+        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
+    }
+
+    private Boolean isTokenExpired(String token) {
+        return getExpiration(token).before(new Date());
     }
 }

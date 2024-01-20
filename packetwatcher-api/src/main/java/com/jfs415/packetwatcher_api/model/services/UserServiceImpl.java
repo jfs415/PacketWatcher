@@ -1,7 +1,9 @@
 package com.jfs415.packetwatcher_api.model.services;
 
-import com.jfs415.packetwatcher_api.auth.JwtUtil;
-import com.jfs415.packetwatcher_api.auth.SecurityConfig;
+import com.jfs415.packetwatcher_api.auth.JwtUtilImpl;
+import com.jfs415.packetwatcher_api.auth.SecurityConfigImpl;
+import com.jfs415.packetwatcher_api.auth.inf.JwtUtil;
+import com.jfs415.packetwatcher_api.auth.inf.SecurityConfig;
 import com.jfs415.packetwatcher_api.exceptions.UserNotFoundException;
 import com.jfs415.packetwatcher_api.model.repositories.UserRepository;
 import com.jfs415.packetwatcher_api.model.services.inf.UserService;
@@ -39,9 +41,9 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     private final JavaMailSender mailSender;
 
-    private final SecurityConfig securityConfig;
+    private final SecurityConfig securityConfigImpl;
 
-    private final JwtUtil jwtUtil;
+    private final JwtUtil jwtUtilImpl;
 
     @Value("${spring.mail.password}")
     private String sender;
@@ -52,30 +54,37 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     @Autowired
     public UserServiceImpl(
-            UserRepository userRepo, JavaMailSender mailSender, SecurityConfig securityConfig, JwtUtil jwtUtil) {
+            UserRepository userRepo,
+            JavaMailSender mailSender,
+            SecurityConfigImpl securityConfigImpl,
+            JwtUtilImpl jwtUtilImpl) {
         this.userRepo = userRepo;
         this.mailSender = mailSender;
-        this.securityConfig = securityConfig;
-        this.jwtUtil = jwtUtil;
+        this.securityConfigImpl = securityConfigImpl;
+        this.jwtUtilImpl = jwtUtilImpl;
     }
 
+    @Override
     public User createUser(UserParams userParams) {
         return new User(userParams);
     }
 
+    @Override
     @Transactional
     public void saveUser(User user) {
         userRepo.saveAndFlush(user);
     }
 
+    @Override
     @Transactional
     public void deleteUser(User user) {
         userRepo.deleteById(user.getUsername());
     }
 
+    @Override
     @Transactional
     public UserProfileView updateUser(UserProfileView updatedProfile) {
-        Optional<User> user = userRepo.findByUsername(updatedProfile.getUsername());
+        Optional<User> user = userRepo.findByUsername(updatedProfile.username());
 
         if (user.isEmpty()) {
             throw new UserNotFoundException();
@@ -90,26 +99,29 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     @Override
     public UserProfileView getUserProfile(String token) throws UserNotFoundException {
-        String username = jwtUtil.getUsername(token);
+        String username = jwtUtilImpl.getUsername(token);
         return userRepo.findByUsername(username)
                 .orElseThrow(UserNotFoundException::new)
                 .toUserProfileView();
     }
 
+    @Override
     @Transactional
     public User getUserByUsername(String username) throws UserNotFoundException {
         return userRepo.findByUsername(username).orElseThrow(UserNotFoundException::new);
     }
 
+    @Override
     @Transactional
     public User getUserByEmail(String email) throws UserNotFoundException {
         return userRepo.findByEmail(email).orElseThrow(UserNotFoundException::new);
     }
 
+    @Override
     @Transactional
     public UserProfilesCollectionView getAllUserProfilesWithLevelLessThanEqual(String token)
             throws UserNotFoundException {
-        String username = jwtUtil.getUsername(token);
+        String username = jwtUtilImpl.getUsername(token);
         Optional<User> optionalUser = userRepo.findByUsername(username);
 
         if (optionalUser.isEmpty()) {
@@ -122,6 +134,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
                         .toList());
     }
 
+    @Override
     @Transactional
     public UserProfilesCollectionView getLockedUserProfiles() {
         return new UserProfilesCollectionView(userRepo.findAllByUserActivationState(UserActivationState.LOCKED).stream()
@@ -129,32 +142,37 @@ public class UserServiceImpl implements UserDetailsService, UserService {
                 .toList());
     }
 
+    @Override
     @Transactional
     public boolean isEmailInUse(String email) {
         return userRepo.existsByEmail(email);
     }
 
+    @Override
     @Transactional
     public boolean isUsernameInUse(String username) {
         return userRepo.existsByUsername(username);
     }
 
+    @Override
     @Transactional
     public boolean isCorrectPasswordResetToken(String requestToken, String storedToken) {
-        return securityConfig.passwordEncoder().matches(requestToken, storedToken);
+        return securityConfigImpl.passwordEncoder().matches(requestToken, storedToken);
     }
 
+    @Override
     @Transactional
     public void setPasswordResetToken(String email, String token) throws UserNotFoundException {
         User user = getUserByEmail(email);
-        user.setPasswordResetToken(securityConfig.passwordEncoder().encode(token));
+        user.setPasswordResetToken(securityConfigImpl.passwordEncoder().encode(token));
 
         saveUser(user);
     }
 
+    @Override
     @Transactional
     public void updatePassword(User user, String password) {
-        String encodedPassword = securityConfig.passwordEncoder().encode(password);
+        String encodedPassword = securityConfigImpl.passwordEncoder().encode(password);
         user.setPassword(encodedPassword);
         user.setPasswordResetToken(null);
 
@@ -163,6 +181,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         saveUser(user);
     }
 
+    @Override
     public void sendPasswordResetEmail(String email, String token) throws MessagingException {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);
@@ -184,14 +203,17 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         mailSender.send(message);
     }
 
+    @Override
     public void addPasswordResetTimestamp(String email, long timestamp) {
         passwordResetTimestamps.put(email, timestamp);
     }
 
+    @Override
     public void purgeExpiredPasswordResetRequests() {
         passwordResetTimestamps.entrySet().removeIf(e -> e.getValue() <= System.currentTimeMillis() - FIVE_MINUTES);
     }
 
+    @Override
     @Transactional
     public void handleAccountRecoveryInitiation(long timestamp, String email) throws MessagingException {
         String token = RandomString.make(30);

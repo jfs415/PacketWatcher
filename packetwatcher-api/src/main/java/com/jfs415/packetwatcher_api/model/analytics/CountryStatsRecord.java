@@ -27,11 +27,10 @@ public class CountryStatsRecord extends StatsRecord implements Serializable {
 
     @Override
     public boolean equals(Object other) {
-        if (other instanceof CountryStatsRecord) {
-            CountryStatsRecord obj = (CountryStatsRecord) other;
-            return super.equals(obj)
-                    && this.mostCaughtHostname.equals(obj.mostCaughtHostname)
-                    && this.mostCaughtHostnameCount == obj.mostCaughtHostnameCount;
+        if (other instanceof CountryStatsRecord statsRecord) {
+            return super.equals(statsRecord)
+                    && this.mostCaughtHostname.equals(statsRecord.mostCaughtHostname)
+                    && this.mostCaughtHostnameCount == statsRecord.mostCaughtHostnameCount;
         }
 
         return false;

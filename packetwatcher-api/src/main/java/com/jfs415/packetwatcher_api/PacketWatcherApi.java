@@ -19,7 +19,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 public class PacketWatcherApi extends SpringBootServletInitializer {
 
-    private final Logger logger = LoggerFactory.getLogger(PacketWatcherApi.class);
+    private static final Logger logger = LoggerFactory.getLogger(PacketWatcherApi.class);
     private static final EnumSet<Authority> authoritySet = EnumSet.allOf(Authority.class);
     private final ApplicationContext applicationContext;
 

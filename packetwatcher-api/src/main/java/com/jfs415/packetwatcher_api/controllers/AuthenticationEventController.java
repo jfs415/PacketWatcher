@@ -7,11 +7,13 @@ import com.jfs415.packetwatcher_api.util.SearchTimeframe;
 import com.jfs415.packetwatcher_api.views.collections.EventsCollectionView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
+@RequestMapping(value = "/events")
 public class AuthenticationEventController {
 
     private final EventService eventService;
@@ -22,23 +24,23 @@ public class AuthenticationEventController {
         this.eventService = eventService;
     }
 
-    @GetMapping("/events/authentication")
+    @GetMapping("/authentication")
     public ResponseEntity<EventsCollectionView> getAuthenticationEvents() {
         return ResponseEntity.ok(eventService.getEventsByType(IMPL));
     }
 
-    @GetMapping(value = "/events/authentication", params = "before")
+    @GetMapping(value = "/authentication", params = "before")
     public ResponseEntity<EventsCollectionView> getAuthenticationEventsBefore(@RequestParam long before) {
         return ResponseEntity.ok(eventService.getEventsByTypeWithTimeframe(IMPL, SearchTimeframe.before(before)));
     }
 
-    @GetMapping(value = "/events/authentication", params = "after")
+    @GetMapping(value = "/authentication", params = "after")
     public ResponseEntity<EventsCollectionView> getAuthenticationEventsAfter(@RequestParam long after) {
         return ResponseEntity.ok(eventService.getEventsByTypeWithTimeframe(IMPL, SearchTimeframe.after(after)));
     }
 
     @GetMapping(
-            value = "/events/authentication",
+            value = "/authentication",
             params = {"start", "stop"})
     public ResponseEntity<EventsCollectionView> getAuthenticationEventsBetween(
             @RequestParam long start, @RequestParam long stop) {
@@ -46,13 +48,13 @@ public class AuthenticationEventController {
                 eventService.getEventsByTypeWithTimeframe(IMPL, RangedSearchTimeframe.between(start, stop)));
     }
 
-    @GetMapping(value = "/events/authentication", params = "username")
+    @GetMapping(value = "/authentication", params = "username")
     public ResponseEntity<EventsCollectionView> getAuthenticationEventsByUsername(@RequestParam String username) {
         return ResponseEntity.ok(eventService.getEventsByTypeAndUsername(IMPL, username));
     }
 
     @GetMapping(
-            value = "/events/authentication",
+            value = "/authentication",
             params = {"username", "before"})
     public ResponseEntity<EventsCollectionView> getAuthenticationEventsWithUsernameBefore(
             @RequestParam String username, @RequestParam long before) {
@@ -61,7 +63,7 @@ public class AuthenticationEventController {
     }
 
     @GetMapping(
-            value = "/events/Authentication",
+            value = "/authentication",
             params = {"username", "after"})
     public ResponseEntity<?> getAuthenticationEventsWithUsernameAfter(
             @RequestParam String username, @RequestParam long after) {
@@ -70,7 +72,7 @@ public class AuthenticationEventController {
     }
 
     @GetMapping(
-            value = "/events/authentication",
+            value = "/authentication",
             params = {"username", "start", "stop"})
     public ResponseEntity<EventsCollectionView> getAuthenticationEventsWithUsernameBetween(
             @RequestParam String username, @RequestParam long start, @RequestParam long stop) {
@@ -78,13 +80,13 @@ public class AuthenticationEventController {
                 IMPL, username, RangedSearchTimeframe.between(start, stop)));
     }
 
-    @GetMapping(value = "/events/authentication", params = "ipAddress")
+    @GetMapping(value = "/authentication", params = "ipAddress")
     public ResponseEntity<EventsCollectionView> getAuthenticationEventsByIpAddress(@RequestParam String ipAddress) {
         return ResponseEntity.ok(eventService.getEventsByTypeAndIpAddress(IMPL, ipAddress));
     }
 
     @GetMapping(
-            value = "/events/authentication",
+            value = "/authentication",
             params = {"ipAddress", "before"})
     public ResponseEntity<EventsCollectionView> getAuthenticationEventsWithIpAddressBefore(
             @RequestParam String ipAddress, @RequestParam long before) {
@@ -93,7 +95,7 @@ public class AuthenticationEventController {
     }
 
     @GetMapping(
-            value = "/events/authentication",
+            value = "/authentication",
             params = {"ipAddress", "after"})
     public ResponseEntity<EventsCollectionView> getAuthenticationEventsWithIpAddressAfter(
             @RequestParam String ipAddress, @RequestParam long after) {
@@ -102,7 +104,7 @@ public class AuthenticationEventController {
     }
 
     @GetMapping(
-            value = "/events/authentication",
+            value = "/authentication",
             params = {"ipAddress", "start", "stop"})
     public ResponseEntity<EventsCollectionView> getAuthenticationEventsWithIpAddressBetween(
             @RequestParam String ipAddress, @RequestParam long start, @RequestParam long stop) {
@@ -111,7 +113,7 @@ public class AuthenticationEventController {
     }
 
     @GetMapping(
-            value = "/events/authentication",
+            value = "/authentication",
             params = {"username", "ipAddress"})
     public ResponseEntity<EventsCollectionView> getAuthenticationEventsWithUsernameAndIpAddress(
             @RequestParam String username, @RequestParam String ipAddress) {
@@ -119,7 +121,7 @@ public class AuthenticationEventController {
     }
 
     @GetMapping(
-            value = "/events/authentication",
+            value = "/authentication",
             params = {"username", "ipAddress", "before"})
     public ResponseEntity<EventsCollectionView> getAuthenticationEventsWithUsernameAndIpAddressBefore(
             @RequestParam String username, @RequestParam String ipAddress, @RequestParam long before) {
@@ -128,7 +130,7 @@ public class AuthenticationEventController {
     }
 
     @GetMapping(
-            value = "/events/authentication",
+            value = "/authentication",
             params = {"username", "ipAddress", "after"})
     public ResponseEntity<EventsCollectionView> getAuthenticationEventsWithUsernameAndIpAddressAfter(
             @RequestParam String username, @RequestParam String ipAddress, @RequestParam long after) {
@@ -137,7 +139,7 @@ public class AuthenticationEventController {
     }
 
     @GetMapping(
-            value = "/events/authentication",
+            value = "/authentication",
             params = {"username", "ipAddress", "start", "stop"})
     public ResponseEntity<EventsCollectionView> getAuthenticationEventsWithUsernameAndIpAddressBetween(
             @RequestParam String username,

@@ -1,8 +1,9 @@
 package com.jfs415.packetwatcher_api.model.services;
 
-import com.jfs415.packetwatcher_api.auth.JwtUtil;
+import com.jfs415.packetwatcher_api.auth.JwtUtilImpl;
 import com.jfs415.packetwatcher_api.exceptions.UserNotFoundException;
 import com.jfs415.packetwatcher_api.exceptions.args.InvalidArgumentException;
+import com.jfs415.packetwatcher_api.model.services.inf.AuthService;
 import com.jfs415.packetwatcher_api.model.services.inf.UserService;
 import com.jfs415.packetwatcher_api.model.user.User;
 import org.slf4j.Logger;
@@ -12,38 +13,41 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AuthService {
+public class AuthServiceImpl implements AuthService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AuthService.class);
+    private static final Logger logger = LoggerFactory.getLogger(AuthServiceImpl.class);
 
-    private final UserAuthCacheService userAuthCacheService;
-    private final JwtUtil jwtUtil;
+    private final UserAuthCacheServiceImpl userAuthCacheServiceImpl;
+    private final JwtUtilImpl jwtUtilImpl;
     private final UserService userService;
 
     @Autowired
-    public AuthService(UserAuthCacheService userAuthCacheService, JwtUtil jwtUtil, UserService userService) {
-        this.userAuthCacheService = userAuthCacheService;
-        this.jwtUtil = jwtUtil;
+    public AuthServiceImpl(
+            UserAuthCacheServiceImpl userAuthCacheServiceImpl, JwtUtilImpl jwtUtilImpl, UserService userService) {
+        this.userAuthCacheServiceImpl = userAuthCacheServiceImpl;
+        this.jwtUtilImpl = jwtUtilImpl;
         this.userService = userService;
     }
 
+    @Override
     public String logUserIn(Authentication authentication) throws InvalidArgumentException {
         User user = (User) authentication.getPrincipal();
-        String token = jwtUtil.generateToken(user);
-        userAuthCacheService.addUserToken(token);
+        String token = jwtUtilImpl.generateToken(user);
+        userAuthCacheServiceImpl.addUserToken(token);
 
         return token;
     }
 
+    @Override
     public boolean logUserOut(String token) throws UserNotFoundException, InvalidArgumentException {
         try {
-            String username = jwtUtil.getUsername(token);
+            String username = jwtUtilImpl.getUsername(token);
             userService.getUserByUsername(username);
-            userAuthCacheService.removeUserToken(token);
+            userAuthCacheServiceImpl.removeUserToken(token);
 
-            return !userAuthCacheService.hasToken(token);
+            return !userAuthCacheServiceImpl.hasToken(token);
         } catch (UserNotFoundException e) {
-            LOGGER.error(e.getMessage(), e);
+            logger.error(e.getMessage(), e);
             return false;
         }
     }

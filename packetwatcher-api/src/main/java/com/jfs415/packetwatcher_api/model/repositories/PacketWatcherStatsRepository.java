@@ -7,8 +7,8 @@ import java.util.List;
 import org.springframework.data.repository.NoRepositoryBean;
 
 @NoRepositoryBean
-public interface PacketWatcherStatsRepository<T extends StatsRecord, ID extends Serializable>
-        extends LimitedAccessRepository<T, ID> {
+public interface PacketWatcherStatsRepository<T extends StatsRecord, K extends Serializable>
+        extends LimitedAccessRepository<T, K> {
 
     List<T> findAllByFirstCaughtBefore(Timestamp before);
 

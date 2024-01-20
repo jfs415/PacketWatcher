@@ -40,12 +40,11 @@ public class AuthService {
             String username = jwtUtil.getUsername(token);
             userService.getUserByUsername(username);
             userAuthCacheService.removeUserToken(token);
-            
+
             return !userAuthCacheService.hasToken(token);
         } catch (UserNotFoundException e) {
             LOGGER.error(e.getMessage(), e);
             return false;
         }
     }
-
 }

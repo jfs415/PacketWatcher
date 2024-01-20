@@ -1,9 +1,8 @@
 package com.jfs415.packetwatcher_api.util;
 
+import java.sql.Timestamp;
 import lombok.Getter;
 import org.hibernate.annotations.Immutable;
-
-import java.sql.Timestamp;
 
 @Getter
 @Immutable
@@ -39,12 +38,8 @@ public class SearchTimeframe {
     }
 
     public enum Timeframe {
-
         BEFORE,
         AFTER,
         BETWEEN;
-
     }
-
 }
-

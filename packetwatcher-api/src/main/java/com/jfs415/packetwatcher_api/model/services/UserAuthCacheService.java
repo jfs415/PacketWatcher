@@ -3,13 +3,12 @@ package com.jfs415.packetwatcher_api.model.services;
 import com.jfs415.packetwatcher_api.exceptions.args.InvalidArgumentException;
 import com.jfs415.packetwatcher_api.exceptions.args.InvalidLoginTimeArgumentException;
 import com.jfs415.packetwatcher_api.exceptions.args.InvalidLoginTokenArgumentException;
+import java.time.Duration;
+import java.util.concurrent.ConcurrentHashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import java.time.Duration;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class UserAuthCacheService {
@@ -19,7 +18,7 @@ public class UserAuthCacheService {
     @Value("${packetwatcher-api.jwt.token-expiry}")
     private Duration tokenExpiry;
 
-    private final ConcurrentHashMap<String, Long> userTokenCache = new ConcurrentHashMap<>(); //<Token, loginTime>
+    private final ConcurrentHashMap<String, Long> userTokenCache = new ConcurrentHashMap<>(); // <Token, loginTime>
 
     public void addUserToken(String token, long loginTime) throws InvalidArgumentException {
         userTokenCache.put(token, loginTime);
@@ -39,7 +38,7 @@ public class UserAuthCacheService {
 
     public boolean hasToken(String token) {
         validateToken(token);
-        
+
         return userTokenCache.containsKey(token);
     }
 
@@ -71,5 +70,4 @@ public class UserAuthCacheService {
             throw new InvalidLoginTokenArgumentException();
         }
     }
-
 }

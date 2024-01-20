@@ -5,7 +5,6 @@ import com.jfs415.packetwatcher_api.model.user.User;
 import com.jfs415.packetwatcher_api.model.user.UserParams;
 import com.jfs415.packetwatcher_api.views.UserProfileView;
 import com.jfs415.packetwatcher_api.views.collections.UserProfilesCollectionView;
-
 import javax.mail.MessagingException;
 
 public interface UserService {
@@ -17,7 +16,7 @@ public interface UserService {
     void deleteUser(User user);
 
     UserProfileView updateUser(UserProfileView updatedProfile);
-    
+
     UserProfileView getUserProfile(String token);
 
     User getUserByUsername(String username) throws UserNotFoundException;
@@ -45,5 +44,4 @@ public interface UserService {
     void purgeExpiredPasswordResetRequests();
 
     void handleAccountRecoveryInitiation(long timestamp, String email) throws MessagingException;
-
 }

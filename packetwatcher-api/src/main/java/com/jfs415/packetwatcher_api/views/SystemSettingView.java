@@ -11,5 +11,4 @@ public class SystemSettingView {
 
     private final String settingKey;
     private final String settingValue;
-
 }

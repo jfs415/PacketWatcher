@@ -1,6 +1,8 @@
 package com.jfs415.packetwatcher_api;
 
 import com.jfs415.packetwatcher_api.model.user.Authority;
+import java.util.EnumSet;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,9 +13,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableScheduling;
-
-import java.util.EnumSet;
-import java.util.Set;
 
 @SpringBootApplication()
 @EnableJpaRepositories()
@@ -42,5 +41,4 @@ public class PacketWatcherApi extends SpringBootServletInitializer {
     public static void main(String... args) {
         SpringApplication.run(PacketWatcherApi.class);
     }
-
 }

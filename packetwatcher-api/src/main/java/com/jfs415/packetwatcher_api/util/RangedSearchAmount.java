@@ -19,5 +19,4 @@ public final class RangedSearchAmount extends SearchAmount {
     public static RangedSearchAmount between(int start, int end) {
         return new RangedSearchAmount(start, end, Operator.BETWEEN);
     }
-
 }

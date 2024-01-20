@@ -2,15 +2,15 @@ package com.jfs415.packetwatcher_api.events.authorization;
 
 import com.jfs415.packetwatcher_api.events.PacketWatcherParentEvent;
 import com.jfs415.packetwatcher_api.model.services.inf.EventService;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.http.HttpServletRequest;
-
 @Component
-public class AuthorizationGrantedEvent extends PacketWatcherParentEvent implements ApplicationListener<org.springframework.security.authorization.event.AuthorizationGrantedEvent<?>> {
+public class AuthorizationGrantedEvent extends PacketWatcherParentEvent
+        implements ApplicationListener<org.springframework.security.authorization.event.AuthorizationGrantedEvent<?>> {
 
     @Autowired
     public AuthorizationGrantedEvent(HttpServletRequest request, EventService eventService) {
@@ -27,5 +27,4 @@ public class AuthorizationGrantedEvent extends PacketWatcherParentEvent implemen
             saveDefaultAuthorizationEvent(event, ipAddress, AuthorizationEventType.GRANTED);
         }
     }
-
 }

@@ -1,17 +1,16 @@
 package com.jfs415.packetwatcher_api.model.user;
 
 import com.jfs415.packetwatcher_api.views.LockedUserHistoryView;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
+import java.io.Serializable;
+import java.sql.Timestamp;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.io.Serializable;
-import java.sql.Timestamp;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -37,5 +36,4 @@ public class LockedUserHistory implements Serializable {
     public LockedUserHistoryView toLockedUserHistoryView() {
         return new LockedUserHistoryView(this);
     }
-
 }

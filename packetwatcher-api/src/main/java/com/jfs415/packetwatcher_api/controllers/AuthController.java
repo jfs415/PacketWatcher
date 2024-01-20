@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(value = "/", produces = "application/json")
 public class AuthController {
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthController.class);
 
     private final AuthenticationManager authenticationManager;
@@ -37,9 +37,10 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<Boolean> processLogin(@RequestBody AuthenticationRequest request) {
         try {
-            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
             String token = authService.logUserIn(authentication);
-            
+
             return ResponseEntity.ok().header(HttpHeaders.AUTHORIZATION, token).body(true);
         } catch (BadCredentialsException | InvalidArgumentException e) {
             LOGGER.error(e.getMessage(), e);
@@ -47,7 +48,7 @@ public class AuthController {
         }
     }
 
-    @PostMapping(value = "/disconnect") //Do not override default spring /logout endpoint
+    @PostMapping(value = "/disconnect") // Do not override default spring /logout endpoint
     public ResponseEntity<Boolean> processLogout(@RequestBody String token) {
         try {
             return ResponseEntity.ok(authService.logUserOut(token));
@@ -56,5 +57,4 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(false);
         }
     }
-
 }

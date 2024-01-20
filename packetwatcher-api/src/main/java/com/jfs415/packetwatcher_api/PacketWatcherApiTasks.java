@@ -2,13 +2,12 @@ package com.jfs415.packetwatcher_api;
 
 import com.jfs415.packetwatcher_api.model.services.UserAuthCacheService;
 import com.jfs415.packetwatcher_api.model.services.inf.UserService;
+import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-
-import java.util.concurrent.TimeUnit;
 
 @Component
 public class PacketWatcherApiTasks {
@@ -25,7 +24,7 @@ public class PacketWatcherApiTasks {
 
     @Scheduled(fixedDelay = 1, timeUnit = TimeUnit.MINUTES)
     public void refreshDashboard() {
-        //TODO: implement
+        // TODO: implement
     }
 
     @Scheduled(fixedDelay = 5, timeUnit = TimeUnit.MINUTES)
@@ -39,5 +38,4 @@ public class PacketWatcherApiTasks {
         userAuthCacheService.purgeAllExpiredTokens();
         LOGGER.debug("Expired login tokens have been purged");
     }
-
 }

@@ -43,5 +43,4 @@ public class SearchAmount {
         LESS_THAN_OR_EQUAL_TO,
         BETWEEN;
     }
-
 }

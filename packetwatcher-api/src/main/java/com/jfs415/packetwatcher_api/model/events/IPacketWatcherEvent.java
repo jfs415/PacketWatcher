@@ -9,5 +9,4 @@ public interface IPacketWatcherEvent {
     String getUsername();
 
     String getIpAddress();
-
 }

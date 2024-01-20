@@ -6,6 +6,8 @@ import com.jfs415.packetwatcher_api.exceptions.UserNotFoundException;
 import com.jfs415.packetwatcher_api.model.services.inf.UserService;
 import com.jfs415.packetwatcher_api.model.user.User;
 import com.jfs415.packetwatcher_api.views.UserProfileView;
+import java.util.Map;
+import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,9 +16,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.Map;
-import java.util.Objects;
 
 @RestController
 public class RecoverAccountController {
@@ -31,7 +30,8 @@ public class RecoverAccountController {
     }
 
     @PostMapping(value = "/account/reset", produces = "application/json")
-    public ResponseEntity<?> processAuthenticatedUserPasswordReset(@CookieValue(name = "jwt") String token, @RequestBody UserProfileView userProfileView) {
+    public ResponseEntity<?> processAuthenticatedUserPasswordReset(
+            @CookieValue(name = "jwt") String token, @RequestBody UserProfileView userProfileView) {
         try {
             Boolean isValidToken = jwtUtil.validateToken(token, userProfileView.getUsername());
             return ResponseEntity.ok(isValidToken);
@@ -75,5 +75,4 @@ public class RecoverAccountController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
     }
-
 }

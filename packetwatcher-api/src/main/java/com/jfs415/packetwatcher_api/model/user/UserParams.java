@@ -1,11 +1,10 @@
 package com.jfs415.packetwatcher_api.model.user;
 
+import javax.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.lang.Nullable;
-
-import javax.validation.constraints.NotBlank;
 
 @AllArgsConstructor
 @Getter
@@ -17,7 +16,6 @@ public class UserParams {
      * Purpose of this class is to reduce number of parameters passed
      * to NewUserController::process.
      */
-
     @NotBlank(message = "First name cannot be empty!")
     private String first;
 
@@ -27,8 +25,7 @@ public class UserParams {
     @NotBlank(message = "Email name cannot be empty!")
     private String email;
 
-    @Nullable
-    private String phone;
+    @Nullable private String phone;
 
     @NotBlank(message = "Username cannot be empty!")
     private String username;
@@ -45,8 +42,11 @@ public class UserParams {
     public boolean equals(Object obj) {
         if (obj instanceof UserParams) {
             UserParams other = (UserParams) obj;
-            return this.username.equals(other.username) && this.password.equals(other.password) && this.first.equals(other.first) &&
-                    this.last.equals(other.last) && this.email.equals(other.email);
+            return this.username.equals(other.username)
+                    && this.password.equals(other.password)
+                    && this.first.equals(other.first)
+                    && this.last.equals(other.last)
+                    && this.email.equals(other.email);
         }
 
         return false;
@@ -54,7 +54,11 @@ public class UserParams {
 
     @Override
     public int hashCode() {
-        return 31 * (username.hashCode() + password.hashCode() + email.hashCode() + first.hashCode() + this.last.hashCode());
+        return 31
+                * (username.hashCode()
+                        + password.hashCode()
+                        + email.hashCode()
+                        + first.hashCode()
+                        + this.last.hashCode());
     }
-
 }

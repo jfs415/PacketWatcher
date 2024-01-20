@@ -11,5 +11,4 @@ public class StatsAnnotationNotFoundException extends RuntimeException {
     public StatsAnnotationNotFoundException(String message) {
         super(message);
     }
-
 }

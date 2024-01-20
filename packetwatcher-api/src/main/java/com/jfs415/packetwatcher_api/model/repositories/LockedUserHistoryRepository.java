@@ -1,11 +1,10 @@
 package com.jfs415.packetwatcher_api.model.repositories;
 
 import com.jfs415.packetwatcher_api.model.user.LockedUserHistory;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-
 import java.sql.Timestamp;
 import java.util.List;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 @Repository
 public interface LockedUserHistoryRepository extends JpaRepository<LockedUserHistory, String> {
@@ -31,5 +30,4 @@ public interface LockedUserHistoryRepository extends JpaRepository<LockedUserHis
     List<LockedUserHistory> findAllByNumberOfTimesLockedLessThanEqual(int numberOfTimesLocked);
 
     List<LockedUserHistory> findAllByNumberOfTimesLockedBetween(int start, int stop);
-
 }

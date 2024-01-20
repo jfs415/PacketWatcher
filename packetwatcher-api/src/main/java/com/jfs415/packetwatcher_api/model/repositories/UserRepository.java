@@ -3,11 +3,10 @@ package com.jfs415.packetwatcher_api.model.repositories;
 import com.jfs415.packetwatcher_api.model.user.Authority;
 import com.jfs415.packetwatcher_api.model.user.User;
 import com.jfs415.packetwatcher_api.model.user.UserActivationState;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, String> {
@@ -49,5 +48,4 @@ public interface UserRepository extends JpaRepository<User, String> {
      * @return True if an existing user has this username, otherwise false.
      */
     boolean existsByUsername(String username);
-
 }

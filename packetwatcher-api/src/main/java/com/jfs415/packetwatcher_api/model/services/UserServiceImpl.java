@@ -10,6 +10,10 @@ import com.jfs415.packetwatcher_api.model.user.UserActivationState;
 import com.jfs415.packetwatcher_api.model.user.UserParams;
 import com.jfs415.packetwatcher_api.views.UserProfileView;
 import com.jfs415.packetwatcher_api.views.collections.UserProfilesCollectionView;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 import net.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,19 +25,13 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
-import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
-
 /**
  * Concrete implementation class that handles functionality outlined in the UserService interface.
  * The adding, accessing, and removal of password reset requests in the underlying storage
  * of this implementation is thread safe.
- * 
+ *
  * @see UserService
  */
-
 @Service
 public class UserServiceImpl implements UserDetailsService, UserService {
 
@@ -42,7 +40,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     private final JavaMailSender mailSender;
 
     private final SecurityConfig securityConfig;
-    
+
     private final JwtUtil jwtUtil;
 
     @Value("${spring.mail.password}")
@@ -53,7 +51,8 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     private static final long FIVE_MINUTES = 300000;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepo, JavaMailSender mailSender, SecurityConfig securityConfig, JwtUtil jwtUtil) {
+    public UserServiceImpl(
+            UserRepository userRepo, JavaMailSender mailSender, SecurityConfig securityConfig, JwtUtil jwtUtil) {
         this.userRepo = userRepo;
         this.mailSender = mailSender;
         this.securityConfig = securityConfig;
@@ -77,11 +76,11 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     @Transactional
     public UserProfileView updateUser(UserProfileView updatedProfile) {
         Optional<User> user = userRepo.findByUsername(updatedProfile.getUsername());
-        
+
         if (user.isEmpty()) {
             throw new UserNotFoundException();
         }
-        
+
         User existingUser = user.get();
         existingUser.updateFromProfile(updatedProfile);
         saveUser(existingUser);
@@ -92,7 +91,9 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     @Override
     public UserProfileView getUserProfile(String token) throws UserNotFoundException {
         String username = jwtUtil.getUsername(token);
-        return userRepo.findByUsername(username).orElseThrow(UserNotFoundException::new).toUserProfileView();
+        return userRepo.findByUsername(username)
+                .orElseThrow(UserNotFoundException::new)
+                .toUserProfileView();
     }
 
     @Transactional
@@ -106,20 +107,26 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Transactional
-    public UserProfilesCollectionView getAllUserProfilesWithLevelLessThanEqual(String token) throws UserNotFoundException {
+    public UserProfilesCollectionView getAllUserProfilesWithLevelLessThanEqual(String token)
+            throws UserNotFoundException {
         String username = jwtUtil.getUsername(token);
         Optional<User> optionalUser = userRepo.findByUsername(username);
-        
+
         if (optionalUser.isEmpty()) {
             throw new UserNotFoundException();
         }
-        
-        return new UserProfilesCollectionView(userRepo.findAllByLevelIsLessThanEqual(optionalUser.get().getLevel()).stream().map(User::toUserProfileView).toList());
+
+        return new UserProfilesCollectionView(
+                userRepo.findAllByLevelIsLessThanEqual(optionalUser.get().getLevel()).stream()
+                        .map(User::toUserProfileView)
+                        .toList());
     }
 
     @Transactional
     public UserProfilesCollectionView getLockedUserProfiles() {
-        return new UserProfilesCollectionView(userRepo.findAllByUserActivationState(UserActivationState.LOCKED).stream().map(User::toUserProfileView).toList());
+        return new UserProfilesCollectionView(userRepo.findAllByUserActivationState(UserActivationState.LOCKED).stream()
+                .map(User::toUserProfileView)
+                .toList());
     }
 
     @Transactional
@@ -184,7 +191,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     public void purgeExpiredPasswordResetRequests() {
         passwordResetTimestamps.entrySet().removeIf(e -> e.getValue() <= System.currentTimeMillis() - FIVE_MINUTES);
     }
-    
+
     @Transactional
     public void handleAccountRecoveryInitiation(long timestamp, String email) throws MessagingException {
         String token = RandomString.make(30);
@@ -197,5 +204,4 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepo.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("Username not found"));
     }
-
 }

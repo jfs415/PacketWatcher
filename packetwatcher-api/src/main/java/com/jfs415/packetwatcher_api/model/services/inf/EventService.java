@@ -11,13 +11,16 @@ public interface EventService {
 
     EventsCollectionView getEventsByTypeAndIpAddress(Class<?> eventType, String ipAddress);
 
-    EventsCollectionView getEventsByTypeAndIpAddressWithTimeframe(Class<?> eventType, String ipAddress, SearchTimeframe timeframe);
+    EventsCollectionView getEventsByTypeAndIpAddressWithTimeframe(
+            Class<?> eventType, String ipAddress, SearchTimeframe timeframe);
 
     EventsCollectionView getEventsByTypeAndIpAddressAndUsername(Class<?> eventType, String ipAddress, String username);
 
-    EventsCollectionView getEventsByTypeAndIpAddressAndUsernameWithTimeframe(Class<?> eventType, String ipAddress, String username, SearchTimeframe timeframe);
+    EventsCollectionView getEventsByTypeAndIpAddressAndUsernameWithTimeframe(
+            Class<?> eventType, String ipAddress, String username, SearchTimeframe timeframe);
 
-    EventsCollectionView getEventsByTypeAndUsernameWithTimeframe(Class<?> eventType, String username, SearchTimeframe timeframe);
+    EventsCollectionView getEventsByTypeAndUsernameWithTimeframe(
+            Class<?> eventType, String username, SearchTimeframe timeframe);
 
     EventsCollectionView getEventsByTypeAndUsername(Class<?> eventType, String username);
 

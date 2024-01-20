@@ -23,5 +23,4 @@ public class AuthorityConverter implements AttributeConverter<Authority, String>
 
         return Authority.of(authority);
     }
-
 }

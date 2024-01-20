@@ -1,7 +1,6 @@
 package com.jfs415.packetwatcher_api.model.user;
 
 public enum UserActivationState {
-
     ENABLED,
     DISABLED,
     LOCKED,
@@ -9,8 +8,5 @@ public enum UserActivationState {
     CREDENTIALS_EXPIRED,
     UNCONFIRMED;
 
-    UserActivationState() {
-
-    }
-
+    UserActivationState() {}
 }

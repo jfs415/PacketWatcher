@@ -2,17 +2,16 @@ package com.jfs415.packetwatcher_api.model.user;
 
 import com.jfs415.packetwatcher_api.PacketWatcherApi;
 import com.jfs415.packetwatcher_api.views.UserProfileView;
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.Objects;
+import javax.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
-import javax.persistence.*;
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.Objects;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -63,7 +62,7 @@ public class User implements Serializable, UserDetails {
         this.email = userParams.getEmail();
         this.phone = userParams.getPhone();
         this.level = Authority.USER;
-        this.userActivationState = UserActivationState.UNCONFIRMED; //Unconfirmed until they activate via email
+        this.userActivationState = UserActivationState.UNCONFIRMED; // Unconfirmed until they activate via email
         this.passwordResetToken = null;
         this.failedLoginAttempts = 0;
     }
@@ -118,15 +117,20 @@ public class User implements Serializable, UserDetails {
     public boolean equals(Object obj) {
         if (obj instanceof User) {
             User other = (User) obj;
-            return this.email.equals(other.email) && this.first.equals(other.first)
-                    && this.last.equals(other.last) && this.username.equals(other.username) && this.level == other.level
+            return this.email.equals(other.email)
+                    && this.first.equals(other.first)
+                    && this.last.equals(other.last)
+                    && this.username.equals(other.username)
+                    && this.level == other.level
                     && this.password.equals(other.password)
-                    && ((this.phone == null && other.phone == null) ||
-                    Objects.requireNonNullElse(this.phone, "").equals(Objects.requireNonNullElse(other.phone, "")))
+                    && ((this.phone == null && other.phone == null)
+                            || Objects.requireNonNullElse(this.phone, "")
+                                    .equals(Objects.requireNonNullElse(other.phone, "")))
                     && this.userActivationState == other.userActivationState
                     && failedLoginAttempts == other.failedLoginAttempts
-                    && ((this.passwordResetToken == null && other.passwordResetToken == null) ||
-                    Objects.requireNonNullElse(this.passwordResetToken, "").equals(Objects.requireNonNullElse(other.passwordResetToken, "")));
+                    && ((this.passwordResetToken == null && other.passwordResetToken == null)
+                            || Objects.requireNonNullElse(this.passwordResetToken, "")
+                                    .equals(Objects.requireNonNullElse(other.passwordResetToken, "")));
         }
 
         return false;
@@ -134,9 +138,14 @@ public class User implements Serializable, UserDetails {
 
     @Override
     public int hashCode() {
-        return 31 * (email.hashCode() + first.hashCode() + last.hashCode() + username.hashCode()
-                + level.hashCode() + password.hashCode()
-                + userActivationState.hashCode() + failedLoginAttempts);
+        return 31
+                * (email.hashCode()
+                        + first.hashCode()
+                        + last.hashCode()
+                        + username.hashCode()
+                        + level.hashCode()
+                        + password.hashCode()
+                        + userActivationState.hashCode()
+                        + failedLoginAttempts);
     }
-
 }

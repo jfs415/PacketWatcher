@@ -1,11 +1,9 @@
 package com.jfs415.packetwatcher_api.model.user;
 
+import java.util.stream.Stream;
 import org.springframework.security.core.GrantedAuthority;
 
-import java.util.stream.Stream;
-
 public enum Authority implements GrantedAuthority {
-
     USER("USER"),
     ADMIN("ADMIN"),
     ROOT("ROOT"),
@@ -23,6 +21,9 @@ public enum Authority implements GrantedAuthority {
     }
 
     public static Authority of(String authority) {
-        return Stream.of(Authority.values()).filter(c -> c.getAuthority().equals(authority)).findFirst().orElseThrow(IllegalArgumentException::new);
+        return Stream.of(Authority.values())
+                .filter(c -> c.getAuthority().equals(authority))
+                .findFirst()
+                .orElseThrow(IllegalArgumentException::new);
     }
 }

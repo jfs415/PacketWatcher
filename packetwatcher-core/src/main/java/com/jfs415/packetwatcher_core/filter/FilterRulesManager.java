@@ -39,8 +39,8 @@ public class FilterRulesManager implements PacketListener {
         this.filterYamlConfiguration = filterYamlConfiguration;
         this.filterConfigurationManager = filterConfigurationManager;
         this.localNetRange = new RangedFilter<>(
-                filterYamlConfiguration.getLocalIpRangeStart(),
-                filterYamlConfiguration.getLocalIpRangeEnd(),
+                filterYamlConfiguration.localIpRangeStart(),
+                filterYamlConfiguration.localIpRangeEnd(),
                 new IpComparator());
 
         try {
@@ -57,14 +57,9 @@ public class FilterRulesManager implements PacketListener {
 
             configuration.forEach((k, v) -> {
                 switch (k) {
-                    case INGRESS:
-                        processIngressPacket(v, packet, tcpHeader);
-                        break;
-                    case EGRESS:
-                        processEgressPacket(v, packet, tcpHeader);
-                        break;
-                    default:
-                        throw new UnknownFilterRuleException();
+                    case INGRESS -> processIngressPacket(v, packet, tcpHeader);
+                    case EGRESS -> processEgressPacket(v, packet, tcpHeader);
+                    default -> throw new UnknownFilterRuleException();
                 }
             });
         }
@@ -108,7 +103,7 @@ public class FilterRulesManager implements PacketListener {
 
     @SuppressWarnings("unchecked")
     public void load() throws IOException {
-        InputStream inputStream = new FileInputStream(filterYamlConfiguration.getFilterRulesPath());
+        InputStream inputStream = new FileInputStream(filterYamlConfiguration.filterRulesPath());
 
         Yaml yaml = new Yaml();
         Map<String, Object> fileData = yaml.load(inputStream); // Map of <FilterRule, FilterConfiguration>

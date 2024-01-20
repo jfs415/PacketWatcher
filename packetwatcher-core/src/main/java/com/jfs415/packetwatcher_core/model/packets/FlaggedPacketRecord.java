@@ -41,8 +41,7 @@ public class FlaggedPacketRecord implements Serializable {
 
     @Override
     public boolean equals(Object other) {
-        if (other instanceof FlaggedPacketRecord) {
-            FlaggedPacketRecord otherRecord = (FlaggedPacketRecord) other;
+        if (other instanceof FlaggedPacketRecord otherRecord) {
             return this.key.equals(otherRecord.key) && this.flaggedCountry.equals(otherRecord.flaggedCountry);
         }
 

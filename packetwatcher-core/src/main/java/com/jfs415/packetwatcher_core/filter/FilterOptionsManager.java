@@ -165,29 +165,14 @@ public class FilterOptionsManager {
 
             filterOptions.forEach((k, v) -> {
                 switch (k) {
-                    case COUNTRY:
-                        processOption(packetData, v, countryName);
-                        break;
-                    case DESTINATION_HOST:
-                        processOption(packetData, v, headerInfo.destHostName());
-                        break;
-                    case DESTINATION_IP, DESTINATION_IP_RANGE:
-                        processOption(packetData, v, headerInfo.destIp());
-                        break;
-                    case DESTINATION_PORT, DESTINATION_PORT_RANGE:
-                        processOption(packetData, v, destPort);
-                        break;
-                    case SOURCE_HOST:
-                        processOption(packetData, v, headerInfo.srcHostName());
-                        break;
-                    case SOURCE_IP, SOURCE_IP_RANGE:
-                        processOption(packetData, v, headerInfo.srcIp());
-                        break;
-                    case SOURCE_PORT, SOURCE_PORT_RANGE:
-                        processOption(packetData, v, srcPort);
-                        break;
-                    default:
-                        logger.debug("Encountered unknown FilterOption"); // TODO: Allow custom filters
+                    case COUNTRY -> processOption(packetData, v, countryName);
+                    case DESTINATION_HOST -> processOption(packetData, v, headerInfo.destHostName());
+                    case DESTINATION_IP, DESTINATION_IP_RANGE -> processOption(packetData, v, headerInfo.destIp());
+                    case DESTINATION_PORT, DESTINATION_PORT_RANGE -> processOption(packetData, v, destPort);
+                    case SOURCE_HOST -> processOption(packetData, v, headerInfo.srcHostName());
+                    case SOURCE_IP, SOURCE_IP_RANGE -> processOption(packetData, v, headerInfo.srcIp());
+                    case SOURCE_PORT, SOURCE_PORT_RANGE -> processOption(packetData, v, srcPort);
+                    default -> logger.debug("Encountered unknown FilterOption"); // TODO: Allow custom filters
                 }
             });
         });

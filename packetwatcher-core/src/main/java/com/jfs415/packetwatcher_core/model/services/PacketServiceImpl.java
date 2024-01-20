@@ -30,10 +30,50 @@ public class PacketServiceImpl implements PacketService {
         this.flaggedPacketRepo = flaggedPacketRepo;
     }
 
+    @Override
     @Transactional
     public void savePacketRecord(FlaggedPacketRecord packetRecord) {
         validateRecord(packetRecord);
         flaggedPacketRepo.saveAndFlush(packetRecord);
+    }
+
+    @Override
+    @Transactional
+    public void flushSaveQueues() {
+        processFlaggedPacketSaveQueue();
+    }
+
+    @Override
+    public void addToSaveQueue(FlaggedPacketRecord packetRecord) {
+        synchronized (flaggedPacketSaveQueue) {
+            flaggedPacketSaveQueue.add(packetRecord);
+        }
+    }
+
+    @Override
+    public void addBatchToFlaggedPacketSaveQueue(List<FlaggedPacketRecord> packetRecords) {
+        validateNotNullOrEmpty(packetRecords);
+
+        synchronized (flaggedPacketSaveQueue) {
+            flaggedPacketSaveQueue.addAll(packetRecords);
+        }
+    }
+
+    @Override
+    public List<FlaggedPacketRecord> getAllFlaggedPacketRecords() {
+        return flaggedPacketRepo.findAll();
+    }
+
+    @Override
+    public List<FlaggedPacketRecord> getLast30FlaggedPacketRecords() {
+        return flaggedPacketRepo.findTop30ByOrderByKey_TimestampDesc();
+    }
+
+    @Override
+    public void validateRecord(FlaggedPacketRecord packetRecord) {
+        if (packetRecord == null) {
+            throw new IllegalArgumentException("The PacketRecord cannot be null!");
+        }
     }
 
     private void processFlaggedPacketSaveQueue() {
@@ -46,34 +86,7 @@ public class PacketServiceImpl implements PacketService {
 
         int size = flaggedSaveQueueCopy.size();
         flaggedPacketRepo.saveAllAndFlush(flaggedSaveQueueCopy);
-        logger.debug("Saved " + size + " flagged packets from the queue");
-    }
-
-    @Transactional
-    public void flushSaveQueues() {
-        processFlaggedPacketSaveQueue();
-    }
-
-    public void addToSaveQueue(FlaggedPacketRecord packetRecord) {
-        synchronized (flaggedPacketSaveQueue) {
-            flaggedPacketSaveQueue.add(packetRecord);
-        }
-    }
-
-    public void addBatchToFlaggedPacketSaveQueue(List<FlaggedPacketRecord> packetRecords) {
-        validateNotNullOrEmpty(packetRecords);
-
-        synchronized (flaggedPacketSaveQueue) {
-            flaggedPacketSaveQueue.addAll(packetRecords);
-        }
-    }
-
-    public List<FlaggedPacketRecord> getAllFlaggedPacketRecords() {
-        return flaggedPacketRepo.findAll();
-    }
-
-    public List<FlaggedPacketRecord> getLast30FlaggedPacketRecords() {
-        return flaggedPacketRepo.findTop30ByOrderByKey_TimestampDesc();
+        logger.debug("Saved {} flagged packets from the queue", size);
     }
 
     private long convertLocalDateTimeToEpochSecond(LocalDateTime localDateTime, int offset) {
@@ -83,12 +96,6 @@ public class PacketServiceImpl implements PacketService {
     private void validateNotNullOrEmpty(List<FlaggedPacketRecord> records) {
         if (records == null || records.isEmpty()) {
             throw new IllegalArgumentException("PacketRecord Lists cannot be null or empty!");
-        }
-    }
-
-    public void validateRecord(FlaggedPacketRecord packetRecord) {
-        if (packetRecord == null) {
-            throw new IllegalArgumentException("The PacketRecord cannot be null!");
         }
     }
 }

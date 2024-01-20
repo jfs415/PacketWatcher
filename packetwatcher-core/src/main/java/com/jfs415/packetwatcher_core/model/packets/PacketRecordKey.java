@@ -36,8 +36,7 @@ public class PacketRecordKey implements Serializable {
 
     @Override
     public boolean equals(Object other) {
-        if (other instanceof PacketRecordKey) {
-            PacketRecordKey otherKey = (PacketRecordKey) other;
+        if (other instanceof PacketRecordKey otherKey) {
             return this.timestamp.equals(otherKey.timestamp)
                     && this.destinationIp.equals(otherKey.destinationIp)
                     && this.destinationPort.equals(otherKey.destinationPort)

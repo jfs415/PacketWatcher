@@ -1,5 +1,10 @@
 package com.jfs415.packetwatcher_core.test.unit;
 
+import java.security.ProtectionDomain;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ServiceConfigurationError;
+import java.util.ServiceLoader;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.pcap4j.core.PcapAddress;
@@ -9,12 +14,6 @@ import org.pcap4j.core.Pcaps;
 import org.pcap4j.packet.factory.PacketFactoryBinderProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.security.ProtectionDomain;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ServiceConfigurationError;
-import java.util.ServiceLoader;
 
 @Order(3)
 class Pcap4jTests {
@@ -65,11 +64,11 @@ class Pcap4jTests {
 
                 logger.info("Succeeded in PacketFactoryBinderProvider.getBinder()");
             } else {
-                logger.info("No PacketFactoryBinder is available. Ensure you have the pcap4j-packetfactory-static-2.0.0-alpha.7-SNAPSHOT.jar as a library!");
+                logger.info(
+                        "No PacketFactoryBinder is available. Ensure you have the pcap4j-packetfactory-static-2.0.0-alpha.7-SNAPSHOT.jar as a library!");
             }
         } catch (ServiceConfigurationError e) {
             logger.info(e.getClass().getName() + ": " + e.getMessage());
         }
     }
-
 }

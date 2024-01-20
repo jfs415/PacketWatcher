@@ -22,12 +22,11 @@ class CoreTests {
         /*
          * JUnit doesnt like the application context being shutdown before it's own shutdown hooks finish.
          * Using @DirtiesContext will also not resolve this.
-         * For now having this run last will prevent it from failing the other integration tests and 
+         * For now having this run last will prevent it from failing the other integration tests and
          * will have to be good enough.
-         * 
+         *
          * TODO: Find workaround for this or potentially remove the test altogether.
          */
-        packetWatcherCore.fail("This is a test fail"); 
+        packetWatcherCore.fail("This is a test fail");
     }
-
 }

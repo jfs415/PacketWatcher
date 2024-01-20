@@ -1,10 +1,9 @@
 package com.jfs415.packetwatcher_core.filter;
 
-import org.springframework.data.annotation.Immutable;
-
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import org.springframework.data.annotation.Immutable;
 
 @Immutable
 public final class FilterSet<T> implements IFilterSet<T> {
@@ -22,7 +21,8 @@ public final class FilterSet<T> implements IFilterSet<T> {
 
     @Override
     public boolean isType(Class<?> type) {
-        return !filteredValues.isEmpty() && filteredValues.iterator().next().getClass().isAssignableFrom(type);
+        return !filteredValues.isEmpty()
+                && filteredValues.iterator().next().getClass().isAssignableFrom(type);
     }
 
     @Override
@@ -71,5 +71,4 @@ public final class FilterSet<T> implements IFilterSet<T> {
 
         return 31 * hash;
     }
-
 }

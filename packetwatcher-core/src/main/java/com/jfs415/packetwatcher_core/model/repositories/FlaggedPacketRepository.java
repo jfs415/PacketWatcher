@@ -2,11 +2,10 @@ package com.jfs415.packetwatcher_core.model.repositories;
 
 import com.jfs415.packetwatcher_core.model.packets.FlaggedPacketRecord;
 import com.jfs415.packetwatcher_core.model.packets.PacketRecordKey;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-
 import java.sql.Timestamp;
 import java.util.List;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 @Repository
 public interface FlaggedPacketRepository extends JpaRepository<FlaggedPacketRecord, PacketRecordKey> {
@@ -22,5 +21,4 @@ public interface FlaggedPacketRepository extends JpaRepository<FlaggedPacketReco
     List<FlaggedPacketRecord> findTop30ByOrderByKey_TimestampDesc();
 
     void deleteAllByKey_TimestampLessThan(Timestamp timestamp);
-
 }

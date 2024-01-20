@@ -14,5 +14,4 @@ public class FilterYamlConfiguration {
     private String localIpRangeStart;
     private String localIpRangeEnd;
     private String filterRulesPath;
-
 }

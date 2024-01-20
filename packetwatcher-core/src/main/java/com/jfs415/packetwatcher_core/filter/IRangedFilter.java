@@ -17,5 +17,4 @@ public interface IRangedFilter<T extends Comparable<T>> extends IFilter<T> {
     boolean anyInRange(List<T> values);
 
     boolean hasRangedComparator();
-
 }

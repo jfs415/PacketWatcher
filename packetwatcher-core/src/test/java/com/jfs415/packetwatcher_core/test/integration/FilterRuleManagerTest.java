@@ -23,7 +23,7 @@ class FilterRuleManagerTest {
 
         assert filterRulesManager != null;
 
-        //Tests outside range
+        // Tests outside range
         assert !filterRulesManager.isIpInLocalRange("0.0.0.0");
         assert !filterRulesManager.isIpInLocalRange("192.168.1.0");
         assert !filterRulesManager.isIpInLocalRange("192.168.2.0");
@@ -33,11 +33,10 @@ class FilterRuleManagerTest {
         assert !filterRulesManager.isIpInLocalRange("1.168.1.");
         assert !filterRulesManager.isIpInLocalRange("1.168.1");
 
-        //Tests inside range
+        // Tests inside range
         assert filterRulesManager.isIpInLocalRange("192.168.1.1");
         assert filterRulesManager.isIpInLocalRange("192.168.1.255");
         assert filterRulesManager.isIpInLocalRange("192.168.1.200");
         assert filterRulesManager.isIpInLocalRange("192.168.1.20");
     }
-
 }

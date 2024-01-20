@@ -13,5 +13,4 @@ public class FilterException extends RuntimeException {
     public FilterException(String message, Throwable cause) {
         super(message, cause);
     }
-
 }

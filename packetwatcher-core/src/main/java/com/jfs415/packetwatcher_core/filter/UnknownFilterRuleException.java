@@ -17,5 +17,4 @@ public class UnknownFilterRuleException extends RuntimeException {
     public UnknownFilterRuleException(String message, Throwable cause) {
         super(message, cause);
     }
-
 }

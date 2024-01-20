@@ -29,6 +29,7 @@ public class UserActivationStateServiceImpl implements UserActivationStateServic
         this.userService = userService;
     }
 
+    @Override
     @Transactional
     public void handleFailedUserLogin(String username, long time) throws UserNotFoundException {
         User user = userService.getUserByUsername(username);
@@ -44,15 +45,18 @@ public class UserActivationStateServiceImpl implements UserActivationStateServic
         }
     }
 
+    @Override
     public void updateLockedUserHistory(User user, long time) {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     @Transactional()
     public LockedUserHistoryView getLockedUserHistoryRecordsByUsername(String username) {
         return lockedUserHistoryRepo.getReferenceById(username).toLockedUserHistoryView();
     }
 
+    @Override
     @Transactional
     public LockedUserHistoryCollectionView getAllLockedUserHistoryRecords() {
         return new LockedUserHistoryCollectionView(lockedUserHistoryRepo.findAll().stream()

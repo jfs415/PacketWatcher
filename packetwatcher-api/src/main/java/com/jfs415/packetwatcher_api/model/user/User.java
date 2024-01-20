@@ -103,34 +103,33 @@ public class User implements Serializable, UserDetails {
     }
 
     public UserProfileView toUserProfileView() {
-        return new UserProfileView(this);
+        return new UserProfileView(username, first, last, email, phone, level);
     }
 
     public void updateFromProfile(UserProfileView updatedProfile) {
-        this.first = updatedProfile.getFirstName();
-        this.last = updatedProfile.getLastName();
-        this.email = updatedProfile.getEmail();
-        this.phone = updatedProfile.getPhone();
+        this.first = updatedProfile.firstName();
+        this.last = updatedProfile.lastName();
+        this.email = updatedProfile.email();
+        this.phone = updatedProfile.phone();
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof User) {
-            User other = (User) obj;
-            return this.email.equals(other.email)
-                    && this.first.equals(other.first)
-                    && this.last.equals(other.last)
-                    && this.username.equals(other.username)
-                    && this.level == other.level
-                    && this.password.equals(other.password)
-                    && ((this.phone == null && other.phone == null)
+        if (obj instanceof User user) {
+            return this.email.equals(user.email)
+                    && this.first.equals(user.first)
+                    && this.last.equals(user.last)
+                    && this.username.equals(user.username)
+                    && this.level == user.level
+                    && this.password.equals(user.password)
+                    && ((this.phone == null && user.phone == null)
                             || Objects.requireNonNullElse(this.phone, "")
-                                    .equals(Objects.requireNonNullElse(other.phone, "")))
-                    && this.userActivationState == other.userActivationState
-                    && failedLoginAttempts == other.failedLoginAttempts
-                    && ((this.passwordResetToken == null && other.passwordResetToken == null)
+                                    .equals(Objects.requireNonNullElse(user.phone, "")))
+                    && this.userActivationState == user.userActivationState
+                    && failedLoginAttempts == user.failedLoginAttempts
+                    && ((this.passwordResetToken == null && user.passwordResetToken == null)
                             || Objects.requireNonNullElse(this.passwordResetToken, "")
-                                    .equals(Objects.requireNonNullElse(other.passwordResetToken, "")));
+                                    .equals(Objects.requireNonNullElse(user.passwordResetToken, "")));
         }
 
         return false;

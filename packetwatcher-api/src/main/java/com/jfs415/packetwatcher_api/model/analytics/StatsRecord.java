@@ -35,19 +35,17 @@ public abstract class StatsRecord implements Serializable {
     private Timestamp lastCollectionTime;
 
     public StatsView toStatsView() {
-        return new StatsView(this);
+        return new StatsView(name, recordsCaught, firstCaught, lastCaught, lastCollectionTime);
     }
 
     @Override
     public boolean equals(Object other) {
-        if (other instanceof StatsRecord) {
-            StatsRecord obj = (StatsRecord) other;
-
-            return this.name.equals(obj.getName())
-                    && this.firstCaught.equals(obj.getFirstCaught())
-                    && this.lastCaught.equals(obj.getLastCaught())
-                    && this.recordsCaught == obj.getRecordsCaught()
-                    && this.lastCollectionTime.equals(obj.lastCollectionTime);
+        if (other instanceof StatsRecord statsRecord) {
+            return this.name.equals(statsRecord.getName())
+                    && this.firstCaught.equals(statsRecord.getFirstCaught())
+                    && this.lastCaught.equals(statsRecord.getLastCaught())
+                    && this.recordsCaught == statsRecord.getRecordsCaught()
+                    && this.lastCollectionTime.equals(statsRecord.lastCollectionTime);
         }
 
         return false;

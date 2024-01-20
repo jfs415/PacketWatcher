@@ -27,10 +27,10 @@ public class HostnameStatsRecord extends StatsRecord implements Serializable {
 
     @Override
     public boolean equals(Object other) {
-        if (other instanceof HostnameStatsRecord) {
-            HostnameStatsRecord obj = (HostnameStatsRecord) other;
-
-            return super.equals(obj) && this.ipAddress.equals(obj.ipAddress) && this.port.equals(obj.port);
+        if (other instanceof HostnameStatsRecord statsRecord) {
+            return super.equals(statsRecord)
+                    && this.ipAddress.equals(statsRecord.ipAddress)
+                    && this.port.equals(statsRecord.port);
         }
 
         return false;

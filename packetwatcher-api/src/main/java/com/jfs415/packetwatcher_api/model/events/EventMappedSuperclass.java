@@ -16,7 +16,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @MappedSuperclass
-public class EventMappedSuperclass implements Serializable, IPacketWatcherEvent {
+public abstract class EventMappedSuperclass implements Serializable, IPacketWatcherEvent {
 
     @Id
     @Column(name = "timestamp", unique = true)
@@ -28,7 +28,5 @@ public class EventMappedSuperclass implements Serializable, IPacketWatcherEvent 
     @Column(name = "ip_address")
     private String ipAddress;
 
-    public EventView toEventView() {
-        return new EventView(this);
-    }
+    public abstract EventView toEventView();
 }

@@ -1,7 +1,8 @@
 package com.jfs415.packetwatcher_api.controllers;
 
+import com.jfs415.packetwatcher_api.model.analytics.RawPacketRecord;
 import com.jfs415.packetwatcher_api.model.services.PacketServiceImpl;
-import com.jfs415.packetwatcher_api.views.RawPacketView;
+import com.jfs415.packetwatcher_api.model.services.inf.PacketService;
 import com.jfs415.packetwatcher_api.views.collections.RawPacketsCollectionView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class PacketsController {
 
-    private final PacketServiceImpl packetService;
+    private final PacketService packetService;
 
     @Autowired
     public PacketsController(PacketServiceImpl packetService) {
@@ -21,7 +22,7 @@ public class PacketsController {
     @GetMapping("/packets")
     public ResponseEntity<RawPacketsCollectionView> getDefaultCapturedPacketsView() {
         return ResponseEntity.ok(new RawPacketsCollectionView(packetService.getLast30FlaggedPacketRecords().stream()
-                .map(RawPacketView::new)
+                .map(RawPacketRecord::toRawPacketRecordView)
                 .toList()));
     }
 }

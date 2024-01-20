@@ -1,5 +1,6 @@
 package com.jfs415.packetwatcher_api.model.analytics;
 
+import com.jfs415.packetwatcher_api.views.RawPacketView;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -25,4 +26,14 @@ public class RawPacketRecord {
 
     @Column(name = "flagged_country")
     private String flaggedCountry;
+
+    public RawPacketView toRawPacketRecordView() {
+        return new RawPacketView(
+                key.getTimestamp().toString(),
+                destinationHost,
+                key.getDestinationPort(),
+                key.getSourceHost(),
+                key.getSourcePort(),
+                flaggedCountry);
+    }
 }

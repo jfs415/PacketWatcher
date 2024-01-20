@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Navbar from "../Navbar";
 import { CDBCard, CDBCardBody, CDBDataTable } from "cdbreact";
+import {getFromLocalStorage} from "../../util/LocalStorage";
 
 const Users = () => {
 
@@ -36,7 +37,12 @@ const Users = () => {
     };
 
     useEffect(() => {
-        fetch("/users").then(response => {
+        fetch(`/users?token=${getFromLocalStorage("jwt")}`, {
+            headers: {
+                "Content-Type": "application/json"
+            },
+            method: "GET",
+        }).then(response => {
             if (response.ok) {
                 return response.json();
             }
@@ -58,7 +64,7 @@ const Users = () => {
     return (
         <div style={ { display: 'flex', height: '100vh' } }>
             <Navbar/>
-            <CDBCard style={ { width: "100%", height: "100%", overflowY: "auto" } }>
+            <CDBCard id={"data-card"}>
                 <CDBCardBody style={ { paddingTop: "5%" } }>
                     <CDBDataTable className={ "data-table" }
                                   striped

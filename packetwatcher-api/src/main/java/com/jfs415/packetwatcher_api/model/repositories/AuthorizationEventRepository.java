@@ -1,9 +1,7 @@
 package com.jfs415.packetwatcher_api.model.repositories;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import com.jfs415.packetwatcher_api.model.events.AuthorizationEvent;
 
-import com.jfs415.packetwatcher_api.model.events.PacketWatcherEvent;
-
-public interface AuthorizationEventRepository extends JpaRepository<PacketWatcherEvent, String> {
-	
+public interface AuthorizationEventRepository extends PacketWatcherEventRepository<AuthorizationEvent, String> {
+    // Intentionally empty, all used methods are inherited currently. Type specific ones can be added here.
 }

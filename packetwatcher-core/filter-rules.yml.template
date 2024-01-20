@@ -1,0 +1,23 @@
+---
+INGRESS:
+  PORT_RANGE_ONLY:
+    DESTINATION_PORT_RANGE:
+      - start: 1
+        end: 40
+      - start: 41
+        end: 65535
+    SOURCE_PORT_RANGE:
+      - start: 1
+        end: 40
+      - start: 41
+        end: 65535
+EGRESS:
+  COUNTRY_AND_SOURCE_HOST:
+    COUNTRY:
+      - "CU"
+      - "RU"
+      - "BY"
+      - "IR"
+      - "CN"
+    SOURCE_HOST:
+      - "LOCALHOST"

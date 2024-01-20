@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { CDBCard, CDBCardBody, CDBDataTable } from "cdbreact";
+import React, {useEffect, useState} from 'react';
+import {CDBCard, CDBCardBody, CDBDataTable} from "cdbreact";
 import Navbar from "../Navbar";
-import "./styles.css";
 
 const Packets = () => {
 
@@ -22,6 +21,15 @@ const Packets = () => {
             {
                 label: "Destination Port",
                 field: "destinationPort",
+            },
+            {
+                label: "Source Host",
+                field: "sourceHost",
+            },
+
+            {
+                label: "Source Port",
+                field: "sourcePort",
             },
             {
                 label: "Flagged Country",
@@ -53,20 +61,20 @@ const Packets = () => {
     }, []);
 
     return (
-        <div style={ { display: 'flex', height: '100vh' } }>
+        <div style={{display: 'flex', height: '100vh'}}>
             <Navbar/>
-            <CDBCard style={ { width: "100%", height: "100%", overflowY: "auto" } }>
-                <CDBCardBody style={ { paddingTop: "5%" } }>
-                    <CDBDataTable className={ "data-table" }
+            <CDBCard id={"data-card"}>
+                <CDBCardBody style={{paddingTop: "5%"}}>
+                    <CDBDataTable className={"data-table"}
                                   striped
                                   bordered
                                   hoveCDBDataTable
-                                  searching={ false }
-                                  entries={ 10 }
-                                  pagesAmount={ 4 }
-                                  data={ data }
-                                  materialSearch={ true }
-                                  noBottomColumns={ true }
+                                  searching={false}
+                                  entries={10}
+                                  pagesAmount={4}
+                                  data={data}
+                                  materialSearch={true}
+                                  noBottomColumns={true}
                     />
                 </CDBCardBody>
             </CDBCard>

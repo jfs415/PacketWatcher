@@ -16,13 +16,14 @@ repositories {
 }
 
 allprojects {
-    sourceCompatibility = '11'
-    targetCompatibility = '11'
+    sourceCompatibility = '17'
+    targetCompatibility = '17'
 
     group 'com.jfs415'
     version '0.1.0-SNAPSHOT'
 
     test {
-        useJUnitPlatform()
+        systemProperty "PW_DB_USERNAME", System.getenv("PW_DB_USERNAME")
+        systemProperty "PW_DB_PASSWORD", System.getenv("PW_DB_PASSWORD")
     }
 }

@@ -2,73 +2,58 @@ package com.jfs415.packetwatcher_core.model.packets;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
-
 import javax.persistence.Column;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class PacketRecordKey implements Serializable {
 
-	@Column(name = "timestamp")
-	public Timestamp timestamp;
+    @Column(name = "timestamp")
+    public Timestamp timestamp;
 
-	@Column(name = "destination_ip")
-	public String destinationIp;
+    @Column(name = "destination_ip")
+    public String destinationIp;
 
-	@Column(name = "destination_port")
-	public String destinationPort;
-	
-	public PacketRecordKey() {
+    @Column(name = "destination_port")
+    public String destinationPort;
 
-	}
+    @Column(name = "source_host")
+    public String sourceHost;
 
-	public PacketRecordKey(Timestamp timestamp, String destinationIp, String destinationPort) {
-		this.timestamp = timestamp;
-		this.destinationIp = destinationIp;
-		this.destinationPort = destinationPort;
-	}
+    @Column(name = "source_port")
+    public String sourcePort;
 
-	public Timestamp getTimestamp() {
-		return this.timestamp;
-	}
+    @Override
+    public String toString() {
+        return timestamp.toString() + " " + destinationIp + ":" + destinationPort + " " + sourceHost + ":" + sourcePort;
+    }
 
-	public void setTimestamp(Timestamp timestamp) {
-		this.timestamp = timestamp;
-	}
+    @Override
+    public boolean equals(Object other) {
+        if (other instanceof PacketRecordKey otherKey) {
+            return this.timestamp.equals(otherKey.timestamp)
+                    && this.destinationIp.equals(otherKey.destinationIp)
+                    && this.destinationPort.equals(otherKey.destinationPort)
+                    && this.sourceHost.equals(otherKey.sourceHost)
+                    && this.sourcePort.equals(otherKey.sourcePort);
+        }
 
-	public String getDestinationPort() {
-		return destinationPort;
-	}
+        return false;
+    }
 
-	public void setDestinationPort(String destinationPort) {
-		this.destinationPort = destinationPort;
-	}
-
-	public String getDestinationIp() {
-		return destinationIp;
-	}
-
-	public void setDestinationIp(String destinationIp) {
-		this.destinationIp = destinationIp;
-	}
-	
-	@Override
-	public String toString() {
-		return timestamp.toString() + " " + destinationIp + ":" + destinationPort;
-	} 
-
-	@Override
-	public boolean equals(Object other) {
-		if (other instanceof PacketRecordKey) {
-			PacketRecordKey otherKey = (PacketRecordKey) other;
-			return this.timestamp.equals(otherKey.timestamp) && this.destinationIp.equals(otherKey.destinationIp) 
-					&& this.destinationPort.equals(otherKey.destinationPort);
-		}
-
-		return false;
-	}
-
-	@Override
-	public int hashCode() {
-		return 31 * (destinationIp.hashCode() + destinationPort.hashCode() + timestamp.hashCode());
-	}
-
+    @Override
+    public int hashCode() {
+        return 31
+                * (destinationIp.hashCode()
+                        + destinationPort.hashCode()
+                        + timestamp.hashCode()
+                        + sourceHost.hashCode()
+                        + sourcePort.hashCode());
+    }
 }

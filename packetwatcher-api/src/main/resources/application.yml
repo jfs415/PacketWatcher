@@ -1,0 +1,49 @@
+spring:
+  application:
+    name: packetwatcher-api
+  datasource:
+    url: jdbc:mysql://${PW_DB_HOST:localhost}:${PW_DB_PORT:3306}/packetwatcher
+    username: ${PW_DB_USERNAME:username}
+    password: ${PW_DB_PASSWORD:password}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    generate-ddl: true
+    hibernate:
+      ddl-auto: update
+  h2:
+    console:
+      enabled: true
+  security:
+    filter:
+      order: 10
+  mail:
+    port: ${PW_MAIL_PORT:587}
+    host: ${PW_MAIL_HOST:smtp.gmail.com}
+    username: ${PW_MAIL_USERNAME:username}
+    password: ${PW_MAIL_PASSWORD:password}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          connection-timeout: 5000
+          timeout: 5000
+          write-timeout: 5000
+          starttls:
+            enable: true
+            required: true
+
+logging:
+  level:
+    org:
+      springframework: TRACE
+    com: TRACE
+
+application:
+  version: 1.0.0
+    
+packetwatcher-api:
+  password-strength: 12
+  jwt:
+    secret: ${PW_JWT:jwt}
+    token-expiry: 15m

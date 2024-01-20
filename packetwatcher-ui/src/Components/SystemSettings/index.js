@@ -45,7 +45,7 @@ const SystemSettings = () => {
     return (
         <div style={ { display: 'flex', height: '100vh' } }>
             <Navbar/>
-            <CDBCard style={ { width: "100%", height: "100%", overflowY: "auto" } }>
+            <CDBCard id={"data-card"}>
                 <CDBCardBody style={ { paddingTop: "5%" } }>
                     <CDBDataTable className={ "data-table" }
                                   striped

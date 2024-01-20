@@ -1,41 +1,40 @@
 package com.jfs415.packetwatcher_api.model.events;
 
-import java.io.Serializable;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Table;
-
+import com.jfs415.packetwatcher_api.annotations.PacketWatcherEvent;
 import com.jfs415.packetwatcher_api.events.authentication.AuthenticationEventType;
+import com.jfs415.packetwatcher_api.views.EventView;
+import java.io.Serializable;
+import java.sql.Timestamp;
+import javax.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
 @Table(name = "authentication_events", schema = "packetwatcher")
-public class AuthenticationEvent extends PacketWatcherEvent implements Serializable {
+@PacketWatcherEvent
+public class AuthenticationEvent extends EventMappedSuperclass implements Serializable {
 
-	@Enumerated(EnumType.STRING)
-	@Column(name = "event_type")
-	private AuthenticationEventType eventType;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "event_type")
+    private AuthenticationEventType eventType;
 
-	public AuthenticationEvent() { }
-	
-	public AuthenticationEvent(long time, String ipAddress, AuthenticationEventType eventType) {
-		super(time, null, ipAddress);
-		this.eventType = eventType;
-	}
+    public AuthenticationEvent(long time, String ipAddress, AuthenticationEventType eventType) {
+        super(new Timestamp(time), null, ipAddress);
+        this.eventType = eventType;
+    }
 
-	public AuthenticationEvent(long time, String ipAddress, String attemptedUsername, AuthenticationEventType eventType) {
-		super(time, attemptedUsername, ipAddress);
-		this.eventType = eventType;
-	}
+    public AuthenticationEvent(
+            long time, String ipAddress, String attemptedUsername, AuthenticationEventType eventType) {
+        super(new Timestamp(time), attemptedUsername, ipAddress);
+        this.eventType = eventType;
+    }
 
-	public AuthenticationEventType getEventType() {
-		return eventType;
-	}
-
-	public void setEventType(AuthenticationEventType eventType) {
-		this.eventType = eventType;
-	}
-
+    @Override
+    public EventView toEventView() {
+        return new EventView(getTimestamp(), getUsername(), getIpAddress(), eventType);
+    }
 }

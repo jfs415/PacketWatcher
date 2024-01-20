@@ -11,7 +11,7 @@ import { NavLink } from "react-bootstrap";
 
 const Navbar = () => {
     return (
-        <CDBSidebar textColor="#fff" backgroundColor="#333">
+        <CDBSidebar textColor="#fff" backgroundColor="#18191A">
             <CDBSidebarHeader prefix={ <i className="fa fa-bars fa-large"></i> }>
                 <a href="/dashboard" className="text-decoration-none" style={ { color: 'inherit' } }>
                     PacketWatcher
@@ -20,29 +20,32 @@ const Navbar = () => {
 
             <CDBSidebarContent className="sidebar-content">
                 <CDBSidebarMenu>
-                    <NavLink href="/packets" activeClassName="activeClicked">
+                    <NavLink href="/packets" className="activeClicked">
                         <CDBSidebarMenuItem icon="envelope">Captured Packets</CDBSidebarMenuItem>
                     </NavLink>
-                    <NavLink href="/system/settings" activeClassName="activeClicked">
+                    <NavLink href="/system/settings" className="activeClicked">
                         <CDBSidebarMenuItem icon="cog">System Settings</CDBSidebarMenuItem>
                     </NavLink>
-                    <NavLink href="/profile" activeClassName="activeClicked">
+                    <NavLink href="/profile" className="activeClicked">
                         <CDBSidebarMenuItem icon="user">User Profile</CDBSidebarMenuItem>
                     </NavLink>
-                    <NavLink href="/users" activeClassName="activeClicked">
+                    <NavLink href="/users" className="activeClicked">
                         <CDBSidebarMenuItem icon="users">Users</CDBSidebarMenuItem>
                     </NavLink>
-                    <NavLink href="/users/locked/history" activeClassName="activeClicked">
-                        <CDBSidebarMenuItem icon="users">Locked User History</CDBSidebarMenuItem>
+                    <NavLink href="/users/locked/history" className="activeClicked">
+                        <CDBSidebarMenuItem icon="user-lock">Locked User History</CDBSidebarMenuItem>
                     </NavLink>
-                    <NavLink href="/system/analytics" activeClassName="activeClicked">
+                    <NavLink href="/system/analytics" className="activeClicked">
                         <CDBSidebarMenuItem icon="chart-line">System Analytics</CDBSidebarMenuItem>
                     </NavLink>
-                    <NavLink href="/events/authentication" activeClassName="activeClicked">
-                        <CDBSidebarMenuItem icon="star">Authentication Events</CDBSidebarMenuItem>
+                    <NavLink href="/events/authentication" className="activeClicked">
+                        <CDBSidebarMenuItem icon="user-check">Authentication Events</CDBSidebarMenuItem>
                     </NavLink>
-                    <NavLink href="/events/authorization" activeClassName="activeClicked">
-                        <CDBSidebarMenuItem icon="star">Authorization Events</CDBSidebarMenuItem>
+                    <NavLink href="/events/authorization" className="activeClicked">
+                        <CDBSidebarMenuItem icon="money-check">Authorization Events</CDBSidebarMenuItem>
+                    </NavLink>
+                    <NavLink href="/console" className="activeClicked">
+                        <CDBSidebarMenuItem icon="terminal">Console</CDBSidebarMenuItem>
                     </NavLink>
                 </CDBSidebarMenu>
             </CDBSidebarContent>

@@ -30,3 +30,8 @@ hs_err_pid*
 /packetwatcher-ui/PacketWatcherUI.properties
 /packetwatcher-api/build/
 /packetwatcher-core/build/
+/packetwatcher-ui.iml
+/PacketWatcher.iml
+/gradlew.bat
+/gradlew
+/gradle/wrapper/gradle-wrapper.properties

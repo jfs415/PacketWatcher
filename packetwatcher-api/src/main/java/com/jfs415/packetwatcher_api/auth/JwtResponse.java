@@ -2,16 +2,4 @@ package com.jfs415.packetwatcher_api.auth;
 
 import java.io.Serializable;
 
-public class JwtResponse implements Serializable {
-
-	private final String token;
-
-	public JwtResponse(String token) {
-		this.token = token;
-	}
-
-	public String getToken() {
-		return token;
-	}
-
-}
+public record JwtResponse(String token) implements Serializable {}

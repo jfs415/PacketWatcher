@@ -1,11 +1,9 @@
 package com.jfs415.packetwatcher_api.model.repositories;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import com.jfs415.packetwatcher_api.model.events.AuthenticationEvent;
 import org.springframework.stereotype.Repository;
 
-import com.jfs415.packetwatcher_api.model.events.PacketWatcherEvent;
-
 @Repository
-public interface AuthenticationEventRepository extends JpaRepository<PacketWatcherEvent, String> {
-
+public interface AuthenticationEventRepository extends PacketWatcherEventRepository<AuthenticationEvent, String> {
+    // Intentionally empty, all used methods are inherited currently. Type specific ones can be added here.
 }

@@ -1,0 +1,14 @@
+version: '3.8'
+services:
+  client:
+    image: packetwatcher-ui-prod
+    build:
+      dockerfile: Dockerfile
+    container_name: packetwatcher-ui
+    ports: 
+      - "8080:8080"
+    environment:
+      - NODE_ENV=production
+
+volumes:
+  node_modules:

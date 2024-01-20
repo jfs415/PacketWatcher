@@ -3,6 +3,7 @@ plugins {
     id 'io.spring.dependency-management' version '1.0.15.RELEASE'
     id 'java'
     id 'maven-publish'
+    id 'com.diffplug.spotless' version '6.24.0'
 }
 
 publishing {
@@ -11,6 +12,24 @@ publishing {
             artifactId = 'packetwatcher-core' as Publication
             from components.java
         }
+    }
+}
+
+spotless {
+    java {
+        target fileTree('.') {
+            include '**/*.java'
+            exclude '**/build/**', '**/build-*/**'
+        }
+        
+        cleanthat()
+        
+        toggleOffOn()
+        palantirJavaFormat()
+        removeUnusedImports()
+        trimTrailingWhitespace()
+        endWithNewline()
+        formatAnnotations()
     }
 }
 

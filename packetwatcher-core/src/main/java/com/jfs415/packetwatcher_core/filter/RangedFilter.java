@@ -1,10 +1,9 @@
 package com.jfs415.packetwatcher_core.filter;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.List;
 import org.springframework.data.annotation.Immutable;
 import org.springframework.lang.Nullable;
-
-import java.util.List;
 
 @Immutable
 public final class RangedFilter<T extends Comparable<T>> implements IRangedFilter<T> {
@@ -15,8 +14,7 @@ public final class RangedFilter<T extends Comparable<T>> implements IRangedFilte
     @JsonProperty("end")
     private final T rangeEnd;
 
-    @Nullable
-    private final RangedComparator<T, T, T> rangedComparator;
+    @Nullable private final RangedComparator<T, T, T> rangedComparator;
 
     public RangedFilter(T rangeStart, T rangeEnd) {
         this.rangeStart = rangeStart;
@@ -43,7 +41,8 @@ public final class RangedFilter<T extends Comparable<T>> implements IRangedFilte
     @Override
     public boolean isFilterValue(T value) {
         if (isType(value.getClass())) {
-            return rangedComparator == null ? value.compareTo(rangeStart) >= 0 && value.compareTo(rangeEnd) <= 0
+            return rangedComparator == null
+                    ? value.compareTo(rangeStart) >= 0 && value.compareTo(rangeEnd) <= 0
                     : rangedComparator.isInRangeInclusive(value, rangeStart, rangeEnd);
         }
 
@@ -52,25 +51,31 @@ public final class RangedFilter<T extends Comparable<T>> implements IRangedFilte
 
     @Override
     public boolean isType(Class<?> type) {
-        return rangeStart != null && rangeEnd != null && rangeStart.getClass().isAssignableFrom(type) && rangeEnd.getClass().isAssignableFrom(type);
+        return rangeStart != null
+                && rangeEnd != null
+                && rangeStart.getClass().isAssignableFrom(type)
+                && rangeEnd.getClass().isAssignableFrom(type);
     }
 
     @Override
     public boolean isInRangeExclusive(T value) {
-        return rangedComparator == null ? value.compareTo(rangeStart) > 0 && value.compareTo(rangeEnd) < 0
+        return rangedComparator == null
+                ? value.compareTo(rangeStart) > 0 && value.compareTo(rangeEnd) < 0
                 : rangedComparator.isInRangeExclusive(value, rangeStart, rangeEnd);
     }
 
     @Override
     public boolean isInRangeLowerInclusiveUpperExclusive(T value) {
-        return rangedComparator == null ? value.compareTo(rangeStart) >= 0 && value.compareTo(rangeEnd) < 0
+        return rangedComparator == null
+                ? value.compareTo(rangeStart) >= 0 && value.compareTo(rangeEnd) < 0
                 : rangedComparator.isInRangeLowerInclusiveUpperExclusive(value, rangeStart, rangeEnd);
     }
 
     @Override
     public boolean isInRangeLowerExclusiveUpperInclusive(T value) {
         if (isType(value.getClass())) {
-            return rangedComparator == null ? value.compareTo(rangeStart) > 0 && value.compareTo(rangeEnd) <= 0
+            return rangedComparator == null
+                    ? value.compareTo(rangeStart) > 0 && value.compareTo(rangeEnd) <= 0
                     : rangedComparator.isInRangeLowerExclusiveUpperInclusive(value, rangeStart, rangeEnd);
         }
 
@@ -81,7 +86,8 @@ public final class RangedFilter<T extends Comparable<T>> implements IRangedFilte
     public boolean anyInRange(List<T> values) {
         return values.stream().anyMatch(v -> {
             if (isType(v.getClass())) {
-                return rangedComparator == null ? v.compareTo(rangeStart) >= 0 && v.compareTo(rangeEnd) <= 0
+                return rangedComparator == null
+                        ? v.compareTo(rangeStart) >= 0 && v.compareTo(rangeEnd) <= 0
                         : rangedComparator.isInRangeInclusive(v, rangeStart, rangeEnd);
             }
 
@@ -107,5 +113,4 @@ public final class RangedFilter<T extends Comparable<T>> implements IRangedFilte
     public boolean hasRangedComparator() {
         return rangedComparator != null;
     }
-
 }

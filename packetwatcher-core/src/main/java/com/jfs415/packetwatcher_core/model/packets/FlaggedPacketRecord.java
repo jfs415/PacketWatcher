@@ -1,16 +1,15 @@
 package com.jfs415.packetwatcher_core.model.packets;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
+import java.io.Serializable;
+import java.sql.Timestamp;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import java.io.Serializable;
-import java.sql.Timestamp;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Getter
@@ -30,7 +29,8 @@ public class FlaggedPacketRecord implements Serializable {
     public String flaggedCountry;
 
     public static FlaggedPacketRecord createTestPacket() {
-        PacketRecordKey key = new PacketRecordKey(new Timestamp(System.currentTimeMillis()), "127.0.0.1", "00000", "127.0.0.1", "00000");
+        PacketRecordKey key = new PacketRecordKey(
+                new Timestamp(System.currentTimeMillis()), "127.0.0.1", "00000", "127.0.0.1", "00000");
         return new FlaggedPacketRecord(key, "LOCALHOST", null);
     }
 
@@ -53,5 +53,4 @@ public class FlaggedPacketRecord implements Serializable {
     public int hashCode() {
         return 31 * (key.hashCode() + flaggedCountry.hashCode());
     }
-
 }

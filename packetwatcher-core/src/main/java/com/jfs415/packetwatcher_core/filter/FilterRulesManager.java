@@ -1,5 +1,13 @@
 package com.jfs415.packetwatcher_core.filter;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.Timestamp;
+import java.util.EnumMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Optional;
 import org.pcap4j.core.PacketListener;
 import org.pcap4j.core.PcapPacket;
 import org.pcap4j.packet.EthernetPacket;
@@ -14,15 +22,6 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.yaml.snakeyaml.Yaml;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.sql.Timestamp;
-import java.util.EnumMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Optional;
-
 @Component
 public class FilterRulesManager implements PacketListener {
 
@@ -35,10 +34,14 @@ public class FilterRulesManager implements PacketListener {
     private final FilterYamlConfiguration filterYamlConfiguration;
 
     @Autowired
-    public FilterRulesManager(FilterConfigurationManager filterConfigurationManager, FilterYamlConfiguration filterYamlConfiguration) {
+    public FilterRulesManager(
+            FilterConfigurationManager filterConfigurationManager, FilterYamlConfiguration filterYamlConfiguration) {
         this.filterYamlConfiguration = filterYamlConfiguration;
         this.filterConfigurationManager = filterConfigurationManager;
-        this.localNetRange = new RangedFilter<>(filterYamlConfiguration.getLocalIpRangeStart(), filterYamlConfiguration.getLocalIpRangeEnd(), new IpComparator());
+        this.localNetRange = new RangedFilter<>(
+                filterYamlConfiguration.getLocalIpRangeStart(),
+                filterYamlConfiguration.getLocalIpRangeEnd(),
+                new IpComparator());
 
         try {
             load();
@@ -67,7 +70,8 @@ public class FilterRulesManager implements PacketListener {
         }
     }
 
-    private void processIngressPacket(FilterConfigurationManager filterConfigurationManager, PcapPacket pcapPacket, TcpHeader tcpHeader) {
+    private void processIngressPacket(
+            FilterConfigurationManager filterConfigurationManager, PcapPacket pcapPacket, TcpHeader tcpHeader) {
         if (pcapPacket.getPacket() instanceof EthernetPacket ethernetPacket && isTcpPacket(pcapPacket)) {
             getDestinationIp(ethernetPacket).ifPresent(ipToTest -> {
                 Timestamp timestamp = new Timestamp(pcapPacket.getTimestamp().getEpochSecond());
@@ -79,7 +83,8 @@ public class FilterRulesManager implements PacketListener {
         }
     }
 
-    private void processEgressPacket(FilterConfigurationManager filterConfigurationManager, PcapPacket pcapPacket, TcpHeader tcpHeader) {
+    private void processEgressPacket(
+            FilterConfigurationManager filterConfigurationManager, PcapPacket pcapPacket, TcpHeader tcpHeader) {
         if (pcapPacket.getPacket() instanceof EthernetPacket ethernetPacket && isTcpPacket(pcapPacket)) {
             getDestinationIp(ethernetPacket).ifPresent(ipToTest -> {
                 Timestamp timestamp = new Timestamp(pcapPacket.getTimestamp().getEpochSecond());
@@ -106,7 +111,7 @@ public class FilterRulesManager implements PacketListener {
         InputStream inputStream = new FileInputStream(filterYamlConfiguration.getFilterRulesPath());
 
         Yaml yaml = new Yaml();
-        Map<String, Object> fileData = yaml.load(inputStream); //Map of <FilterRule, FilterConfiguration>
+        Map<String, Object> fileData = yaml.load(inputStream); // Map of <FilterRule, FilterConfiguration>
 
         if (fileData == null || fileData.isEmpty()) {
             throw new FilterException("Filter-Rules.yml is empty!");
@@ -118,7 +123,8 @@ public class FilterRulesManager implements PacketListener {
             }
 
             FilterRule filterRule = FilterRule.valueOf(rule);
-            LinkedHashMap<String, Object> configurationManagerData = (LinkedHashMap<String, Object>) filterConfigurations; //Map of <FilterConfiguration, FilterOptions>
+            LinkedHashMap<String, Object> configurationManagerData =
+                    (LinkedHashMap<String, Object>) filterConfigurations; // Map of <FilterConfiguration, FilterOptions>
             filterConfigurationManager.load(configurationManagerData);
 
             configuration.put(filterRule, filterConfigurationManager);
@@ -128,11 +134,12 @@ public class FilterRulesManager implements PacketListener {
     }
 
     protected boolean isTcpPacket(PcapPacket packet) {
-        return packet.getPacket().getPayload() != null && packet.getPacket().getPayload().getPayload() != null && (packet.getPacket().getPayload().getPayload() instanceof TcpPacket);
+        return packet.getPacket().getPayload() != null
+                && packet.getPacket().getPayload().getPayload() != null
+                && (packet.getPacket().getPayload().getPayload() instanceof TcpPacket);
     }
 
     public boolean isIpInLocalRange(@Nullable String ipToTest) {
         return localNetRange.isFilterValue(ipToTest);
     }
-
 }

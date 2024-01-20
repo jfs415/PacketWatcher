@@ -1,11 +1,10 @@
 package com.jfs415.packetwatcher_core.test.unit;
 
 import com.jfs415.packetwatcher_core.filter.FilterSet;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-
 import java.util.List;
 import java.util.stream.Collectors;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
 
 @Order(1)
 class FilterSetTest {
@@ -31,8 +30,10 @@ class FilterSetTest {
         assert stringFilterSet.containsAny(stringList);
         assert stringFilterSet.isFilterValue(stringList.get(0));
 
-        assert !stringFilterSet.containsAll(intList.stream().map(String::valueOf).collect(Collectors.toList()));
-        assert !stringFilterSet.containsAny(intList.stream().map(String::valueOf).collect(Collectors.toList()));
+        assert !stringFilterSet.containsAll(
+                intList.stream().map(String::valueOf).collect(Collectors.toList()));
+        assert !stringFilterSet.containsAny(
+                intList.stream().map(String::valueOf).collect(Collectors.toList()));
         assert !stringFilterSet.isFilterValue(intList.get(0).toString());
     }
 
@@ -48,8 +49,10 @@ class FilterSetTest {
         assert intFilterSet.containsAny(intList);
         assert intFilterSet.isFilterValue(intList.get(0));
 
-        assert !intFilterSet.containsAll(doubleList.stream().map(Double::intValue).collect(Collectors.toList()));
-        assert !intFilterSet.containsAny(doubleList.stream().map(Double::intValue).collect(Collectors.toList()));
+        assert !intFilterSet.containsAll(
+                doubleList.stream().map(Double::intValue).collect(Collectors.toList()));
+        assert !intFilterSet.containsAny(
+                doubleList.stream().map(Double::intValue).collect(Collectors.toList()));
         assert !intFilterSet.isFilterValue(doubleList.get(0).intValue());
     }
 
@@ -65,8 +68,10 @@ class FilterSetTest {
         assert doubleFilterSet.containsAny(doubleList);
         assert doubleFilterSet.isFilterValue(doubleList.get(0));
 
-        assert !doubleFilterSet.containsAll(floatList.stream().map(Float::doubleValue).collect(Collectors.toList()));
-        assert !doubleFilterSet.containsAny(floatList.stream().map(Float::doubleValue).collect(Collectors.toList()));
+        assert !doubleFilterSet.containsAll(
+                floatList.stream().map(Float::doubleValue).collect(Collectors.toList()));
+        assert !doubleFilterSet.containsAny(
+                floatList.stream().map(Float::doubleValue).collect(Collectors.toList()));
         assert !doubleFilterSet.isFilterValue(floatList.get(0).doubleValue());
     }
 
@@ -86,5 +91,4 @@ class FilterSetTest {
         assert !floatFilterSet.containsAny(intList.stream().map(Float::valueOf).collect(Collectors.toList()));
         assert !floatFilterSet.isFilterValue(Float.valueOf(intList.get(0)));
     }
-
 }

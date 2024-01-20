@@ -10,5 +10,4 @@ public interface IFilterSet<T> extends IFilter<T> {
     boolean containsAny(List<T> values);
 
     Set<T> getDataSet();
-
 }

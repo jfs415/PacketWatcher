@@ -1,7 +1,6 @@
 package com.jfs415.packetwatcher_core.model.services;
 
 import com.jfs415.packetwatcher_core.model.packets.FlaggedPacketRecord;
-
 import java.util.List;
 
 public interface PacketService {

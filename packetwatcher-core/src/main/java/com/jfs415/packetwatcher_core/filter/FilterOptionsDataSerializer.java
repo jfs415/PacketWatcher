@@ -3,18 +3,18 @@ package com.jfs415.packetwatcher_core.filter;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class FilterOptionsDataSerializer extends JsonSerializer<FilterOptionsManager> {
 
     private static final Logger logger = LoggerFactory.getLogger(FilterOptionsDataSerializer.class);
 
     @Override
-    public void serialize(FilterOptionsManager filterOptionsManager, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+    public void serialize(FilterOptionsManager filterOptionsManager, JsonGenerator gen, SerializerProvider serializers)
+            throws IOException {
         gen.writeStartObject();
 
         filterOptionsManager.getOptions().forEach((option, filterList) -> {
@@ -28,7 +28,8 @@ public class FilterOptionsDataSerializer extends JsonSerializer<FilterOptionsMan
         gen.writeEndObject();
     }
 
-    private void processFilterOption(FilterOption option, List<IFilter<?>> filterList, JsonGenerator gen) throws IOException {
+    private void processFilterOption(FilterOption option, List<IFilter<?>> filterList, JsonGenerator gen)
+            throws IOException {
         gen.writeFieldName(option.name());
         gen.writeStartArray();
 
@@ -57,5 +58,4 @@ public class FilterOptionsDataSerializer extends JsonSerializer<FilterOptionsMan
             gen.writeObject(listValue);
         }
     }
-
 }

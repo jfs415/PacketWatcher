@@ -8,6 +8,8 @@ import com.jfs415.packetwatcher_core.PacketWatcherCore;
 import com.jfs415.packetwatcher_core.model.packets.FlaggedPacketRecord;
 import com.jfs415.packetwatcher_core.model.packets.PacketRecordKey;
 import com.jfs415.packetwatcher_core.model.services.PacketServiceImpl;
+import java.sql.Timestamp;
+import java.util.*;
 import org.pcap4j.packet.EthernetPacket;
 import org.pcap4j.packet.IpV4Packet.IpV4Header;
 import org.pcap4j.packet.IpV6Packet.IpV6Header;
@@ -17,9 +19,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
-import java.sql.Timestamp;
-import java.util.*;
 
 @JsonSerialize(using = FilterOptionsDataSerializer.class)
 @Component
@@ -53,7 +52,7 @@ public class FilterOptionsManager {
         this.packetWatcherCore = packetWatcherCore;
     }
 
-    protected EnumMap<FilterOption, List<IFilter<?>>> getOptions() { //Protected to provide visibility within package
+    protected EnumMap<FilterOption, List<IFilter<?>>> getOptions() { // Protected to provide visibility within package
         return filterOptions;
     }
 
@@ -101,7 +100,6 @@ public class FilterOptionsManager {
             } else {
                 throw new FilterException("Filter-Rules option data is not in the proper format!");
             }
-
         }
     }
 
@@ -130,19 +128,21 @@ public class FilterOptionsManager {
 
     private Optional<PacketHeaderInfo> parseIpv4Header(IpV4Header ipV4Header) {
         return ipV4Header != null && ipV4Header.getDstAddr() != null
-                ? Optional.of(new PacketHeaderInfo(ipV4Header.getDstAddr().getHostAddress(),
-                ipV4Header.getDstAddr().getHostName(),
-                ipV4Header.getSrcAddr().getHostAddress(),
-                ipV4Header.getSrcAddr().getHostName()))
+                ? Optional.of(new PacketHeaderInfo(
+                        ipV4Header.getDstAddr().getHostAddress(),
+                        ipV4Header.getDstAddr().getHostName(),
+                        ipV4Header.getSrcAddr().getHostAddress(),
+                        ipV4Header.getSrcAddr().getHostName()))
                 : Optional.empty();
     }
 
     private Optional<PacketHeaderInfo> parseIpv6Header(IpV6Header ipV6Header) {
         return ipV6Header != null && ipV6Header.getDstAddr() != null
-                ? Optional.of(new PacketHeaderInfo(ipV6Header.getDstAddr().getHostAddress(),
-                ipV6Header.getDstAddr().getHostName(),
-                ipV6Header.getSrcAddr().getHostAddress(),
-                ipV6Header.getSrcAddr().getHostName()))
+                ? Optional.of(new PacketHeaderInfo(
+                        ipV6Header.getDstAddr().getHostAddress(),
+                        ipV6Header.getDstAddr().getHostName(),
+                        ipV6Header.getSrcAddr().getHostAddress(),
+                        ipV6Header.getSrcAddr().getHostName()))
                 : Optional.empty();
     }
 
@@ -153,7 +153,15 @@ public class FilterOptionsManager {
 
             String countryName = ipLookupUtility != null ? getFlaggedCountry(headerInfo.destIp()) : null;
 
-            PacketData packetData = new PacketData(headerInfo.destIp, headerInfo.destHostName(), destPort, headerInfo.srcHostName(), headerInfo.srcIp(), srcPort, countryName, timestamp);
+            PacketData packetData = new PacketData(
+                    headerInfo.destIp,
+                    headerInfo.destHostName(),
+                    destPort,
+                    headerInfo.srcHostName(),
+                    headerInfo.srcIp(),
+                    srcPort,
+                    countryName,
+                    timestamp);
 
             filterOptions.forEach((k, v) -> {
                 switch (k) {
@@ -179,7 +187,7 @@ public class FilterOptionsManager {
                         processOption(packetData, v, srcPort);
                         break;
                     default:
-                        logger.debug("Encountered unknown FilterOption"); //TODO: Allow custom filters
+                        logger.debug("Encountered unknown FilterOption"); // TODO: Allow custom filters
                 }
             });
         });
@@ -201,14 +209,20 @@ public class FilterOptionsManager {
                     createPacket(packetData);
                 }
             } else {
-                logger.debug("Encountered unknown Filter"); //TODO: Allow custom filters
+                logger.debug("Encountered unknown Filter"); // TODO: Allow custom filters
             }
         }
     }
 
     private void createPacket(PacketData packetData) {
-        PacketRecordKey key = new PacketRecordKey(packetData.timestamp(), packetData.destinationIp(), packetData.destinationPort(), packetData.sourceHost(), packetData.sourcePort());
-        packetService.addToSaveQueue(new FlaggedPacketRecord(key, packetData.destinationHost(), packetData.countryName()));
+        PacketRecordKey key = new PacketRecordKey(
+                packetData.timestamp(),
+                packetData.destinationIp(),
+                packetData.destinationPort(),
+                packetData.sourceHost(),
+                packetData.sourcePort());
+        packetService.addToSaveQueue(
+                new FlaggedPacketRecord(key, packetData.destinationHost(), packetData.countryName()));
     }
 
     @SuppressWarnings("unchecked")
@@ -225,7 +239,9 @@ public class FilterOptionsManager {
                 throw new FilterException("Country filter is configured but non-string country filter was provided!");
             }
 
-            ipLookupUtility = new Ip2Asn2Cc(filterOptions.get(FilterOption.COUNTRY).stream().flatMap(f -> ((FilterSet<String>) f).getDataSet().stream()).toList());
+            ipLookupUtility = new Ip2Asn2Cc(filterOptions.get(FilterOption.COUNTRY).stream()
+                    .flatMap(f -> ((FilterSet<String>) f).getDataSet().stream())
+                    .toList());
         } catch (RIRNotDownloadedException e) {
             if (!surviveRirException) {
                 packetWatcherCore.fail("Encountered a fatal exception when creating ipLookupUtility");
@@ -237,13 +253,15 @@ public class FilterOptionsManager {
         return ipLookupUtility.getRIRCountryCode(destinationIp);
     }
 
-    private record PacketHeaderInfo(String destIp, String destHostName, String srcIp, String srcHostName) {
+    private record PacketHeaderInfo(String destIp, String destHostName, String srcIp, String srcHostName) {}
 
-    }
-
-    private record PacketData(String destinationIp, String destinationHost, String destinationPort, String sourceHost,
-                              String sourceIp, String sourcePort, String countryName, Timestamp timestamp) {
-
-    }
-
+    private record PacketData(
+            String destinationIp,
+            String destinationHost,
+            String destinationPort,
+            String sourceHost,
+            String sourceIp,
+            String sourcePort,
+            String countryName,
+            Timestamp timestamp) {}
 }

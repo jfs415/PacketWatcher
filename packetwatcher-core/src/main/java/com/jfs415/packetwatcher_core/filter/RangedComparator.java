@@ -9,5 +9,4 @@ public interface RangedComparator<V, F, C> {
     boolean isInRangeLowerExclusiveUpperInclusive(V value, F floor, C ceiling);
 
     boolean isInRangeLowerInclusiveUpperExclusive(V value, F floor, C ceiling);
-
 }

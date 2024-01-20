@@ -2,17 +2,16 @@ package com.jfs415.packetwatcher_core.model.services;
 
 import com.jfs415.packetwatcher_core.model.packets.FlaggedPacketRecord;
 import com.jfs415.packetwatcher_core.model.repositories.FlaggedPacketRepository;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class PacketServiceImpl implements PacketService {
@@ -24,7 +23,7 @@ public class PacketServiceImpl implements PacketService {
     private final ArrayList<FlaggedPacketRecord> flaggedPacketSaveQueue = new ArrayList<>();
 
     @Value("${packetwatcher-core.flagged-packet-retention-days}")
-    private int flaggedPacketRetentionDays; //TODO implement retention period removal query
+    private int flaggedPacketRetentionDays; // TODO implement retention period removal query
 
     @Autowired
     public PacketServiceImpl(FlaggedPacketRepository flaggedPacketRepo) {
@@ -92,5 +91,4 @@ public class PacketServiceImpl implements PacketService {
             throw new IllegalArgumentException("The PacketRecord cannot be null!");
         }
     }
-
 }

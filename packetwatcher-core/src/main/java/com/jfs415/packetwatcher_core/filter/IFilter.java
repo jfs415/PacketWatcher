@@ -5,5 +5,4 @@ public interface IFilter<T> {
     boolean isFilterValue(T value);
 
     boolean isType(Class<?> type);
-
 }

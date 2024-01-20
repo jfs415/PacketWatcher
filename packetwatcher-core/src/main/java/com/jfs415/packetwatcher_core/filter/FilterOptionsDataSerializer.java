@@ -45,8 +45,7 @@ public class FilterOptionsDataSerializer extends JsonSerializer<FilterOptionsMan
     }
 
     private void processFilterList(IFilter<?> listValue, JsonGenerator gen) throws IOException {
-        if (listValue instanceof FilterSet) {
-            FilterSet<?> filterSet = (FilterSet<?>) listValue;
+        if (listValue instanceof FilterSet<?> filterSet) {
             filterSet.getDataSet().forEach(setValue -> {
                 try {
                     gen.writeString(setValue.toString());

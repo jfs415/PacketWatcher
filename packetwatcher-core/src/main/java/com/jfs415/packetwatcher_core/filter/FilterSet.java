@@ -42,9 +42,7 @@ public final class FilterSet<T> implements IFilterSet<T> {
 
     @Override
     public boolean equals(Object other) {
-        if (other instanceof FilterSet<?>) {
-            FilterSet<?> otherFilter = (FilterSet<?>) other;
-
+        if (other instanceof FilterSet<?> otherFilter) {
             if (otherFilter.filteredValues.isEmpty() && this.filteredValues.isEmpty()) {
                 return true;
             }

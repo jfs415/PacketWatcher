@@ -2,7 +2,6 @@ import React from 'react';
 import {
     CDBSidebar,
     CDBSidebarContent,
-    CDBSidebarFooter,
     CDBSidebarHeader,
     CDBSidebarMenu,
     CDBSidebarMenuItem
@@ -50,14 +49,11 @@ const Navbar = () => {
                     <NavLink href="/stats/dashboard" className="activeClicked">
                         <CDBSidebarMenuItem icon="star">Stats</CDBSidebarMenuItem>
                     </NavLink>
+                    <NavLink href="/logout" className="activeClicked">
+                        <CDBSidebarMenuItem icon="arrow-circle-left">Logout</CDBSidebarMenuItem>
+                    </NavLink>
                 </CDBSidebarMenu>
             </CDBSidebarContent>
-
-            <CDBSidebarFooter style={ { textAlign: 'center' } }>
-                <div style={ { padding: '2em 5em' } }>
-                    <a className="password" href="/logout">Logout</a>
-                </div>
-            </CDBSidebarFooter>
         </CDBSidebar>
     );
 };

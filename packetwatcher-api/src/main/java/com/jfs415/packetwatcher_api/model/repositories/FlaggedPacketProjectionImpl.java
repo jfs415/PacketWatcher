@@ -1,5 +1,6 @@
 package com.jfs415.packetwatcher_api.model.repositories;
 
+import com.jfs415.packetwatcher_api.model.core.FlaggedPacketChoroplethProjection;
 import com.jfs415.packetwatcher_api.model.core.FlaggedPacketRecord;
 import com.jfs415.packetwatcher_api.model.core.FlaggedPacketRecordProjection;
 import com.jfs415.packetwatcher_api.model.core.FlaggedPacketTimelineProjection;
@@ -189,6 +190,22 @@ public class FlaggedPacketProjectionImpl implements FlaggedPacketProjectionRepos
         query.where(builder.between(root.get(KEY).get(TIMESTAMP), start, end));
         query.groupBy(function);
         query.orderBy(new OrderImpl(function));
+
+        return entityManager.createQuery(query).getResultList();
+    }
+
+    @Override
+    public List<FlaggedPacketChoroplethProjection> getChoroplethMapData() {
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<FlaggedPacketChoroplethProjection> query =
+                builder.createQuery(FlaggedPacketChoroplethProjection.class);
+        Root<FlaggedPacketRecord> root = query.from(FlaggedPacketRecord.class);
+
+        Expression<Integer> count = builder.count(root).as(Integer.class);
+
+        query.select(builder.construct(FlaggedPacketChoroplethProjection.class, root.get(FLAGGED_COUNTRY), count));
+        query.where(root.get(FLAGGED_COUNTRY).isNotNull());
+        query.groupBy(root.get(FLAGGED_COUNTRY));
 
         return entityManager.createQuery(query).getResultList();
     }

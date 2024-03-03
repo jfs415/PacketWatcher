@@ -17,8 +17,12 @@ import LockedUserHistory from "./Components/LockedUserHistory";
 import Logout from "./Components/Logout";
 import Console from "./Components/Console";
 import Stats from "./Components/Stats";
+import {useState} from "react";
+import { Tooltip } from 'react-tooltip';
 
 function App() {
+    const [content, setContent] = useState("");
+    
     return (
         <Routes>
             <Route path="/" element={<Login/>}/>
@@ -30,7 +34,8 @@ function App() {
                 path="/dashboard"
                 element={
                     <PrivateRoute>
-                        <Dashboard/>
+                        <Dashboard setTooltipContent={setContent} />
+                        <Tooltip content={content}/>
                     </PrivateRoute>
                 }
             />

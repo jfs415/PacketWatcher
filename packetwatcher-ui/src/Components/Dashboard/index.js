@@ -7,7 +7,7 @@ import {
     Geographies,
     Geography,
     Sphere,
-    Graticule
+    Graticule, ZoomableGroup
 } from "react-simple-maps";
 import Navbar from "../Navbar";
 
@@ -59,9 +59,8 @@ const loadData = (countryData) => {
     });
 }
 
-const Dashboard = () => {
+const Dashboard = ({ setTooltipContent }) => {
     const [countryData, setCountryData] = useState([]);
-    const [content, setContent] = useState("");
     
     useEffect(() => {
         loadGeographies().then((geo) => loadData(geo)).then(setCountryData);
@@ -75,32 +74,33 @@ const Dashboard = () => {
                                rotate: [-10, 0, 0],
                                scale: 147
                            }}>
-                <Sphere stroke="#E4E5E6" strokeWidth={0.0}/>
-                <Graticule stroke="#E4E5E6" strokeWidth={0.0}/>
-                {countryData.length > 0 && (
-                    <Geographies geography={geoUrl}>
-                        {({geographies}) =>
-                            geographies.map((geo) => {
-                                const d = countryData.find((s) => s.ISO3166 === geo.id);
-                                return (
-                                    <Geography
-                                        key={geo.rsmKey}
-                                        geography={geo}
-                                        onMouseEnter={() => {
-                                            setContent(`${geo.properties.name}`);
-                                        }}
-                                        onMouseLeave={() => {
-                                            setContent("");
-                                        }}
-                                        fill={d ? colorScale(d["count"]) : "#F5F4F6"}
-                                    />
-                                );
-                            })
-                        }
-                    </Geographies>
-                )}
+                <ZoomableGroup>
+                    <Sphere stroke="#E4E5E6" strokeWidth={0.0}/>
+                    <Graticule stroke="#E4E5E6" strokeWidth={0.0}/>
+                    {countryData.length > 0 && (
+                        <Geographies geography={geoUrl}>
+                            {({geographies}) =>
+                                geographies.map((geo) => {
+                                    const id = countryData.find((s) => s.ISO3166 === geo.id);
+                                    return (
+                                        <Geography
+                                            key={geo.rsmKey}
+                                            geography={geo}
+                                            fill={id ? colorScale(id["count"]) : "#F5F4F6"}
+                                            onMouseEnter={() => {
+                                                setTooltipContent(`${geo.properties.name}`);
+                                            }}
+                                            onMouseLeave={() => {
+                                                setTooltipContent("");
+                                            }}
+                                        />
+                                    );
+                                })
+                            }
+                        </Geographies>
+                    )}
+                </ZoomableGroup>
             </ComposableMap>
-            <ReactTooltip>{content}</ReactTooltip>
         </div>
     );
 }

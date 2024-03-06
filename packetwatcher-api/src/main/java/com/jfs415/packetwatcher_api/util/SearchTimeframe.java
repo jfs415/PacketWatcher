@@ -3,7 +3,10 @@ package com.jfs415.packetwatcher_api.util;
 import com.jfs415.packetwatcher_api.exceptions.args.InvalidArgumentException;
 import com.jfs415.packetwatcher_api.exceptions.args.InvalidEventArgumentException;
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.TimeZone;
+
 import lombok.Getter;
 import org.hibernate.annotations.Immutable;
 
@@ -21,37 +24,37 @@ public class SearchTimeframe implements SearchFilter {
         this.timestamp = null;
     }
 
-    private SearchTimeframe(Timeframe timeframe, Timestamp timestamp) {
+    private SearchTimeframe(Timeframe timeframe, long timestamp) {
         this.timeframe = timeframe;
-        this.timestamp = LocalDateTime.parse(timestamp.toString());
+        this.timestamp = LocalDateTime.ofInstant(Instant.ofEpochMilli(timestamp), TimeZone.getDefault().toZoneId());
     }
 
     public static SearchTimeframe before(Timestamp timestamp) throws InvalidEventArgumentException {
         if (isNullInput(timestamp)) {
             throw new InvalidEventArgumentException(INVALID_TIME_ARG_MESSAGE);
         }
-        return new SearchTimeframe(Timeframe.BEFORE, timestamp);
+        return new SearchTimeframe(Timeframe.BEFORE, timestamp.getTime());
     }
 
     public static SearchTimeframe before(long time) throws InvalidEventArgumentException {
         if (isInvalidTime(time)) {
             throw new InvalidEventArgumentException(INVALID_TIME_ARG_MESSAGE);
         }
-        return new SearchTimeframe(Timeframe.BEFORE, new Timestamp(time));
+        return new SearchTimeframe(Timeframe.BEFORE, time);
     }
 
     public static SearchTimeframe after(Timestamp timestamp) throws InvalidEventArgumentException {
         if (isNullInput(timestamp)) {
             throw new InvalidEventArgumentException(INVALID_TIME_ARG_MESSAGE);
         }
-        return new SearchTimeframe(Timeframe.AFTER, timestamp);
+        return new SearchTimeframe(Timeframe.AFTER, timestamp.getTime());
     }
 
     public static SearchTimeframe after(long time) throws InvalidEventArgumentException {
         if (isInvalidTime(time)) {
             throw new InvalidEventArgumentException(INVALID_TIME_ARG_MESSAGE);
         }
-        return new SearchTimeframe(Timeframe.AFTER, new Timestamp(time));
+        return new SearchTimeframe(Timeframe.AFTER, time);
     }
 
     public boolean passesFilterTest(Timestamp timestampToCheck) {

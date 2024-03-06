@@ -2,7 +2,10 @@ package com.jfs415.packetwatcher_api.util;
 
 import com.jfs415.packetwatcher_api.exceptions.args.InvalidEventArgumentException;
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.TimeZone;
+
 import lombok.Getter;
 import org.springframework.data.annotation.Immutable;
 
@@ -22,6 +25,12 @@ public final class RangedSearchTimeframe extends SearchTimeframe {
         this.end = LocalDateTime.parse(end.toString());
     }
 
+    private RangedSearchTimeframe(Timeframe timeframe, long start, long end) {
+        super(timeframe);
+        this.start = LocalDateTime.ofInstant(Instant.ofEpochMilli(start), TimeZone.getDefault().toZoneId());
+        this.end = LocalDateTime.ofInstant(Instant.ofEpochMilli(end), TimeZone.getDefault().toZoneId());
+    }
+
     public static RangedSearchTimeframe between(Timestamp start, Timestamp end) throws InvalidEventArgumentException {
         if (isNullInput(start, end) || isInValidBetween(start, start)) {
             throw new InvalidEventArgumentException(INVALID_EVENT_ARG_MESSAGE);
@@ -34,7 +43,8 @@ public final class RangedSearchTimeframe extends SearchTimeframe {
         if (isInValidLongValueInput(start, end)) {
             throw new InvalidEventArgumentException(INVALID_EVENT_ARG_MESSAGE);
         }
-        return new RangedSearchTimeframe(TIMEFRAME, new Timestamp(start), new Timestamp(end));
+        
+        return new RangedSearchTimeframe(TIMEFRAME, start, end);
     }
 
     private static boolean isNullInput(Object start, Object end) {
@@ -42,7 +52,7 @@ public final class RangedSearchTimeframe extends SearchTimeframe {
     }
 
     private static boolean isInValidLongValueInput(long start, long end) {
-        return start <= 0 && end <= 0 && start >= end;
+        return start <= 0 || end <= 0 || start >= end;
     }
 
     private static boolean isInValidBetween(Timestamp start, Timestamp end) {

@@ -1,5 +1,6 @@
 package com.jfs415.packetwatcher_api.util;
 
+import com.jfs415.packetwatcher_api.exceptions.args.InvalidEventArgumentException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import lombok.Getter;
@@ -13,6 +14,7 @@ public final class RangedSearchTimeframe extends SearchTimeframe {
     private final LocalDateTime end;
 
     private static final Timeframe TIMEFRAME = Timeframe.BETWEEN;
+    private static final String INVALID_EVENT_ARG_MESSAGE = "Invalid start and end times provided";
 
     private RangedSearchTimeframe(Timeframe timeframe, Timestamp start, Timestamp end) {
         super(timeframe);
@@ -20,12 +22,31 @@ public final class RangedSearchTimeframe extends SearchTimeframe {
         this.end = LocalDateTime.parse(end.toString());
     }
 
-    public static RangedSearchTimeframe between(Timestamp start, Timestamp end) {
+    public static RangedSearchTimeframe between(Timestamp start, Timestamp end) throws InvalidEventArgumentException {
+        if (isNullInput(start, end) || isInValidBetween(start, start)) {
+            throw new InvalidEventArgumentException(INVALID_EVENT_ARG_MESSAGE);
+        }
+
         return new RangedSearchTimeframe(TIMEFRAME, start, end);
     }
 
-    public static RangedSearchTimeframe between(long start, long end) {
+    public static RangedSearchTimeframe between(long start, long end) throws InvalidEventArgumentException {
+        if (isInValidLongValueInput(start, end)) {
+            throw new InvalidEventArgumentException(INVALID_EVENT_ARG_MESSAGE);
+        }
         return new RangedSearchTimeframe(TIMEFRAME, new Timestamp(start), new Timestamp(end));
+    }
+
+    private static boolean isNullInput(Object start, Object end) {
+        return start == null || end == null;
+    }
+
+    private static boolean isInValidLongValueInput(long start, long end) {
+        return start <= 0 && end <= 0 && start >= end;
+    }
+
+    private static boolean isInValidBetween(Timestamp start, Timestamp end) {
+        return start.after(end);
     }
 
     public boolean isBetween(Timestamp timestamp) {

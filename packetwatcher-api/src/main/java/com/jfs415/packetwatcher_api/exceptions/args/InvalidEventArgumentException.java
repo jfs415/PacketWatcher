@@ -8,6 +8,10 @@ public class InvalidEventArgumentException extends InvalidArgumentException {
     private static final String DEFAULT_MESSAGE = "Only " + AuthorizationDeniedEvent.class.getSimpleName() + " and "
             + AuthorizationGrantedEvent.class.getSimpleName() + " are accepted!";
 
+    public InvalidEventArgumentException(String message) {
+        super(message);
+    }
+
     public InvalidEventArgumentException() {
         super(DEFAULT_MESSAGE);
     }

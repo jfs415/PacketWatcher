@@ -1,5 +1,6 @@
 package com.jfs415.packetwatcher_api.model.services;
 
+import com.jfs415.packetwatcher_api.exceptions.args.InvalidEventArgumentException;
 import com.jfs415.packetwatcher_api.model.events.EventMappedSuperclass;
 import com.jfs415.packetwatcher_api.model.repositories.PacketWatcherEventRepository;
 import com.jfs415.packetwatcher_api.model.services.inf.RepositoryManager;
@@ -24,12 +25,17 @@ public class RepositoryManagerImpl implements RepositoryManager {
     @Override
     @SuppressWarnings("unchecked")
     public <T extends EventMappedSuperclass, E extends Serializable>
-            PacketWatcherEventRepository<T, E> getEventRepository(Class<?> entity) {
+            PacketWatcherEventRepository<T, E> getEventRepository(Class<?> entity) throws InvalidEventArgumentException {
         ensureRepositoriesInstantiated();
+        
+        if (entity == null) {
+            throw new InvalidEventArgumentException("Null entity received");
+        }
+        
         Object repository = repositories.getRepositoryFor(entity).orElseThrow(RuntimeException::new);
 
         if (!(repository instanceof PacketWatcherEventRepository)) {
-            throw new RuntimeException("Found repository is not instanceof PacketWatcherEventRepository");
+            throw new InvalidEventArgumentException("Found repository is not instanceof PacketWatcherEventRepository");
         }
 
         return (PacketWatcherEventRepository<T, E>) repository;

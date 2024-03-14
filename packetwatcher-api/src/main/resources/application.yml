@@ -47,3 +47,8 @@ packetwatcher-api:
   jwt:
     secret: ${PW_JWT:jwt}
     token-expiry: 15m
+  test:
+    username: ${PW_API_TEST_USERNAME:default}
+    ipv4: ${PW_API_TEST_IPV4:127.0.0.1}
+    ipv6: ${PW_API_TESTIPV4:::1}
+    

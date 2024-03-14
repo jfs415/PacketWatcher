@@ -65,7 +65,7 @@ public class AuthorizationEventController implements EventController {
     @GetMapping(
             value = "/authorization",
             params = {"username", "after"})
-    public ResponseEntity<?> getAuthorizationEventsWithUsernameAfter(
+    public ResponseEntity<EventsCollectionView> getAuthorizationEventsWithUsernameAfter(
             @RequestParam String username, @RequestParam long after) {
         return eventsWithUsernameAfter(IMPL, eventService, logger, username, after);
     }

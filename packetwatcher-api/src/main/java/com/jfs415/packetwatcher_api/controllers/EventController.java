@@ -113,7 +113,7 @@ public interface EventController {
                 .build());
     }
 
-    default ResponseEntity<?> eventsWithUsernameAfter(
+    default ResponseEntity<EventsCollectionView> eventsWithUsernameAfter(
             Class<?> impl, EventService eventService, Logger logger, String username, long after) {
         Optional<SearchTimeframe> searchTimeframe = createAfterSearch(after, logger);
 
@@ -215,7 +215,7 @@ public interface EventController {
 
         Optional<EventsCollectionView> optionalEvents =
                 eventService.getEventsByTypeAndIpAddressAndUsernameWithTimeframe(
-                        impl, username, ipAddress, searchTimeframe.get());
+                        impl, ipAddress, username, searchTimeframe.get());
 
         return optionalEvents.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.badRequest()
                 .build());
@@ -231,7 +231,7 @@ public interface EventController {
 
         Optional<EventsCollectionView> optionalEvents =
                 eventService.getEventsByTypeAndIpAddressAndUsernameWithTimeframe(
-                        impl, username, ipAddress, searchTimeframe.get());
+                        impl, ipAddress, username, searchTimeframe.get());
 
         return optionalEvents.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.badRequest()
                 .build());

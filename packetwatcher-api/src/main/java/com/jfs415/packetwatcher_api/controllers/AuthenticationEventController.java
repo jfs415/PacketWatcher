@@ -64,7 +64,7 @@ public class AuthenticationEventController implements EventController {
     @GetMapping(
             value = "/authentication",
             params = {"username", "after"})
-    public ResponseEntity<?> getAuthenticationEventsWithUsernameAfter(
+    public ResponseEntity<EventsCollectionView> getAuthenticationEventsWithUsernameAfter(
             @RequestParam String username, @RequestParam long after) {
         return eventsWithUsernameAfter(IMPL, eventService, logger, username, after);
     }
